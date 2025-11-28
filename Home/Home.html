@@ -245,7 +245,7 @@
                 
                 <!-- Main Link Buttons Grid -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
-                    <!-- Button 1: Calories --><a href="calories.html" id="btn1" class="dashboard-card">
+                    <!-- Button 1: Calories --><a href="Calories/Calories.html" id="btn1" class="dashboard-card">
                         <span class="card-text" data-translate-key="btn_calories">Calories</span>
                     </a>
                     
@@ -392,7 +392,7 @@
                 });
             });
 
-            // --- Language Toggle Handler (NEW) ---
+            // --- Language Toggle Handler ---
             langToggle.addEventListener('click', () => {
                 const newLang = (currentLang === 'en') ? 'ar' : 'en';
                 updateContent(newLang);
@@ -421,7 +421,7 @@
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Global variables (MANDATORY TO USE)
+        // Global variables 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
 
@@ -432,7 +432,7 @@
             const auth = getAuth(app);
             setLogLevel('Debug');
 
-            // Authentication Setup (MANDATORY TO USE)
+            // Authentication Setup 
             const initAuth = async () => {
                 try {
                     if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
