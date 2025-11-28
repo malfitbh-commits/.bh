@@ -4,11 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MALFIT</title>
-    <link rel="icon" type="image/png" href="img/favicon.ico" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="shortcut icon" href="/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="manifest" href="/site.webmanifest" />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Cairo:wght@400;700&display=swap');
@@ -91,7 +86,7 @@
 
     <div id="intro-video-container">
         <video id="intro-video" autoplay muted playsinline>
-            <source src="video/MAL.mp4" type="video/mp4">
+            <source src="C:\Users\mada saleh\Desktop\Fitness Website\work\MAL.mp4" type="video/mp4">
         </video>
     </div>
 
@@ -190,7 +185,7 @@
                     Create Account
                 </button>
 
-                <button onclick="signInAsGuest()" data-i18n-key="guestSignIn"
+                <button onclick="signInAsGuest()" data-i18n-key="guestSignIn" id="go-home-btn"
                         class="w-full bg-white text-purple-600 font-semibold py-2.5 rounded-lg border-2 border-purple-600 hover:bg-purple-50 transition duration-150 focus:outline-none focus:ring-2 focus:ring-purple-600/50">
                     Sign In as Guest
                 </button>
@@ -201,7 +196,6 @@
 
 
     <script>
-        // ⭐️ NEW VIDEO ELEMENTS ⭐️
         const videoContainer = document.getElementById('intro-video-container');
         const videoElement = document.getElementById('intro-video');
         const authContentContainer = document.getElementById('auth-content-container');
@@ -335,8 +329,6 @@
             showMessage(langData.msgWelcome, 'text-gray-500');
         }
 
-        // --- Video Handler Function (NEW) ---
-
         /**
          * Hides the video container and reveals the main content when the video ends 
          * or when an error occurs.
@@ -357,8 +349,6 @@
             document.body.classList.remove('overflow-hidden');
             console.log('Video finished and form is now visible.');
         }
-
-        // --- Other Functions (Simplified) ---
 
         function updateFormTexts() {
             const langData = translations[currentLang];
@@ -462,7 +452,6 @@
 
         // --- Initialization ---
 
-        // ⭐️ NEW: Set event listener for video end ⭐️
         videoElement.addEventListener('ended', handleVideoEnd);
 
         // Optional: In case video fails to load or play (e.g., if the user blocked autoplay)
@@ -470,6 +459,10 @@
         
         // Hide the scroll bar while the video is playing
         document.body.classList.add('overflow-hidden');
+        document.getElementById('go-home-btn').addEventListener('click', function() {
+        // This JavaScript command performs the navigation
+            window.location.href = 'afterthelogpage.html.html';
+        });
 
         toggleFormBtn.addEventListener('click', toggleFormMode);
         langToggleBtn.addEventListener('click', toggleLanguage);
