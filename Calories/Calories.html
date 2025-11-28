@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-translate-key="page_title">MALFIT | Calorie</title>
+
+    <!-- Load Tailwind CSS for utility classes -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Use Lucide Icons CDN for cleaner SVGs -->
+    <script src="https://unpkg.com/lucide@latest"></script> 
+
+    <style>
+        /* Custom styles for the falling items and overall look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        :root {
+            --primary-color: #4f46e5; /* indigo-600 */
+            --primary-light: #eef2ff; /* indigo-50 */
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f0f4f8; /* Softer, slightly blue background */
+            overflow-x: hidden; 
+            min-height: 100vh;
+            position: relative; 
+        }
+
+        /* Apply Arabic font when direction is RTL */
+        html[dir="rtl"] body {
+            font-family: 'Cairo', sans-serif;
+            text-align: right;
+        }
+
+        /* --- Custom Nav Link Styles (Pill-shaped) --- */
+        .nav-link {
+            text-decoration: none;
+            color: #474646;
+            font-weight: 500;
+            padding: 10px 15px; 
+            margin-right: 10px;
+            transition: color 0.2s, background-color 0.2s, transform 0.1s;
+            border-radius: 9999px; /* Pill shape */
+            white-space: nowrap;
+        }
+        .nav-link:hover {
+            color: var(--primary-color); 
+            background-color: var(--primary-light); 
+            transform: translateY(-1px);
+        }
+        
+        /* Adjustments for RTL layout for links */
+        html[dir="rtl"] header nav .nav-link {
+            margin-right: 0;
+            margin-left: 10px;
+        }
+
+        /* --- Falling Item Styles (Background Layer) --- */
+        .falling-item {
+            position: absolute;
+            user-select: none;
+            pointer-events: none; 
+            opacity: 0.5; /* More subtle opacity */
+            transition: opacity 2s ease-out;
+            z-index: 0; 
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Slight shadow to lift them */
+        }
+        
+        /* Ensure all structural elements are above the falling background */
+        header, main, footer {
+            position: relative;
+            z-index: 10; 
+        }
+
+        /* --- Header Specific Styles --- */
+        header {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Stronger header shadow */
+            background-color: #ffffff;
+            transition: box-shadow 0.3s ease-in-out;
+        }
+        
+        /* --- Mobile Menu Styles --- */
+        #mobile-menu {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            background-color: #ffffff;
+            position: absolute;
+            top: 70px; /* Adjusted for taller header */
+            right: 0;
+            left: 0;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100; 
+        }
+        #mobile-menu.active {
+            max-height: 500px;
+            opacity: 1;
+            padding: 10px 0;
+        }
+        #mobile-menu a {
+            display: block;
+            padding: 12px 20px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #333;
+            text-decoration: none;
+            text-align: left; 
+            transition: background-color 0.15s;
+        }
+        #mobile-menu a:hover {
+            background-color: var(--primary-light);
+        }
+        html[dir="rtl"] #mobile-menu a {
+            text-align: right; 
+        }
+
+        /* Icon Button Styling */
+        .icon-btn {
+            padding: 10px;
+            border-radius: 50%;
+            transition: background-color 0.2s, color 0.2s;
+            display: flex; /* Ensure SVG is centered */
+            align-items: center;
+            justify-content: center;
+            color: #4b5563; /* gray-700 */
+        }
+        .icon-btn:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+        
+        /* Specific RTL fix for button icon placement (mr-2 equivalent for RTL) */
+        html[dir="rtl"] .rtl-ml-2 {
+            margin-right: 0;
+            margin-left: 0.5rem; 
+        }
+        
+        /* Enhanced Contact Button Gradient */
+        .contact-btn {
+            background-image: linear-gradient(to right, #4f46e5 0%, #3b82f6 100%); /* Indigo to Blue */
+            transition: all 0.2s ease;
+        }
+        .contact-btn:hover {
+            box-shadow: 0 8px 15px rgba(63, 131, 248, 0.4);
+            transform: scale(1.02);
+            opacity: 0.95;
+        }
+        
+        /* Centering for the main card container */
+        .min-h-main {
+            /* Ensures main content takes up remaining screen space */
+            min-height: calc(100vh - 140px);
+        }
+        @media (min-width: 768px) {
+            .min-h-main {
+                /* Adjusted for desktop header height */
+                min-height: calc(100vh - 120px); 
+            }
+        }
+
+        /* Calculator Specific Styles */
+        .input-style {
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            background-color: #ffffff;
+            color: #1f2937;
+        }
+        .input-style:focus {
+            outline: none;
+            border-color: #4f46e5; /* Indigo-600 */
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+        .result-box-style {
+            background-color: #eef2ff; /* Primary light color */
+            border-left: 4px solid #4f46e5; /* Primary color */
+        }
+        html[dir="rtl"] .result-box-style {
+            border-left: none;
+            border-right: 4px solid #4f46e5; /* Primary color */
+        }
+    </style>
+</head>
+<body>
+    <!-- 
+    The header is now sticky (top-0 z-50) for better navigation access. 
+    Navigation links use pill-shaped hover effects.
+    -->
+    <header class="sticky top-0 z-50 w-full flex items-center justify-between px-4 md:px-8 lg:px-16 py-3 bg-white border-b border-gray-100">
+        
+        <!-- Logo on the left -->
+        <div class="flex items-center">
+            <h1 class="text-3xl font-extrabold text-indigo-600 tracking-wide" data-translate-key="logo">MALFIT</h1>
+        </div>
+
+        <!-- Desktop Navigation Links (Hidden on small screens) -->
+        <nav class="hidden md:flex flex-grow justify-center mx-10">
+            <a href="calories.html" class="nav-link" data-translate-key="nav_calories">Calories</a>
+            <a href="eathealrhy.html" class="nav-link" data-translate-key="nav_eat_healthy">Eat Healthy</a>
+            <a href="plane.html" class="nav-link" data-translate-key="nav_plans">Plans</a>
+            <a href="club.html" class="nav-link" data-translate-key="nav_clubs">Clubs</a>
+            <a href="survey.html" class="nav-link" data-translate-key="nav_survey">Survey</a>
+            <a href="contact us.html" class="nav-link" data-translate-key="nav_contact_us">Contact Us</a>
+        </nav>
+
+        <!-- Icons and Mobile Menu Toggle on the right -->
+        <div class="icons-container flex items-center gap-2 md:gap-4">
+            
+            <!-- Language Switch Icon -->
+            <button id="lang-toggle" class="icon-btn w-10 h-10 border-2 border-gray-300 hover:border-indigo-600">
+                <!-- Text inside the span is updated by JavaScript to show the language you are switching TO -->
+                <span id="current-lang" class="text-sm font-bold">EN</span> 
+            </button>
+
+            <!-- Home Icon -->
+            <a href="afterthelogpage.html.html" class="icon-btn hover:bg-indigo-50">
+                <svg data-lucide="home" width="24" height="24"></svg>
+            </a>
+
+            <!-- Account Icon -->
+            <a href="accountData.html" class="icon-btn hover:bg-indigo-50">
+                <svg data-lucide="user" width="24" height="24"></svg>
+            </a>
+
+            <!-- Mobile Menu Toggle (Hamburger Icon - Visible only on small screens) -->
+            <button id="menu-toggle" class="md:hidden icon-btn">
+                <svg data-lucide="menu" width="24" height="24"></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="md:hidden">
+        <a href="calories.html" data-translate-key="nav_calories">Calories</a>
+        <a href="eathealrhy.html" data-translate-key="nav_eat_healthy">Eat Healthy</a>
+        <a href="plane.html" data-translate-key="nav_plans">Plans</a>
+        <a href="club.html" data-translate-key="nav_clubs">Clubs</a>
+        <a href="survey.html" data-translate-key="nav_survey">Survey</a>
+        <a href="contact us.html" data-translate-key="nav_contact_us">Contact Us</a>
+    </div>
+
+    <!-- Main Content (Calorie Planner Card) -->
+    <main class="flex items-center justify-center p-4 min-h-main"> 
+        
+        <div class="w-full max-w-lg bg-white shadow-2xl rounded-3xl p-6 sm:p-8 border border-blue-50/50 transform transition-all duration-300 hover:shadow-indigo-200/50">
+
+            <div class="text-center">
+                 <!-- Calculator Icon -->
+                <div class="mx-auto w-16 h-16 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-full flex items-center justify-center shadow-lg">
+                    <svg data-lucide="calculator" width="28" height="28" stroke="white" stroke-width="2.5"></svg>
+                </div>
+                <h1 class="mt-6 text-3xl font-extrabold text-gray-900 leading-tight" data-translate-key="calc_title">Calculate Calories</h1>
+                <p class="mt-3 text-md text-gray-500 max-w-md mx-auto" data-translate-key="calc_subtitle">Find your daily calorie target based on your goal.</p>
+            </div>
+
+            <!-- Input Form -->
+            <div class="space-y-4 mt-8">
+                <!-- Row 1: Age & Gender -->
+                <div class="flex space-x-4">
+                    <div class="w-1/2">
+                        <label for="age" class="block text-sm font-medium text-gray-700 mb-1" data-translate-key="label_age">Your Age (Years)</label>
+                        <input type="number" id="age" min="15" class="input-style" placeholder="e.g., 30">
+                    </div>
+                    <div class="w-1/2">
+                        <label for="gender" class="block text-sm font-medium text-gray-700 mb-1" data-translate-key="label_gender">Are you Male or Female?</label>
+                        <select id="gender" class="input-style">
+                            <option value="male" data-translate-key="option_male">Male</option>
+                            <option value="female" data-translate-key="option_female">Female</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Row 2: Height & Weight -->
+                <div class="flex space-x-4">
+                    <div class="w-1/2">
+                        <label for="height" class="block text-sm font-medium text-gray-700 mb-1" data-translate-key="label_height">Your Height (cm)</label>
+                        <input type="number" id="height" min="100" class="input-style" placeholder="e.g., 175">
+                    </div>
+                    <div class="w-1/2">
+                        <label for="weight" class="block text-sm font-medium text-gray-700 mb-1" data-translate-key="label_weight">Your Current Weight (kg)</label>
+                        <input type="number" id="weight" min="40" class="input-style" placeholder="e.g., 75">
+                    </div>
+                </div>
+
+                <!-- Row 3: Activity Level -->
+                <div>
+                    <label for="activity" class="block text-sm font-medium text-gray-700 mb-1" data-translate-key="label_activity">How Active Are You?</label>
+                    <select id="activity" class="input-style">
+                        <option value="1.2" data-translate-key="activity_1_2">Not Active (Desk job, little exercise)</option>
+                        <option value="1.375" data-translate-key="activity_1_375">A Bit Active (Exercise 1-3 times a week)</option>
+                        <option value="1.55" selected data-translate-key="activity_1_55">Active (Exercise 3-5 times a week)</option>
+                        <option value="1.725" data-translate-key="activity_1_725">Very Active (Exercise 6-7 times a week)</option>
+                        <option value="1.9" data-translate-key="activity_1_9">Extremely Active (Hard exercise + physical job)</option>
+                    </select>
+                </div>
+
+                <hr class="border-gray-200 pt-2">
+
+                <!-- Row 4: Goal Setting -->
+                <div class="flex space-x-4">
+                    <div class="w-1/2">
+                        <label for="goal_weight" class="block text-sm font-medium text-gray-700 mb-1" data-translate-key="label_goal_weight">How many kg do you want to lose?</label>
+                        <input type="number" id="goal_weight" min="0.5" class="input-style" placeholder="e.g., 5">
+                    </div>
+                    <div class="w-1/2">
+                        <label for="time_frame" class="block text-sm font-medium text-gray-700 mb-1" data-translate-key="label_time_frame">How many Weeks do you have?</label>
+                        <input type="number" id="time_frame" min="1" class="input-style" placeholder="e.g., 8">
+                    </div>
+                </div>
+
+                <button onclick="calculatePlan()" 
+                    class="contact-btn w-full flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-2xl shadow-xl text-white mt-6">
+                    <span data-translate-key="btn_calculate">Find My Daily Calorie Goal</span>
+                </button>
+            </div>
+
+            <!-- Result Box (Initially Hidden) -->
+            <div id="result-box" class="mt-8 p-6 result-box-style rounded-lg hidden">
+                <h2 class="text-xl font-bold text-indigo-800 mb-3" data-translate-key="result_title">Your Simple Plan</h2>
+                
+                <p class="text-gray-700 mb-3">
+                    <span class="font-semibold" data-translate-key="result_maintenance">Calories to Stay the Same:</span> 
+                    <span id="tdee-output"></span> kcal
+                </p>
+
+                <div class="bg-indigo-200 p-4 rounded-md">
+                    <p class="text-lg font-bold text-indigo-900" data-translate-key="result_daily_goal">Your Target Daily Calorie Goal is:</p>
+                    <p class="text-4xl font-extrabold text-indigo-700 mt-1"><span id="target-calories-output"></span> kcal</p>
+                </div>
+
+                <p class="text-sm text-gray-600 mt-4">
+                    <span data-translate-key="result_weekly_loss_info_part1">To reach your goal on time, you need to lose about </span>
+                    <span id="weekly-loss-output" class="font-bold"></span> 
+                    <span data-translate-key="result_weekly_loss_info_part2"> kg each week.</span>
+                </p>
+            </div>
+
+            <!-- Warning/Error Box (Initially Hidden) -->
+            <div id="warning-box" class="mt-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 rounded-lg hidden">
+                <p id="warning-message" class="text-sm font-medium text-yellow-800"></p>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer (Z-index 10) - Enhanced contrast and styling -->
+    <footer class="p-6 bg-white border-t border-gray-100 shadow-inner">
+        <p class="text-gray-600 text-center text-sm" data-translate-key="footer_text">&copy; 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi</p>
+    </footer>
+
+
+    <script>
+        // Constants for Calculation Logic
+        const KCAL_PER_KG_FAT = 7700;
+        const MIN_CALORIES_MALE = 1500;
+        const MIN_CALORIES_FEMALE = 1200;
+
+        /**
+         * Core Calculation Function
+         */
+        function calculatePlan() {
+            const age = parseFloat(document.getElementById('age').value);
+            const gender = document.getElementById('gender').value;
+            const height = parseFloat(document.getElementById('height').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+            const activityMultiplier = parseFloat(document.getElementById('activity').value);
+            const goalWeight = parseFloat(document.getElementById('goal_weight').value);
+            const timeFrameWeeks = parseFloat(document.getElementById('time_frame').value);
+
+            const resultBox = document.getElementById('result-box');
+            const warningBox = document.getElementById('warning-box');
+            warningBox.classList.add('hidden');
+            resultBox.classList.add('hidden');
+
+            // 1. Input Validation
+            if (!age || !height || !weight || !goalWeight || !timeFrameWeeks || age < 15 || height < 100 || weight < 40 || goalWeight <= 0 || timeFrameWeeks <= 0) {
+                warningBox.classList.remove('hidden');
+                document.getElementById('warning-message').textContent = translations[currentLang].warning_fill_fields;
+                return;
+            }
+
+            // 2. Calculate BMR (Mifflin-St Jeor Equation)
+            let bmr;
+            if (gender === 'male') {
+                bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
+            } else {
+                bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
+            }
+
+            // 3. Calculate TDEE (Maintenance Calories)
+            const tdee = bmr * activityMultiplier;
+            const roundedTdee = Math.round(tdee);
+
+            // 4. Calculate Required Deficit
+            const totalTimeDays = timeFrameWeeks * 7;
+            const totalDeficitKcal = goalWeight * KCAL_PER_KG_FAT;
+            const dailyDeficit = totalDeficitKcal / totalTimeDays;
+            
+            // 5. Calculate Target Calories
+            let targetCalories = tdee - dailyDeficit;
+            
+            // 6. Safety & Reality Checks
+            let safeMinimum = (gender === 'male') ? MIN_CALORIES_MALE : MIN_CALORIES_FEMALE;
+            let warningMessageKey = '';
+            let resultingWeeks = timeFrameWeeks;
+
+            if (targetCalories < safeMinimum) {
+                // Adjust to the safe minimum
+                targetCalories = safeMinimum;
+                const resultingDailyDeficit = tdee - safeMinimum;
+                resultingWeeks = totalDeficitKcal / resultingDailyDeficit / 7;
+                
+                warningMessageKey = 'warning_goal_too_fast';
+            } else if ((dailyDeficit * 7 / KCAL_PER_KG_FAT) > 1.2) { // Slightly stricter check for fast loss
+                warningMessageKey = 'warning_loss_fast';
+            } else if (targetCalories <= 0) {
+                 // Final safety net check
+                 targetCalories = roundedTdee - 500; 
+                 warningMessageKey = 'warning_error';
+            }
+
+            // Update output based on the (potentially adjusted) target calories
+            const finalTargetCalories = Math.round(targetCalories);
+            const finalDailyDeficit = Math.round(roundedTdee - finalTargetCalories);
+            const finalWeeklyLoss = (finalDailyDeficit * 7 / KCAL_PER_KG_FAT).toFixed(2);
+            
+            // 7. Display Results
+            document.getElementById('tdee-output').textContent = roundedTdee.toLocaleString();
+            document.getElementById('target-calories-output').textContent = finalTargetCalories.toLocaleString();
+            document.getElementById('weekly-loss-output').textContent = finalWeeklyLoss;
+            
+            resultBox.classList.remove('hidden');
+            
+            // 8. Display Warning if applicable
+            if (warningMessageKey) {
+                warningBox.classList.remove('hidden');
+                let message = translations[currentLang][warningMessageKey];
+                
+                if (warningMessageKey === 'warning_goal_too_fast') {
+                    // Inject calculated safe weeks into the translation string
+                    message = message.replace('{safeMinimum}', safeMinimum).replace('{resultingWeeks}', resultingWeeks.toFixed(1));
+                } else if (warningMessageKey === 'warning_error') {
+                    // Inject calculated fallback target into the translation string
+                    message = message.replace('{fallbackTarget}', Math.round(roundedTdee - 500));
+                }
+                
+                document.getElementById('warning-message').textContent = message;
+            }
+        }
+
+
+        // --- Translation Data (NEW) ---
+        const translations = {
+            'en': {
+                'page_title': 'MALFIT | Calorie',
+                'logo': 'MALFIT',
+                'nav_calories': 'Calories',
+                'nav_eat_healthy': 'Eat Healthy',
+                'nav_plans': 'Plans',
+                'nav_clubs': 'Clubs',
+                'nav_survey': 'Survey',
+                'nav_contact_us': 'Contact Us',
+                'footer_text': '© 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi',
+                'lang_code': 'AR', // Display 'AR' to switch to Arabic
+
+                // Calculator Specific Translations
+                'calc_title': 'Calculate Calories',
+                'calc_subtitle': 'Find your daily calorie target based on your goal.',
+                'label_age': 'Your Age (Years)',
+                'label_gender': 'Are you Male or Female?',
+                'option_male': 'Male',
+                'option_female': 'Female',
+                'label_height': 'Your Height (cm)',
+                'label_weight': 'Your Current Weight (kg)',
+                'label_activity': 'How Active Are You?',
+                'activity_1_2': 'Not Active (Desk job, little exercise)',
+                'activity_1_375': 'A Bit Active (Exercise 1-3 times a week)',
+                'activity_1_55': 'Active (Exercise 3-5 times a week)',
+                'activity_1_725': 'Very Active (Exercise 6-7 times a week)',
+                'activity_1_9': 'Extremely Active (Hard exercise + physical job)',
+                'label_goal_weight': 'How many kg do you want to lose?',
+                'label_time_frame': 'How many Weeks do you have?',
+                'btn_calculate': 'Find My Daily Calorie Goal',
+                'result_title': 'Your Simple Plan',
+                'result_maintenance': 'Calories to Stay the Same:',
+                'result_daily_goal': 'Your Target Daily Calorie Goal is:',
+                'result_weekly_loss_info_part1': 'To reach your goal on time, you need to lose about ',
+                'result_weekly_loss_info_part2': ' kg each week.',
+                'warning_fill_fields': 'Please fill in all the blanks correctly using positive numbers.',
+                'warning_goal_too_fast': 'ATTENTION: Your goal is too fast! To be safe and healthy, we cannot go below {safeMinimum} kcal/day. At this safe limit, you should reach your goal in about {resultingWeeks} weeks. Please prioritize health over speed.',
+                'warning_loss_fast': 'NOTE: This plan targets a fast weight loss rate. You might find it easier and more sustainable to add a couple more weeks to your time goal.',
+                'warning_error': 'ERROR: Something went wrong with the numbers. The plan has been reset to a standard 500 kcal daily deficit (Target: {fallbackTarget} kcal). Please check your inputs.',
+            },
+            'ar': {
+                'page_title': 'ملفت | السعرات الحرارية',
+                'logo': 'ملفت',
+                'nav_calories': 'السعرات الحرارية',
+                'nav_eat_healthy': 'تناول طعام صحي',
+                'nav_plans': 'الخطط',
+                'nav_clubs': 'الأندية',
+                'nav_survey': 'الاستبيان',
+                'nav_contact_us': 'اتصل بنا',
+                'footer_text': '© 2025، مشروع تخرج، مدى صالح، أحمد خليفة، لورا عادل، المشرف الدكتور عبد الله محمد خالد القادومي',
+                'lang_code': 'EN', // Display 'EN' to switch to English
+                
+                // Calculator Specific Translations
+                'calc_title': 'حساب السعرات الحرارية',
+                'calc_subtitle': 'ابحث عن هدفك اليومي من السعرات الحرارية بناءً على هدفك.',
+                'label_age': 'عمرك (بالسنوات)',
+                'label_gender': 'هل أنت ذكر أم أنثى؟',
+                'option_male': 'ذكر',
+                'option_female': 'أنثى',
+                'label_height': 'طولك (سم)',
+                'label_weight': 'وزنك الحالي (كجم)',
+                'label_activity': 'ما مدى نشاطك؟',
+                'activity_1_2': 'غير نشط (عمل مكتبي، قليل من الرياضة)',
+                'activity_1_375': 'نشط قليلاً (تمرين 1-3 مرات في الأسبوع)',
+                'activity_1_55': 'نشط (تمرين 3-5 مرات في الأسبوع)',
+                'activity_1_725': 'نشط جداً (تمرين 6-7 مرات في الأسبوع)',
+                'activity_1_9': 'نشط للغاية (تمرين شاق + عمل بدني)',
+                'label_goal_weight': 'كم كجم تريد أن تخسر؟',
+                'label_time_frame': 'كم أسبوعاً لديك؟',
+                'btn_calculate': 'اكتشف هدفي اليومي من السعرات الحرارية',
+                'result_title': 'خطتك البسيطة',
+                'result_maintenance': 'السعرات الحرارية اللازمة للحفاظ على الوزن:',
+                'result_daily_goal': 'هدف السعرات الحرارية اليومي المستهدف هو:',
+                'result_weekly_loss_info_part1': 'لتحقيق هدفك في الوقت المحدد، تحتاج إلى خسارة حوالي ',
+                'result_weekly_loss_info_part2': ' كجم كل أسبوع.',
+                'warning_fill_fields': 'يرجى ملء جميع الفراغات بشكل صحيح باستخدام أرقام موجبة.',
+                'warning_goal_too_fast': 'تنبيه: هدفك سريع جداً! لضمان سلامتك وصحتك، لا يمكننا النزول إلى أقل من {safeMinimum} سعرة حرارية/يوم. عند هذا الحد الآمن، يجب أن تصل إلى هدفك في حوالي {resultingWeeks} أسابيع. يرجى إعطاء الأولوية للصحة على السرعة.',
+                'warning_loss_fast': 'ملاحظة: تستهدف هذه الخطة معدل خسارة وزن سريعاً. قد تجد أنه من الأسهل والأكثر استدامة إضافة بضعة أسابيع أخرى إلى هدفك الزمني.',
+                'warning_error': 'خطأ: حدث خطأ ما في الأرقام. تمت إعادة تعيين الخطة إلى عجز قياسي يومي قدره 500 سعرة حرارية (الهدف: {fallbackTarget} سعرة حرارية). يرجى التحقق من مدخلاتك.',
+            }
+        };
+
+        let currentLang = localStorage.getItem('malfitMainLang') || 'en';
+        
+        // Utility function to convert Lucide icons
+        function replaceLucideIcons() {
+            lucide.createIcons();
+        }
+
+        /**
+         * Updates the content of the page based on the selected language and handles RTL layout.
+         * @param {string} lang - The target language code ('en' or 'ar').
+         */
+        function updateContent(lang) {
+            currentLang = lang;
+            const dir = (lang === 'ar') ? 'rtl' : 'ltr';
+            const langData = translations[lang];
+            const html = document.documentElement;
+
+            // 1. Update HTML language and direction attributes
+            html.setAttribute('lang', lang);
+            html.setAttribute('dir', dir);
+            
+            // 2. Update all translated elements
+            document.querySelectorAll('[data-translate-key]').forEach(element => {
+                const key = element.getAttribute('data-translate-key');
+                if (langData[key]) {
+                    // Update content only if it's not the language code span
+                    if (element.id === 'current-lang') {
+                        element.textContent = langData.lang_code;
+                    } else if (element.tagName === 'TITLE') {
+                        document.title = langData[key];
+                    } else if (element.tagName === 'OPTION') {
+                        // Special handling for select options (like activity levels)
+                        if (element.value === 'male') element.textContent = langData.option_male;
+                        else if (element.value === 'female') element.textContent = langData.option_female;
+                        else if (key.startsWith('activity_')) element.textContent = langData[key];
+                    } else {
+                        element.textContent = langData[key];
+                    }
+                }
+            });
+
+            // 3. Persist the selection
+            localStorage.setItem('malfitMainLang', lang);
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- 1. MALFIT Mobile Menu Toggle Handler ---
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const langToggle = document.getElementById('lang-toggle'); 
+
+            menuToggle.addEventListener('click', () => {
+                mobileMenu.classList.toggle('active');
+            });
+            
+            // Close menu when a link is clicked
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('active');
+                });
+            });
+            
+            // --- 2. Language Toggle Handler ---
+            langToggle.addEventListener('click', () => {
+                const newLang = (currentLang === 'en') ? 'ar' : 'en';
+                updateContent(newLang);
+                // After switching language, recalculate plan to update warning/result text if visible
+                if (!document.getElementById('result-box').classList.contains('hidden')) {
+                    calculatePlan();
+                }
+            });
+            
+            // --- 3. Initial Language Load & Icon Replacement ---
+            // Load saved language or default to English
+            updateContent(currentLang);
+            // Replace placeholder SVGs with Lucide Icons (only needed once DOM is ready)
+            replaceLucideIcons();
+
+            // --- 4. Falling Food Background Animation Script ---
+            const produceEmojis = ['🍎', '🍊', '🍋', '🍇', '🍓', '🍍', '🥦', '🥕', '🥬', '🌶️', '🌽', '🥝'];
+            const body = document.body;
+            const maxItems = 40; 
+            let itemsOnScreen = 0;
+
+            function createFallingItem() {
+                if (itemsOnScreen >= maxItems) return;
+
+                const emoji = produceEmojis[Math.floor(Math.random() * produceEmojis.length)];
+                // Smaller size range for subtlety
+                const size = Math.floor(Math.random() * 15) + 12; 
+                const initialX = Math.random() * window.innerWidth;
+                // Faster duration for slightly more noticeable movement
+                const duration = Math.random() * 8 + 4; 
+                const rotation = Math.random() * 360; 
+                
+                const item = document.createElement('div');
+                item.className = 'falling-item';
+                item.innerHTML = emoji;
+                item.style.fontSize = `${size}px`;
+                item.style.left = `${initialX}px`;
+                item.style.top = `-50px`; 
+                item.style.transform = `rotate(${rotation}deg)`;
+                
+                body.appendChild(item);
+                itemsOnScreen++;
+
+                let currentY = -50;
+                const speed = (window.innerHeight + 100) / (duration * 60); 
+                const driftX = (Math.random() - 0.5) * 0.5; 
+
+                function animateFall() {
+                    if (currentY > window.innerHeight) {
+                        if (body.contains(item)) {
+                            body.removeChild(item);
+                        }
+                        itemsOnScreen--;
+                        return;
+                    }
+
+                    currentY += speed;
+                    let currentX = parseFloat(item.style.left) || initialX;
+                    currentX += driftX;
+
+                    item.style.top = `${currentY}px`;
+                    item.style.left = `${currentX}px`;
+                    
+                    requestAnimationFrame(animateFall);
+                }
+
+                requestAnimationFrame(animateFall);
+            }
+
+            function spawnLoop() {
+                createFallingItem();
+                // Spawn a new item every 100ms to 500ms
+                const delay = Math.random() * 400 + 100;
+                setTimeout(spawnLoop, delay);
+            }
+
+            spawnLoop();
+        });
+    </script>
+</body>
+</html>
