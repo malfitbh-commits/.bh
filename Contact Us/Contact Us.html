@@ -205,7 +205,7 @@
             </div>
 
             <div class="mt-10">
-                <a href="https://mail.google.com/mail/u/0/?view=cm&fs=1&to=malfit.bh@gmail.com&su=Website%20Inquiry%20Regarding%20Support&body=Hello%20Team,%0A%0AI%20am%20writing%20to%20you%20about...%0A%0AThank%20you."
+                <a id="email-contact-link"
                     target="_blank"
                     class="contact-btn w-full flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-2xl shadow-xl text-white">
                     <span class="rtl-ml-2 mr-2" data-translate-key="btn_send_email">Send Email</span>
@@ -235,6 +235,9 @@
             { href: "Contact Us/Contact Us.html", key: "nav_contact_us" }
         ];
 
+        // The constant email address
+        const CONTACT_EMAIL = 'malfit.bh@gmail.com';
+
         // --- Translation Data (NEW) ---
         const translations = {
             'en': {
@@ -249,9 +252,12 @@
                 'card_title': 'Get in Touch',
                 'card_description': 'We are happy to answer any questions you may have regarding our plans, clubs, or calorie tracking features.',
                 'btn_send_email': 'Send Email',
-                'card_footer': 'For urgent matters, expect a reply within 24 hours. Our support team is available Monday to Friday.',
+                'card_footer': 'For urgent matters, expect a reply within 24 hours. Our support team is available Sunday to Thursday.',
                 'footer_text': '© 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi',
-                'lang_code': 'AR' // Display 'AR' to switch to Arabic
+                'lang_code': 'AR', // Display 'AR' to switch to Arabic
+                // NEW EMAIL KEYS
+                'email_subject': 'Website Inquiry Regarding Support',
+                'email_body_prefix': 'Hello Team,\n\nI am writing to you about...'
             },
             'ar': {
                 'page_title': 'ملفت | اتصل بنا',
@@ -265,9 +271,12 @@
                 'card_title': 'تواصل معنا',
                 'card_description': 'يسعدنا الإجابة على أي أسئلة قد تكون لديكم بخصوص خططنا أو الأندية أو ميزات تتبع السعرات الحرارية.',
                 'btn_send_email': 'إرسال بريد إلكتروني',
-                'card_footer': 'للمسائل العاجلة، توقعوا رداً خلال 24 ساعة. فريق الدعم متاح من الاثنين إلى الجمعة.',
+                'card_footer': 'للمسائل العاجلة، توقعوا رداً خلال 24 ساعة. فريق الدعم متاح من الأحد إلى الخميس.',
                 'footer_text': '© 2025، مشروع تخرج، مدى صالح، أحمد خليفة، لورا عادل، المشرف الدكتور عبد الله محمد خالد القادومي',
-                'lang_code': 'EN'  // Display 'EN' to switch to English
+                'lang_code': 'EN',  // Display 'EN' to switch to English
+                // NEW EMAIL KEYS
+                'email_subject': 'استفسار من الموقع بخصوص الدعم',
+                'email_body_prefix': 'أهلاً بالفريق،\n\nأكتب إليكم بخصوص...'
             }
         };
 
@@ -306,6 +315,28 @@
         }
 
         /**
+         * Dynamically updates the mailto link's href attribute based on the current language.
+         * @param {string} lang - The target language code ('en' or 'ar').
+         */
+        function updateEmailLink(lang) {
+            const langData = translations[lang];
+            const emailLink = document.getElementById('email-contact-link');
+
+            if (!emailLink) return;
+
+            // Construct the subject and body from translation keys
+            const subject = encodeURIComponent(langData.email_subject || 'Website Inquiry');
+            // Adding two newlines (%0A%0A) after the prefix for formatting
+            const body = encodeURIComponent(langData.email_body_prefix + '\n\nThank you.');
+
+            // Construct the final mailto href using the constant email
+            // Use mail.google.com/mail/u/0/?view=cm&fs=1 to open Gmail tab
+            const mailtoLink = `https://mail.google.com/mail/u/0/?view=cm&fs=1&to=${CONTACT_EMAIL}&su=${subject}&body=${body}`;
+
+            emailLink.href = mailtoLink;
+        }
+
+        /**
          * Updates the content of the page based on the selected language and handles RTL layout.
          * @param {string} lang - The target language code ('en' or 'ar').
          */
@@ -334,7 +365,10 @@
                 }
             });
 
-            // 3. Persist the selection
+            // 3. Update the Email Link
+            updateEmailLink(lang);
+
+            // 4. Persist the selection
             localStorage.setItem('malfitMainLang', lang);
         }
         
