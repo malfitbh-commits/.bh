@@ -3,172 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-translate-key="page_title">MALFIT | My Plans</title>
+    <title>MALFIT | Shopping Cart</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script> 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com" defer></script>
+    <script src="https://unpkg.com/lucide@latest" defer></script> 
 
     <style>
-        /* Custom styles from the provided code */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap'); 
-        
+        /* Custom styles for consistency and reusability */
         :root {
             --primary-color: #4f46e5; /* indigo-600 */
-            --primary-light: #eef2ff; /* indigo-50 */
-            /* New colors for cards */
-            --calorie-color: #ef4444; /* red-500 */
-            --cycle-color: #10b981; /* emerald-500 */
-            --calorie-light: #fef2f2; /* red-50 */
-            --cycle-light: #ecfdf5; /* emerald-50 */
         }
         
         body { 
             font-family: 'Inter', sans-serif; 
             background-color: #f0f4f8; 
-            overflow-x: hidden; 
             min-height: 100vh;
             position: relative; 
         }
 
-        html[dir="rtl"] body {
-            font-family: 'Cairo', sans-serif;
-            text-align: right;
-        }
-
-        /* Nav Link Styles */
-        .nav-link {
-            text-decoration: none;
-            color: #474646;
-            font-weight: 500;
-            padding: 10px 15px; 
-            margin-right: 10px;
-            transition: color 0.2s, background-color 0.2s, transform 0.1s;
-            border-radius: 9999px; 
-            white-space: nowrap;
-        }
-        .nav-link:hover {
-            color: var(--primary-color); 
-            background-color: var(--primary-light); 
-            transform: translateY(-1px);
-        }
-        .nav-link.active-plans { 
-            color: var(--primary-color); 
-            background-color: var(--primary-light); 
-            font-weight: 700;
-        }
-        
-        html[dir="rtl"] header nav .nav-link {
-            margin-right: 0;
-            margin-left: 10px;
-        }
-        
-        /* Ensures the wrapped Period link div behaves like a flex item */
-        #desktop-period-nav {
-            display: contents; /* Allows children to flow directly into flex container */
-        }
-        
-        /* General Header/Mobile Menu styles */
+        /* Header and Navigation Styles */
         header {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             background-color: #ffffff;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
         }
 
-        /* --- Plan Card Styles --- */
-        .plan-card {
-            background-color: #ffffff;
-            border-radius: 1rem;
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s, box-shadow 0.2s;
+        .nav-link {
+            padding: 0.5rem 0.75rem;
+            color: #4b5563; 
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s;
         }
-        .plan-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+        .nav-link:hover {
+            color: var(--primary-color); 
         }
         
-        /* Calorie Card Specific */
-        .calorie-card {
-            border-top: 5px solid var(--calorie-color);
-            background-color: var(--calorie-light);
-        }
-        html[dir="rtl"] .calorie-card {
-            border-top: none;
-            border-right: 5px solid var(--calorie-color);
-        }
-
-        /* Cycle Card Specific */
-        .cycle-card {
-            border-top: 5px solid var(--cycle-color);
-            background-color: var(--cycle-light);
-        }
-        html[dir="rtl"] .cycle-card {
-            border-top: none;
-            border-right: 5px solid var(--cycle-color);
-        }
-
-        .remove-btn {
-            background-color: #fca5a5; /* red-300 */
-            color: #991b1b; /* red-800 */
-            transition: background-color 0.2s;
-        }
-        .remove-btn:hover {
-            background-color: #f87171; /* red-400 */
-            color: white;
-        }
-        
-        /* Icon and Mobile Menu styles inherited from the example code... */
         .icon-btn {
-            padding: 10px;
-            border-radius: 50%;
-            transition: background-color 0.2s, color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s;
+            color: #4b5563;
+            cursor: pointer;
+        }
+        
+        .lang-circle-btn {
+            border: 2px solid #d1d5db;
+            border-radius: 9999px;
+            width: 40px; 
+            height: 40px; 
+            font-weight: 600;
             display: flex; 
             align-items: center;
             justify-content: center;
-            color: #4b5563; 
+            transition: border-color 0.2s;
+            font-family: 'Inter', Tahoma, Arial, sans-serif;
         }
-        .icon-btn:hover {
-            background-color: var(--primary-light);
+        .lang-circle-btn:hover {
+            border-color: var(--primary-color);
+        }
+        
+        /* Styles specific to the cart table */
+        .cart-table th {
+            text-align: inherit; 
+            padding: 1rem 1.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            font-weight: 700;
+            color: var(--primary-color); 
+        }
+        .cart-table td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #f3f4f6;
+            color: #374151; 
+        }
+        
+        /* Pay Now button style */
+        .pay-button {
+            background-image: linear-gradient(to right, #4f46e5 0%, #3b82f6 100%);
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.4);
+            transition: all 0.3s ease;
+        }
+        .pay-button:hover {
+            box-shadow: 0 6px 15px rgba(63, 131, 248, 0.6); 
+            transform: translateY(-1px); 
+        }
+        
+        /* Custom Mobile Menu Styling */
+        #mobile-nav a {
+            display: block;
+            padding: 12px 24px;
+            color: #4b5563;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        #mobile-nav a:hover {
+            background-color: #eef2ff; /* indigo-50 */
             color: var(--primary-color);
         }
-        
-        #mobile-menu {
-            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
-            max-height: 0;
-            overflow: hidden;
-            opacity: 0;
-            background-color: #ffffff;
-            position: absolute;
-            top: 70px; 
-            right: 0;
-            left: 0;
-            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
-            z-index: 100; 
-        }
-        #mobile-menu.active {
-            max-height: 500px;
-            opacity: 1;
-            padding: 10px 0;
-        }
-        #mobile-menu a {
-            display: block;
-            padding: 12px 20px;
-            border-bottom: 1px solid #f3f4f6;
-            color: #333;
-            text-decoration: none;
-            text-align: left; 
-            transition: background-color 0.15s;
-        }
-        #mobile-menu a:hover {
-            background-color: var(--primary-light);
-        }
-        html[dir="rtl"] #mobile-menu a {
-            text-align: right; 
-        }
-        
-        .min-h-main {
-            min-height: calc(100vh - 140px);
-        }
-
     </style>
 </head>
 <body>
@@ -176,411 +114,356 @@
     <header class="sticky top-0 z-50 w-full flex items-center justify-between px-4 md:px-8 lg:px-16 py-3 bg-white border-b border-gray-100">
         
         <div class="flex items-center">
-            <a href="afterthelogpage.html" class="text-3xl font-extrabold text-indigo-600 tracking-wide" data-translate-key="logo" aria-label="Go to Homepage">MALFIT</a>
+            <h1 class="text-3xl font-extrabold text-indigo-600 tracking-wide">MALFIT</h1>
         </div>
 
         <nav class="hidden md:flex flex-grow justify-center mx-10">
-            <a href="calories.html" class="nav-link" data-translate-key="nav_calories">Calories</a>
-            
-            <div id="desktop-period-nav" class="hidden">
-                <a href="Period/Period.html" class="nav-link" data-translate-key="nav_period">Period</a>
-            </div>
-            
-            <a href="Eat Healthy/Eat Healthy.html" class="nav-link" data-translate-key="nav_eat_healthy">Eat Healthy</a>
-            <a href="Plans/Plans.html" class="nav-link active-plans" data-translate-key="nav_plans">Plans</a>
-            <a href="Clubs/Clubs.html" class="nav-link" data-translate-key="nav_clubs">Clubs</a>
-            <a href="Survey/Survey.html" class="nav-link" data-translate-key="nav_survey">Survey</a>
-            <a href="Contact Us/Contact Us.html" class="nav-link" data-translate-key="nav_contact_us">Contact Us</a>
+            <a href="Calories/Calories.html" class="nav-link" data-translate-key="calories" id="nav-calories">Calories</a>
+            <a href="Eat Healthy/Eat Healthy.html" class="nav-link" data-translate-key="eat-healthy" id="nav-eat-healthy">Eat Healthy</a>
+            <a href="Plans/Plans.html" class="nav-link" data-translate-key="plans" id="nav-plans">Plans</a>
+            <a href="Clubs/Clubs.html" class="nav-link" data-translate-key="clubs" id="nav-clubs">Clubs</a> 
+            <a href="Survey/Survey.html" class="nav-link" data-translate-key="survey" id="nav-survey">Survey</a>
+            <a href="Contact Us/Contact Us.html" class="nav-link" data-translate-key="contact-us" id="nav-contact-us">Contact Us</a>
         </nav>
+
         <div class="icons-container flex items-center gap-2 md:gap-4">
             
-            <button id="lang-toggle" class="icon-btn w-10 h-10 border-2 border-gray-300 hover:border-indigo-600" aria-label="Toggle language">
-                <span id="current-lang" class="text-sm font-bold">EN</span> 
+            <button id="lang-toggle" class="lang-circle-btn" title="Toggle Language">
+                <span id="current-lang" class="text-sm">ع</span> 
             </button>
-
-            <a href="Home/Home.html" class="icon-btn hover:bg-indigo-50" aria-label="Home">
-                <svg data-lucide="home" width="24" height="24" aria-hidden="true"></svg>
+            
+            <a href="Shopping/Shopping.html" class="icon-btn w-10 h-10 hover:bg-indigo-50 border-2 border-indigo-600" title="Shopping Cart">
+                <svg data-lucide="shopping-cart" width="24" height="24"></svg>
             </a>
 
-            <a href="Account/Account.html" class="icon-btn hover:bg-indigo-50" aria-label="Account Settings">
-                <svg data-lucide="user" width="24" height="24" aria-hidden="true"></svg>
+            <a href="Home/Home.html" class="icon-btn w-10 h-10 hover:bg-indigo-50" title="Home">
+                <svg data-lucide="home" width="24" height="24"></svg>
             </a>
 
-            <button id="menu-toggle" class="md:hidden icon-btn" aria-label="Toggle mobile menu">
-                <svg data-lucide="menu" width="24" height="24" aria-hidden="true"></svg>
+            <a href="Account/Account.html" class="icon-btn w-10 h-10 hover:bg-indigo-50" title="Account">
+                <svg data-lucide="user" width="24" height="24"></svg>
+            </a>
+
+            <button id="menu-toggle" class="md:hidden icon-btn w-10 h-10" title="Menu">
+                <svg data-lucide="menu" width="24" height="24"></svg>
             </button>
         </div>
     </header>
 
-    <div id="mobile-menu" class="md:hidden">
-        <a href="calories.html" data-translate-key="nav_calories">Calories</a>
-        
-        <div id="mobile-period-nav" class="hidden">
-            <a href="period.html" data-translate-key="nav_period">Period</a> 
-        </div>
-        
-        <a href="Eat Healthy/Eat Healthy.html" data-translate-key="nav_eat_healthy">Eat Healthy</a>
-        <a href="Plans/Plans.html" class="active-plans" data-translate-key="nav_plans">Plans</a>
-        <a href="Clubs/Clubs.html" data-translate-key="nav_clubs">Clubs</a>
-        <a href="Survey/Survey.html" data-translate-key="nav_survey">Survey</a>
-        <a href="Contact Us/Contact Us.html" data-translate-key="nav_contact_us">Contact Us</a>
+    <div id="mobile-nav" class="hidden md:hidden absolute w-full bg-white border-b border-gray-200 shadow-lg top-[68px] z-40">
+        <a href="Calories/Calories.html" data-translate-key="calories">Calories</a>
+        <a href="Eat Healthy/Eat Healthy.html" data-translate-key="eat-healthy">Eat Healthy</a>
+        <a href="Plans/Plans.html" data-translate-key="plans">Plans</a>
+        <a href="Clubs/Clubs.html" data-translate-key="clubs">Clubs</a>
+        <a href="Survey/Survey.html" data-translate-key="survey">Survey</a>
+        <a href="Contact Us/Contact Us.html" data-translate-key="contact-us">Contact Us</a>
     </div>
-    <main class="flex flex-col items-center p-4 min-h-main"> 
-    
-        <h1 class="text-4xl font-extrabold text-gray-800 mb-8 mt-4" data-translate-key="main_plans_heading">My Active Plans</h1>
 
-        <div id="plans-container" class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8">
+    <main class="flex items-center justify-center p-4 sm:p-10 min-h-[calc(100vh-160px)]"> 
+        
+        <div class="w-full max-w-4xl bg-white shadow-2xl rounded-3xl p-6 sm:p-10 border border-blue-50/50">
+
+            <div class="text-center mb-8">
+                <h2 id="checkout-title" class="text-3xl sm:text-4xl font-extrabold text-gray-800">
+                    Shopping Cart
+                </h2>
+                <p id="checkout-subtitle" class="text-md text-gray-500 mt-1">
+                    Review your selected club memberships before proceeding.
+                </p>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full cart-table rounded-xl overflow-hidden shadow-lg border border-gray-100">
+                    <thead class="bg-indigo-50">
+                        <tr>
+                            <th id="th-item" class="text-left">Item</th>
+                            <th id="th-type" class="text-left hidden sm:table-cell">Type</th>
+                            <th id="th-price" class="text-right">Price</th>
+                            <th id="th-remove" class="text-center">Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cart-items-body">
+                        </tbody>
+                </table>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-end items-center mt-6 sm:mt-10 gap-4">
+                <div class="text-xl font-bold text-gray-800 p-2 border-b-2 border-pink-500">
+                    <span id="total-text">Total:</span> <span id="cart-total" class="text-indigo-600">Free</span>
+                </div>
+                
+                <button id="pay-button" class="pay-button text-white font-bold py-3 px-8 rounded-full shadow-lg text-lg w-full sm:w-auto" disabled>
+                    Proceed to Payment (Free)
+                </button>
+            </div>
             
-            <div id="calorie-plan-card" class="plan-card calorie-card p-6 hidden">
-            </div>
+            <p id="empty-cart-message" class="text-center text-gray-500 mt-6 hidden">
+                Your shopping cart is currently empty. Start adding clubs!
+            </p>
 
-            <div id="cycle-plan-card" class="plan-card cycle-card p-6 hidden">
-            </div>
-
-            <div id="no-plans-message" class="md:col-span-2 text-center text-gray-500 p-10 bg-white rounded-xl shadow-lg border-2 border-dashed border-gray-300">
-                <svg data-lucide="clipboard-list" width="36" height="36" class="mx-auto mb-3 text-indigo-600" aria-hidden="true"></svg>
-                <p class="text-lg font-semibold" data-translate-key="empty_plans_title">No Active Plans Found.</p>
-                <p data-translate-key="empty_plans_subtitle">Go to the Calories or Period pages to set a new plan.</p>
-            </div>
         </div>
     </main>
-
+    
     <footer class="p-6 bg-white border-t border-gray-100 shadow-inner">
-        <p class="text-gray-600 text-center text-sm" data-translate-key="footer_text">&copy; 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi</p>
+        <p id="footer-text" class="text-gray-600 text-center text-sm">&copy; 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi.</p>
     </footer>
 
     <script>
-        // --- GLOBAL STATE ---
-        let currentLang = localStorage.getItem('malfitMainLang') || 'en';
+        // Key for localStorage (must match the key used when adding items)
+        const CART_STORAGE_KEY = 'malfitShoppingCart';
         
-        // --- TRANSLATIONS (Updated and Consolidated) ---
-        const translations = {
-            'en': {
-                'page_title': 'MALFIT | My Plans',
-                'logo': 'MALFIT',
-                'nav_calories': 'Calories',
-                'nav_period': 'Period', 
-                'nav_eat_healthy': 'Eat Healthy',
-                'nav_plans': 'Plans',
-                'nav_clubs': 'Clubs',
-                'nav_survey': 'Survey',
-                'nav_contact_us': 'Contact Us',
-                'footer_text': '© 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi',
-                'lang_code': 'AR', 
-                'main_plans_heading': 'My Active Plans',
-                'empty_plans_title': 'No Active Plans Found.',
-                'empty_plans_subtitle': 'Go to the Calories or Period pages to set a new plan.',
-                'month_names': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+        // --- 1. GLOBAL AND TRANSLATION LOGIC ---
+        
+        let currentLang = localStorage.getItem('currentLang') || 'en'; 
 
-                // Calorie Plan Specific
-                'calorie_plan_title': '📊 Daily Calorie Goal',
-                'calorie_target': 'Target:',
-                'calorie_saved': 'Date Saved:',
-                'calorie_type_lose': 'Lose Weight',
-                'calorie_type_maintain': 'Maintain Weight',
-                'calorie_type_gain': 'Gain Weight',
-                'btn_remove_calorie': 'Remove Calorie Plan',
-                
-                // Cycle Plan Specific
-                'cycle_plan_title': '🩸 Cycle Prediction Plan',
-                'cycle_next_period': 'Next Period Start:',
-                'cycle_ovulation': 'Estimated Ovulation:',
-                'cycle_length': 'Cycle Length (Days):',
-                'cycle_period_duration': 'Period Duration (Days):',
-                'btn_remove_cycle': 'Remove Cycle Plan',
+        const langToggleBtn = document.getElementById('lang-toggle');
+        const menuToggleBtn = document.getElementById('menu-toggle');
+        const mobileNav = document.getElementById('mobile-nav');
+        const currentLangSpan = document.getElementById('current-lang');
+        const htmlElement = document.documentElement;
+
+        // Elements on this page
+        const checkoutTitle = document.getElementById('checkout-title');
+        const checkoutSubtitle = document.getElementById('checkout-subtitle');
+        const footerText = document.getElementById('footer-text'); 
+        const cartItemsBody = document.getElementById('cart-items-body');
+        const emptyCartMessage = document.getElementById('empty-cart-message');
+        const payButton = document.getElementById('pay-button');
+
+        // Static translations for this page and navigation
+        const staticTranslations = {
+            'checkout-title': {
+                'en': 'Shopping Cart',
+                'ar': 'سلة التسوق'
             },
-            'ar': {
-                'page_title': 'ملفت | خططي',
-                'logo': 'ملفت',
-                'nav_calories': 'السعرات الحرارية',
-                'nav_period': 'الدورة الشهرية', 
-                'nav_eat_healthy': 'تناول طعام صحي',
-                'nav_plans': 'الخطط',
-                'nav_clubs': 'الأندية',
-                'nav_survey': 'الاستبيان',
-                'nav_contact_us': 'اتصل بنا',
-                'footer_text': '© 2025، مشروع تخرج، مدى صالح، أحمد خليفة، لورا عادل، المشرف الدكتور عبد الله محمد خالد القادومي',
-                'lang_code': 'EN', 
-                'main_plans_heading': 'خططي النشطة',
-                'empty_plans_title': 'لا توجد خطط نشطة.',
-                'empty_plans_subtitle': 'انتقل إلى صفحات السعرات الحرارية أو الدورة الشهرية لتعيين خطة جديدة.',
-                'month_names': ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'],
-
-                // Calorie Plan Specific
-                'calorie_plan_title': '📊 هدف السعرات اليومي',
-                'calorie_target': 'الهدف:',
-                'calorie_saved': 'تاريخ الحفظ:',
-                'calorie_type_lose': 'خسارة الوزن',
-                'calorie_type_maintain': 'الحفاظ على الوزن',
-                'calorie_type_gain': 'زيادة الوزن',
-                'btn_remove_calorie': 'إزالة خطة السعرات',
-                
-                // Cycle Plan Specific
-                'cycle_plan_title': '🩸 خطة توقع الدورة',
-                'cycle_next_period': 'بدء الدورة القادمة:',
-                'cycle_ovulation': 'التبويض المتوقع:',
-                'cycle_length': 'طول الدورة (بالأيام):',
-                'cycle_period_duration': 'مدة الدورة (بالأيام):',
-                'btn_remove_cycle': 'إزالة خطة الدورة',
-            }
+            'checkout-subtitle': {
+                'en': 'Review your selected club memberships before proceeding.',
+                'ar': 'راجع عضويات النادي التي اخترتها قبل المتابعة.'
+            },
+            'th-item': { 'en': 'Item', 'ar': 'المنتج' },
+            'th-type': { 'en': 'Type', 'ar': 'النوع' },
+            'th-price': { 'en': 'Price', 'ar': 'السعر' },
+            'th-remove': { 'en': 'Remove', 'ar': 'إزالة' },
+            'total-text': { 'en': 'Total:', 'ar': 'الإجمالي:' },
+            'pay-button': { 'en': 'Proceed to Payment (Free)', 'ar': 'المتابعة للدفع (مجاني)' },
+            'empty-cart-message': { 'en': 'Your shopping cart is currently empty. Start adding clubs!', 'ar': 'سلة التسوق فارغة حالياً. ابدأ بإضافة الأندية!' },
+            'footer-text': {
+                'en': '&copy; 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi.',
+                'ar': '© 2025، مشروع تخرج، مدى صالح، أحمد خليفة، لورا عادل، المشرف الدكتور عبد الله محمد خالد القادومي.'
+            },
+            // Navigation link translations
+            'calories': { 'en': 'Calories', 'ar': 'السعرات الحرارية' },
+            'eat-healthy': { 'en': 'Eat Healthy', 'ar': 'تناول طعامًا صحيًا' },
+            'plans': { 'en': 'Plans', 'ar': 'الخطط' },
+            'clubs': { 'en': 'Clubs', 'ar': 'الأندية' },
+            'survey': { 'en': 'Survey', 'ar': 'الاستبيان' },
+            'contact-us': { 'en': 'Contact Us', 'ar': 'اتصل بنا' }
         };
 
-        // --- UTILITY FUNCTIONS ---
+        // Custom alert function (simulates a toast notification)
+        function alertMessage(message) {
+            console.log("App Message: " + message);
+            const isRTL = htmlElement.getAttribute('dir') === 'rtl';
+            const statusMessage = document.createElement('div');
+            
+            const placementClass = isRTL ? 'bottom-4 left-4' : 'bottom-4 right-4';
 
-        /**
-         * Parses a date string (YYYY-MM-DD) and formats it for display.
-         * @param {string} dateString 
-         * @returns {string} Formatted date string.
-         */
-        function formatDateForDisplay(dateString) {
-            // Ensure compatibility by replacing hyphens with slashes
-            const date = new Date(dateString.replace(/-/g, '/')); 
-            const monthNames = translations[currentLang].month_names;
-            return `${date.getDate()} ${monthNames[date.getMonth()]}, ${date.getFullYear()}`;
+            statusMessage.className = `fixed ${placementClass} bg-indigo-600 text-white p-4 rounded-lg shadow-2xl transition-opacity duration-300 z-50`;
+            statusMessage.textContent = message;
+            document.body.appendChild(statusMessage);
+
+            setTimeout(() => {
+                statusMessage.style.opacity = '0';
+                statusMessage.addEventListener('transitionend', () => statusMessage.remove());
+            }, 3000);
+        }
+
+        // Function to update static page elements (headers, footer, and navigation links)
+        function updateStaticText() {
+            // Document Title
+            document.title = currentLang === 'ar' ? 'ملفت | سلة التسوق' : 'MALFIT | Shopping Cart';
+            
+            // Static Page Text
+            checkoutTitle.textContent = staticTranslations['checkout-title'][currentLang];
+            checkoutSubtitle.textContent = staticTranslations['checkout-subtitle'][currentLang];
+            footerText.textContent = staticTranslations['footer-text'][currentLang];
+            document.getElementById('empty-cart-message').textContent = staticTranslations['empty-cart-message'][currentLang];
+            document.getElementById('total-text').textContent = staticTranslations['total-text'][currentLang];
+            
+            // Payment Button Text
+            const isCartEmpty = (JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || []).length === 0;
+            if (isCartEmpty) {
+                payButton.textContent = currentLang === 'ar' ? 'لا توجد عناصر للدفع' : 'No Items to Pay';
+            } else {
+                payButton.textContent = staticTranslations['pay-button'][currentLang];
+            }
+            
+            // Table headers
+            document.getElementById('th-item').textContent = staticTranslations['th-item'][currentLang];
+            document.getElementById('th-type').textContent = staticTranslations['th-type'][currentLang];
+            document.getElementById('th-price').textContent = staticTranslations['th-price'][currentLang];
+            document.getElementById('th-remove').textContent = staticTranslations['th-remove'][currentLang];
+            
+            // Navigation link translations
+            const navKeys = ['calories', 'eat-healthy', 'plans', 'clubs', 'survey', 'contact-us'];
+
+            navKeys.forEach(key => {
+                const desktopEl = document.getElementById(`nav-${key}`);
+                if (desktopEl) {
+                    desktopEl.textContent = staticTranslations[key][currentLang];
+                }
+                document.querySelectorAll(`#mobile-nav a[data-translate-key="${key}"]`).forEach(mobileEl => {
+                    mobileEl.textContent = staticTranslations[key][currentLang];
+                });
+            });
+
+            // Set document direction (RTL/LTR)
+            if (currentLang === 'ar') {
+                htmlElement.setAttribute('dir', 'rtl');
+                currentLangSpan.textContent = 'EN';
+            } else {
+                htmlElement.setAttribute('dir', 'ltr');
+                currentLangSpan.textContent = 'ع';
+            }
+        }
+
+        // Function to toggle the language state
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'ar' : 'en';
+            localStorage.setItem('currentLang', currentLang);
+            updateStaticText();
+            renderCart(); // Re-render cart items with new language
+            
+            // Close mobile menu when language is toggled, if open
+            if (!mobileNav.classList.contains('hidden')) {
+                toggleMobileMenu();
+            }
         }
         
-        /**
-         * Calculates the estimated ovulation date based on the next period start date.
-         * @param {string} nextPeriodDateString - YYYY-MM-DD format
-         * @returns {string} Formatted ovulation date.
-         */
-        function calculateOvulationDate(nextPeriodDateString) {
-            const nextPeriodDate = new Date(nextPeriodDateString.replace(/-/g, '/'));
-            const ovulationDate = new Date(nextPeriodDate);
-            // Ovulation is approximately 14 days before the next period
-            ovulationDate.setDate(ovulationDate.getDate() - 14); 
-            // Return the formatted date string (first convert back to YYYY-MM-DD for formatting utility)
-            // Use .toISOString().split('T')[0] to get YYYY-MM-DD format
-            return formatDateForDisplay(ovulationDate.toISOString().split('T')[0]);
-        }
-
-
-        // --- PLAN RENDERING FUNCTIONS ---
-
-        /**
-         * Renders the Calorie Goal Plan card.
-         * @param {object} planData - Parsed Calorie plan data.
-         */
-        function renderCaloriePlan(planData) {
-            const card = document.getElementById('calorie-plan-card');
-            const langData = translations[currentLang];
-            
-            let goalTypeKey;
-            switch(planData.type) {
-                case 'lose': goalTypeKey = 'calorie_type_lose'; break;
-                case 'gain': goalTypeKey = 'calorie_type_gain'; break;
-                default: goalTypeKey = 'calorie_type_maintain'; 
-            }
-
-            card.innerHTML = `
-                <div class="flex items-center justify-between mb-4 text-red-600">
-                    <h2 class="text-2xl font-bold" data-translate-key="calorie_plan_title">${langData.calorie_plan_title}</h2>
-                    <svg data-lucide="flame" width="28" height="28" aria-hidden="true"></svg>
-                </div>
-                
-                <div class="space-y-3 mb-6 text-gray-700">
-                    <p class="text-lg">
-                        <span class="font-semibold" data-translate-key="calorie_target">${langData.calorie_target}</span> 
-                        <span class="text-3xl font-extrabold text-red-700 block mt-1">${planData.target} kcal / Day</span>
-                    </p>
-                    <p class="text-base">
-                        <span class="font-medium" data-translate-key="calorie_saved">${langData.calorie_saved}</span> 
-                        ${formatDateForDisplay(planData.dateSaved)}
-                    </p>
-                    <p class="text-base font-bold text-gray-800">
-                        Goal: <span class="text-red-600" data-translate-key="${goalTypeKey}">${langData[goalTypeKey]}</span>
-                    </p>
-                </div>
-
-                <button onclick="removePlan('savedCalorieGoal')" class="remove-btn w-full mt-4 py-2 text-sm font-semibold rounded-lg">
-                    <span data-translate-key="btn_remove_calorie">${langData.btn_remove_calorie}</span>
-                </button>
-            `;
-            card.classList.remove('hidden');
-        }
-
-        /**
-         * Renders the Cycle Prediction Plan card.
-         * @param {object} planData - Parsed Cycle plan data.
-         */
-        function renderCyclePlan(planData) {
-            const card = document.getElementById('cycle-plan-card');
-            const langData = translations[currentLang];
-            
-            // Calculate Ovulation Date for display
-            const ovulationDateDisplay = calculateOvulationDate(planData.nextPeriodStart);
-
-            card.innerHTML = `
-                <div class="flex items-center justify-between mb-4 text-emerald-600">
-                    <h2 class="text-2xl font-bold" data-translate-key="cycle_plan_title">${langData.cycle_plan_title}</h2>
-                    <svg data-lucide="calendar-heart" width="28" height="28" aria-hidden="true"></svg>
-                </div>
-                
-                <div class="space-y-3 mb-6 text-gray-700">
-                    <p class="text-lg font-bold">
-                        <span data-translate-key="cycle_next_period">${langData.cycle_next_period}</span> 
-                        <span class="text-2xl font-extrabold text-emerald-700 block mt-1">${formatDateForDisplay(planData.nextPeriodStart)}</span>
-                    </p>
-                    <p class="text-base">
-                        <span class="font-medium" data-translate-key="cycle_ovulation">${langData.cycle_ovulation}</span> 
-                        <span class="font-semibold text-emerald-600">${ovulationDateDisplay}</span>
-                    </p>
-                    <p class="text-base">
-                        <span class="font-medium" data-translate-key="cycle_length">${langData.cycle_length}</span> 
-                        ${planData.cycleLength}
-                    </p>
-                    <p class="text-base">
-                        <span class="font-medium" data-translate-key="cycle_period_duration">${langData.cycle_period_duration}</span> 
-                        ${planData.periodDuration}
-                    </p>
-                </div>
-
-                <button onclick="removePlan('savedCyclePlan')" class="remove-btn w-full mt-4 py-2 text-sm font-semibold rounded-lg">
-                    <span data-translate-key="btn_remove_cycle">${langData.btn_remove_cycle}</span>
-                </button>
-            `;
-            card.classList.remove('hidden');
-        }
-
-
-        /**
-         * Main function to load and render all saved plans.
-         */
-        function loadPlans() {
-            const calorieDataRaw = localStorage.getItem('savedCalorieGoal');
-            const cycleDataRaw = localStorage.getItem('savedCyclePlan');
-            
-            let plansFound = false;
-
-            document.getElementById('calorie-plan-card').classList.add('hidden');
-            document.getElementById('cycle-plan-card').classList.add('hidden');
-            
-            // Get the Period navigation containers
-            const desktopPeriodNav = document.getElementById('desktop-period-nav');
-            const mobilePeriodNav = document.getElementById('mobile-period-nav');
-            
-            // Hide them by default for a fresh check
-            desktopPeriodNav.classList.add('hidden');
-            mobilePeriodNav.classList.add('hidden');
-
-            // 1. Load Calorie Plan
-            if (calorieDataRaw) {
-                try {
-                    const planData = JSON.parse(calorieDataRaw);
-                    renderCaloriePlan(planData);
-                    plansFound = true;
-                } catch (e) {
-                    console.error("Error parsing Calorie Plan from localStorage:", e);
-                    localStorage.removeItem('savedCalorieGoal');
-                }
-            }
-
-            // 2. Load Cycle Plan
-            if (cycleDataRaw) {
-                try {
-                    const planData = JSON.parse(cycleDataRaw);
-                    renderCyclePlan(planData);
-                    plansFound = true;
-                    
-                    // Show the Period navigation buttons since a plan exists
-                    desktopPeriodNav.classList.remove('hidden');
-                    mobilePeriodNav.classList.remove('hidden');
-                    
-                } catch (e) {
-                    console.error("Error parsing Cycle Plan from localStorage:", e);
-                    localStorage.removeItem('savedCyclePlan');
-                }
-            }
-            
-            // 3. Update Empty State
-            const noPlansMessage = document.getElementById('no-plans-message');
-            if (plansFound) {
-                noPlansMessage.classList.add('hidden');
+        // Function to toggle the mobile menu visibility
+        function toggleMobileMenu() {
+            mobileNav.classList.toggle('hidden'); 
+            const menuIconSvg = menuToggleBtn.querySelector('svg');
+            // Toggle the icon from 'menu' to 'x'
+            if (mobileNav.classList.contains('hidden')) {
+                 menuIconSvg.outerHTML = '<svg data-lucide="menu" width="24" height="24"></svg>';
             } else {
-                noPlansMessage.classList.remove('hidden');
+                 menuIconSvg.outerHTML = '<svg data-lucide="x" width="24" height="24"></svg>';
             }
+            lucide.createIcons();
+        }
+
+        // --- 2. CART RENDERING AND LOGIC ---
+
+        /**
+         * Removes an item from the cart by its name (English key) and updates storage/UI.
+         * @param {string} itemName - The name of the item to remove (English key).
+         */
+        function removeItemFromCart(itemName) {
+            let shoppingCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
+            
+            const itemToRemove = shoppingCart.find(item => item.name === itemName);
+
+            if (itemToRemove) {
+                shoppingCart = shoppingCart.filter(item => item.name !== itemName);
+                localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(shoppingCart));
+                
+                // Show confirmation message
+                const removedName = currentLang === 'ar' ? itemToRemove.nameAr : itemToRemove.name;
+                alertMessage(currentLang === 'ar' ? `تمت إزالة: ${removedName}` : `Removed: ${removedName}`);
+            }
+            
+            renderCart();
+            updateStaticText(); // Update button text if cart becomes empty
+        }
+
+
+        /**
+         * Renders the current state of the shopping cart to the table.
+         */
+        function renderCart() {
+            const shoppingCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
+            const isRTL = currentLang === 'ar';
+            const nameKey = isRTL ? 'nameAr' : 'name';
+            const tableBody = document.getElementById('cart-items-body');
+            tableBody.innerHTML = '';
+            
+            if (shoppingCart.length === 0) {
+                document.getElementById('cart-total').textContent = isRTL ? 'مجاني' : 'Free';
+                payButton.disabled = true;
+                emptyCartMessage.classList.remove('hidden');
+                return;
+            } else {
+                payButton.disabled = false;
+                emptyCartMessage.classList.add('hidden');
+            }
+
+            shoppingCart.forEach(item => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50 transition-colors';
+                
+                // Item Name
+                const nameCell = document.createElement('td');
+                nameCell.className = 'font-semibold';
+                nameCell.textContent = item[nameKey];
+
+                // Item Type (Hidden on small screens)
+                const typeCell = document.createElement('td');
+                typeCell.className = 'hidden sm:table-cell text-sm';
+                typeCell.textContent = item.type; // Assuming type is English (e.g., 'Lifetime', 'Monthly')
+
+                // Price (Always Free in this phase)
+                const priceCell = document.createElement('td');
+                priceCell.className = 'text-right font-mono text-lg text-green-600 font-bold';
+                priceCell.textContent = isRTL ? 'مجاني' : 'Free';
+                
+                // Remove Button
+                const removeCell = document.createElement('td');
+                removeCell.className = 'text-center';
+                const removeButton = document.createElement('button');
+                removeButton.className = 'text-red-500 hover:text-red-700 p-2 rounded-full transition-colors';
+                removeButton.innerHTML = `<svg data-lucide="trash-2" width="20" height="20"></svg>`;
+                removeButton.title = isRTL ? 'إزالة' : 'Remove';
+                
+                // Attach removal function to the button, using the English name as the unique key
+                removeButton.onclick = () => removeItemFromCart(item.name);
+                
+                removeCell.appendChild(removeButton);
+
+                row.appendChild(nameCell);
+                row.appendChild(typeCell);
+                row.appendChild(priceCell);
+                row.appendChild(removeCell);
+                tableBody.appendChild(row);
+            });
+            
+            // Final total update
+            document.getElementById('cart-total').textContent = isRTL ? 'مجاني' : 'Free';
             
             // Re-render lucide icons after injecting HTML
             lucide.createIcons();
         }
-        
-        /**
-         * Removes a specific plan from localStorage and reloads the page.
-         * @param {string} key - The localStorage key (e.g., 'savedCalorieGoal').
-         */
-        window.removePlan = function(key) {
-            const keyName = (key === 'savedCalorieGoal') ? 
-                (currentLang === 'en' ? 'Calorie Goal' : 'هدف السعرات') : 
-                (currentLang === 'en' ? 'Cycle Prediction' : 'توقع الدورة');
-
-            const confirmationMessage = (currentLang === 'en') ? 
-                `Are you sure you want to remove the ${keyName} Plan?` : 
-                `هل أنت متأكد من رغبتك في إزالة خطة ${keyName}؟`;
-
-            if (confirm(confirmationMessage)) {
-                localStorage.removeItem(key);
-                loadPlans(); 
-            }
-        }
-
-
-        // --- LANGUAGE SWITCHING LOGIC ---
-
-        function updateContent(lang) {
-            currentLang = lang;
-            const dir = (lang === 'ar') ? 'rtl' : 'ltr';
-            const langData = translations[lang];
-            const html = document.documentElement;
-
-            html.setAttribute('lang', lang);
-            html.setAttribute('dir', dir);
-            
-            document.querySelectorAll('[data-translate-key]').forEach(element => {
-                const key = element.getAttribute('data-translate-key');
-                if (langData[key]) {
-                    if (element.id === 'current-lang') {
-                        element.textContent = langData.lang_code;
-                    } else if (element.tagName === 'TITLE') {
-                        document.title = langData[key];
-                    } else {
-                        // This handles most text content
-                        element.textContent = langData[key];
-                    }
-                }
-            });
-
-            // Reload plans to ensure the card content is also translated
-            loadPlans();
-            localStorage.setItem('malfitMainLang', lang);
-        }
-        
-        // --- INITIALIZATION ---
 
         document.addEventListener('DOMContentLoaded', () => {
-            // --- Handlers ---
-            const menuToggle = document.getElementById('menu-toggle');
-            const mobileMenu = document.getElementById('mobile-menu');
-            const langToggle = document.getElementById('lang-toggle'); 
+            // Initial setup
+            lucide.createIcons();
+            langToggleBtn.onclick = toggleLanguage;
+            menuToggleBtn.onclick = toggleMobileMenu;
 
-            menuToggle.addEventListener('click', () => {
-                mobileMenu.classList.toggle('active');
-            });
-
-            mobileMenu.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', () => {
-                    mobileMenu.classList.remove('active');
-                });
-            });
-
-            langToggle.addEventListener('click', () => {
-                const newLang = (currentLang === 'en') ? 'ar' : 'en';
-                updateContent(newLang);
-            });
+            // Load content based on the saved 'currentLang' value
+            updateStaticText();
+            renderCart();
             
-            // Initial setup 
-            updateContent(currentLang);
+            // Payment button handler (Placeholder logic for now)
+            payButton.onclick = () => {
+                if (payButton.disabled) return;
+                alertMessage(currentLang === 'ar' ? 'تمت معالجة الطلب بنجاح. سيتم توجيهك إلى صفحة التأكيد.' : 'Order processed successfully. Redirecting to confirmation page.');
+                
+                // In a real application, you would clear the cart and redirect:
+                // localStorage.removeItem(CART_STORAGE_KEY);
+                // window.location.href = 'confirmation.html';
+            };
         });
-
     </script>
 </body>
 </html>
