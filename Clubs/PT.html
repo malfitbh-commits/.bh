@@ -4,16 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MALFIT | Personal Training</title>
-    <!-- Load Tailwind CSS (Optimized with defer) -->
     <script src="https://cdn.tailwindcss.com" defer></script>
-    <!-- Load Lucide for easy icon usage in the header (Optimized with defer) -->
     <script src="https://unpkg.com/lucide@latest" defer></script> 
 
     <style>
         /* Custom styles */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         
-        :root {
+        :root { 
             --primary-color: #4f46e5; /* indigo-600 */
             --primary-light: #eef2ff; /* indigo-50 */
         }
@@ -106,6 +104,11 @@
             opacity: 0.9;
             box-shadow: 0 6px 15px rgba(217, 70, 239, 0.6);
         }
+        
+        /* Tailwind classes for the cart badge */
+        .cart-badge {
+            font-family: 'Inter', sans-serif; 
+        }
 
         /* Custom Mobile Menu Styling */
         #mobile-nav a {
@@ -124,32 +127,28 @@
 </head>
 <body>
     
-    <!-- HEADER -->
     <header class="sticky top-0 z-50 w-full flex items-center justify-between px-4 md:px-8 lg:px-16 py-3 bg-white border-b border-gray-100">
         
         <div class="flex items-center">
             <h1 class="text-3xl font-extrabold text-indigo-600 tracking-wide">MALFIT</h1>
         </div>
 
-        <!-- Desktop Navigation -->
         <nav class="hidden md:flex flex-grow justify-center mx-10">
-            <a href="#" class="nav-link" id="nav-calories">Calories</a>
-            <a href="#" class="nav-link" id="nav-eat-healthy">Eat Healthy</a>
-            <a href="#" class="nav-link" id="nav-plans">Plans</a>
-            <a href="#" class="nav-link" id="nav-clubs">Clubs</a> 
-            <a href="#" class="nav-link" id="nav-survey">Survey</a>
-            <a href="#" class="nav-link" id="nav-contact-us">Contact Us</a>
+            <a href="Calories/Calories.html" class="nav-link" id="nav-calories">Calories</a>
+            <a href="Eat Healthy/Eat Healthy.html" class="nav-link" id="nav-eat-healthy">Eat Healthy</a>
+            <a href="Plans/Plans.html" class="nav-link" id="nav-plans">Plans</a>
+            <a href="Clubs/club.html" class="nav-link" id="nav-clubs">Clubs</a> 
+            <a href="Survey/Survey/html" class="nav-link" id="nav-survey">Survey</a>
+            <a href="Contact Us/Contact Us.html" class="nav-link" id="nav-contact-us">Contact Us</a>
         </nav>
 
         <div class="icons-container flex items-center gap-2 md:gap-4">
             
-            <!-- Language Toggle Button -->
             <button id="lang-toggle" class="lang-circle-btn" title="Toggle Language">
                 <span id="current-lang" class="text-sm">ع</span> 
             </button>
             
-            <!-- Shopping Cart Icon - Links to checkout.html -->
-            <a href="checkout.html" class="icon-btn w-10 h-10 hover:bg-indigo-50" title="Shopping Cart">
+            <a href="shopping.html" class="icon-btn w-10 h-10 hover:bg-indigo-50" title="Shopping Cart">
                 <svg data-lucide="shopping-cart" width="24" height="24"></svg>
             </a>
 
@@ -161,27 +160,24 @@
                 <svg data-lucide="user" width="24" height="24"></svg>
             </a>
 
-            <!-- Mobile Menu Toggle -->
             <button id="menu-toggle" class="md:hidden icon-btn w-10 h-10" title="Menu">
                 <svg data-lucide="menu" width="24" height="24"></svg>
             </button>
         </div>
     </header>
 
-    <!-- MOBILE NAVIGATION MENU -->
     <div id="mobile-nav" class="hidden md:hidden absolute w-full bg-white border-b border-gray-200 shadow-lg top-[68px] z-40">
-        <a href="calories.html" data-translate-key="calories">Calories</a>
-        <a href="eathealrhy.html" data-translate-key="eat-healthy">Eat Healthy</a>
-        <a href="plane.html" data-translate-key="plans">Plans</a>
-        <a href="club.html" data-translate-key="clubs">Clubs</a>
-        <a href="survey.html" data-translate-key="survey">Survey</a>
-        <a href="contact us.html" data-translate-key="contact-us">Contact Us</a>
+        <a href="Calories/Calories.html" class="nav-link" id="nav-calories">Calories</a>
+        <a href="Eat Healthy/Eat Healthy.html" class="nav-link" id="nav-eat-healthy">Eat Healthy</a>
+        <a href="Plans/Plans.html" class="nav-link" id="nav-plans">Plans</a>
+        <a href="Clubs/club.html" class="nav-link" id="nav-clubs">Clubs</a> 
+        <a href="Survey/Survey/html" class="nav-link" id="nav-survey">Survey</a>
+        <a href="Contact Us/Contact Us.html" class="nav-link" id="nav-contact-us">Contact Us</a>
     </div>
 
 
     <main class="flex items-center justify-center p-4 sm:p-10 min-h-main"> 
         
-        <!-- Main Content Card -->
         <div class="w-full max-w-6xl bg-white shadow-2xl rounded-3xl p-6 sm:p-12 border border-blue-50/50">
 
             <div class="text-center mb-12">
@@ -193,20 +189,99 @@
                 </p>
             </div>
 
-            <!-- Trainer Profiles Grid Container -->
             <div id="trainers-container" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Trainer cards will be inserted here by JavaScript -->
-            </div>
+                </div>
 
         </div>
     </main>
     
-    <!-- FOOTER -->
     <footer class="p-6 bg-white border-t border-gray-100 shadow-inner relative z-10">
         <p id="footer-text" class="text-gray-600 text-center text-sm">&copy; 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi.</p>
     </footer>
 
     <script>
+        // --- 1. SHOPPING CART MANAGEMENT ---
+        
+        // Key for localStorage
+        const CART_STORAGE_KEY = 'malfitShoppingCart';
+        
+        // Initialize cart state from localStorage or use an empty array
+        let shoppingCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
+        
+        const cartCountLink = document.querySelector('a[title="Shopping Cart"]');
+
+        /**
+         * Updates the visual count next to the shopping cart icon.
+         */
+        function updateCartCountUI() {
+            const count = shoppingCart.length;
+            
+            // Remove existing badge if present
+            let badge = cartCountLink.querySelector('.cart-badge');
+            if (badge) {
+                badge.remove();
+            }
+
+            if (count > 0) {
+                // Create a new badge element
+                badge = document.createElement('span');
+                // Tailwind classes for a small red notification badge
+                badge.className = 'cart-badge absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full';
+                badge.textContent = count;
+                
+                // Set the cart link to relative position for the absolute badge
+                cartCountLink.style.position = 'relative';
+                cartCountLink.appendChild(badge);
+            }
+        }
+
+        /**
+         * Adds a trainer item to the shopping cart and saves it to localStorage.
+         * @param {object} trainerData - The data for the trainer to add.
+         */
+        function addToCart(trainerData) {
+            // Check if this specific Personal Trainer item is already in the cart
+            const itemName = `Personal Trainer: ${trainerData.name}`;
+            const existingItem = shoppingCart.find(item => item.name === itemName);
+            
+            if (existingItem) {
+                alertMessage(currentLang === 'ar' 
+                    ? `المدرب ${trainerData.nameAr} موجود بالفعل في سلة التسوق.` 
+                    : `Trainer ${trainerData.name} is already in your cart.`, 
+                    true // isError
+                );
+                return;
+            }
+
+            // Create the new cart item
+            shoppingCart.push({
+                name: itemName,
+                nameAr: `مدرب شخصي: ${trainerData.nameAr}`,
+                price: 'Negotiable', // Placeholder for the price or a specific service package
+                type: 'Personal Training Service'
+            });
+
+            // Save the updated cart to localStorage
+            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(shoppingCart));
+
+            // Update the UI
+            updateCartCountUI();
+            
+            // Show success message and redirect to the shopping cart page
+            alertMessage(currentLang === 'ar' 
+                ? `تمت إضافة المدرب ${trainerData.nameAr} إلى سلة التسوق! يتم تحويلك الآن...` 
+                : `Added Trainer ${trainerData.name} to the cart! Redirecting now...`, 
+                false // isError
+            );
+            
+            // Redirect to the shopping.html page after a short delay
+            setTimeout(() => {
+                window.location.href = 'shopping.html';
+            }, 1500); 
+        }
+
+        // --- 2. GLOBAL AND TRANSLATION LOGIC ---
+        
         // Global variables for language state and elements
         let currentLang = localStorage.getItem('currentLang') || 'en'; 
 
@@ -235,8 +310,8 @@
                 'ar': '© 2025، مشروع تخرج، مدى صالح، أحمد خليفة، لورا عادل، المشرف الدكتور عبد الله محمد خالد القادومي.'
             },
             'choose-button': {
-                'en': 'Choose',
-                'ar': 'اختيار'
+                'en': 'Choose & Add to Cart',
+                'ar': 'اختيار والإضافة للسلة'
             },
             'button-chosen': {
                 'en': 'Trainer Chosen!',
@@ -279,15 +354,16 @@
             }
         ];
 
-        // Custom alert function (simulates a join message)
-        function alertMessage(message) {
+        // Custom alert function (simulates a toast notification)
+        function alertMessage(message, isError = false) {
             console.log("App Message: " + message);
             const isRTL = htmlElement.getAttribute('dir') === 'rtl';
             const statusMessage = document.createElement('div');
             
             const placementClass = isRTL ? 'bottom-4 left-4' : 'bottom-4 right-4';
+            const bgColor = isError ? 'bg-red-600' : 'bg-pink-500';
 
-            statusMessage.className = `fixed ${placementClass} bg-pink-500 text-white p-4 rounded-lg shadow-2xl transition-opacity duration-300 z-50 font-semibold`;
+            statusMessage.className = `fixed ${placementClass} ${bgColor} text-white p-4 rounded-lg shadow-2xl transition-opacity duration-300 z-50 font-semibold`;
             statusMessage.textContent = message;
             document.body.appendChild(statusMessage);
 
@@ -372,13 +448,8 @@
                 button.className = 'choose-button w-full py-3 text-white font-bold rounded-lg text-lg hover:bg-pink-600';
                 button.textContent = buttonText;
                 
-                // Add click handler to button
-                button.onclick = () => {
-                    const message = currentLang === 'ar' 
-                        ? `تم اختيار المدرب ${trainer.nameAr}! سنتواصل معك قريباً.`
-                        : `You have chosen ${trainer.name}! We will contact you soon.`;
-                    alertMessage(message);
-                };
+                // Add click handler to button to call addToCart
+                button.onclick = () => addToCart(trainer);
 
                 // Append elements to card
                 card.appendChild(image);
@@ -434,6 +505,9 @@
             // Load content based on the saved 'currentLang' value
             updateStaticText();
             renderTrainers();
+            
+            // LOAD INITIAL CART COUNT ON PAGE LOAD
+            updateCartCountUI(); 
         });
     </script>
 </body>
