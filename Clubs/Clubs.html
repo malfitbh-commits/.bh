@@ -12,7 +12,8 @@
 
     <style>
         /* Custom styles */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');        
+        /* REDUNDANT FONT IMPORT REMOVED: @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap'); */
+
         :root {
             --primary-color: #4f46e5; /* indigo-600 */
             --primary-light: #eef2ff; /* indigo-50 */
@@ -24,6 +25,12 @@
             overflow-x: hidden; 
             min-height: 100vh;
             position: relative; 
+        }
+
+        /* Set Arabic font when direction is RTL, uses Cairo from <head> link */
+        html[dir="rtl"] body {
+            font-family: 'Cairo', sans-serif;
+            text-align: right;
         }
 
         /* --- Falling Item Styles (Moving Background) --- */
@@ -46,6 +53,7 @@
         /* Define a container that strictly holds the main content and prevents items from falling into the footer */
         #page-content-wrapper {
             position: relative;
+            /* Recalculate if header height changes */
             min-height: calc(100vh - 120px); 
             overflow: hidden; 
         }
@@ -93,7 +101,6 @@
             align-items: center;
             justify-content: center;
             transition: border-color 0.2s;
-            /* Use a flexible font stack for Arabic characters */
             font-family: 'Inter', Tahoma, Arial, sans-serif;
         }
         .lang-circle-btn:hover {
@@ -102,7 +109,6 @@
 
         /* --- Club Button Styling (Standard Sports) --- */
         .club-button {
-            /* Apply indigo/blue gradient and shadow effects */
             background-image: linear-gradient(to right, #4f46e5 0%, #3b82f6 100%); 
             box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
             border-radius: 1.5rem; 
@@ -118,26 +124,23 @@
         
         /* --- Personal Training Button Styling (Unique Hot Pink Color) --- */
         .personal-training-button {
-            /* Hot pink gradient to stand out */
-            background-image: linear-gradient(to right, #ec4899 0%, #f472b6 100%); /* Pink-500 to Pink-400 */
-            box-shadow: 0 4px 10px rgba(236, 72, 153, 0.4); /* Pink shadow */
+            background-image: linear-gradient(to right, #ec4899 0%, #f472b6 100%); 
+            box-shadow: 0 4px 10px rgba(236, 72, 153, 0.4); 
             border-radius: 1.5rem; 
             transition: all 0.3s ease;
             cursor: pointer;
         }
 
         .personal-training-button:hover {
-            box-shadow: 0 8px 18px rgba(244, 114, 182, 0.6); /* Deeper pink shadow on hover */
+            box-shadow: 0 8px 18px rgba(244, 114, 182, 0.6); 
             transform: translateY(-2px); 
             opacity: 0.95;
         }
 
         .club-icon {
-            /* Light color for icons inside the gradient button */
             color: #ffffff;
         }
         
-        /* Tailwind classes for the badge */
         .cart-badge {
             font-family: 'Inter', sans-serif; 
         }
@@ -162,7 +165,7 @@
             background-color: #eef2ff; /* indigo-50 */
             color: #4f46e5;
         }
-        /* Highlight the current page */
+        /* Highlight the current page (uses the data-translate-key for consistency) */
         #mobile-nav a[data-translate-key="clubs"] {
             background-color: #f3f4f6;
             color: #4f46e5;
@@ -213,12 +216,12 @@
     </header>
 
     <div id="mobile-nav" class="hidden md:hidden absolute w-full bg-white border-b border-gray-200 shadow-lg top-[68px] z-40">
-        <a href="Calories/Calories.html" class="nav-link" id="nav-calories">Calories</a>
-        <a href="Eat Healthy/Eat Healthy.html" class="nav-link" id="nav-eat-healthy">Eat Healthy</a>
-        <a href="Plans/Plans.html" class="nav-link" id="nav-plans">Plans</a>
-        <a href="Clubs/Clubs.html" class="nav-link" id="nav-clubs">Clubs</a> 
-        <a href="Survey/Survey.html" class="nav-link" id="nav-survey">Survey</a>
-        <a href="Contact Us/Contact Us.html" class="nav-link" id="nav-contact-us">Contact Us</a>
+        <a href="Calories/Calories.html" class="nav-link" id="nav-calories" data-translate-key="calories">Calories</a>
+        <a href="Eat Healthy/Eat Healthy.html" class="nav-link" id="nav-eat-healthy" data-translate-key="eat-healthy">Eat Healthy</a>
+        <a href="Plans/Plans.html" class="nav-link" id="nav-plans" data-translate-key="plans">Plans</a>
+        <a href="Clubs/Clubs.html" class="nav-link" id="nav-clubs" data-translate-key="clubs">Clubs</a> 
+        <a href="Survey/Survey.html" class="nav-link" id="nav-survey" data-translate-key="survey">Survey</a>
+        <a href="Contact Us/Contact Us.html" class="nav-link" id="nav-contact-us" data-translate-key="contact-us">Contact Us</a>
     </div>
 
 
@@ -317,6 +320,7 @@
         // --- 2. GLOBAL AND TRANSLATION LOGIC ---
         
         // Global variables for language state and elements
+        // Use 'currentLang' to store language preference
         let currentLang = localStorage.getItem('currentLang') || 'en'; 
 
         const langToggleBtn = document.getElementById('lang-toggle');
@@ -434,20 +438,21 @@
         function updateStaticText() {
             mainTitle.textContent = staticTranslations['main-title'][currentLang];
             mainSubtitle.textContent = staticTranslations['main-subtitle'][currentLang];
-            footerText.textContent = staticTranslations['footer-text'][currentLang];
+            // Use innerHTML for footer since it contains HTML entities (&copy;)
+            footerText.innerHTML = staticTranslations['footer-text'][currentLang]; 
             
             const navKeys = ['calories', 'eat-healthy', 'plans', 'clubs', 'survey', 'contact-us'];
 
             navKeys.forEach(key => {
-                // Update Desktop Navigation Links
+                // Update Desktop Navigation Links (using ID)
                 const desktopId = `nav-${key}`;
                 const desktopEl = document.getElementById(desktopId);
                 if (desktopEl) {
                     desktopEl.textContent = staticTranslations[key][currentLang];
                 }
 
-                // Update Mobile Navigation Links
-                document.querySelectorAll(`[data-translate-key="${key}"]`).forEach(mobileEl => {
+                // Update Mobile Navigation Links (using data-translate-key)
+                document.querySelectorAll(`#mobile-nav a[data-translate-key="${key}"]`).forEach(mobileEl => {
                     mobileEl.textContent = staticTranslations[key][currentLang];
                 });
             });
@@ -456,9 +461,11 @@
             // Set document direction for proper RTL display
             if (currentLang === 'ar') {
                 htmlElement.setAttribute('dir', 'rtl');
+                htmlElement.setAttribute('lang', 'ar'); // Set language attribute
                 currentLangSpan.textContent = 'EN';
             } else {
                 htmlElement.setAttribute('dir', 'ltr');
+                htmlElement.setAttribute('lang', 'en'); // Set language attribute
                 currentLangSpan.textContent = 'ع';
             }
         }
@@ -476,18 +483,17 @@
                 const buttonClass = club.specialStyle ? 'personal-training-button' : 'club-button';
                 const directionClass = currentLang === 'ar' ? 'sm:flex-row-reverse' : 'sm:flex-row';
                 const textAlignment = currentLang === 'ar' ? 'sm:text-right' : 'sm:text-left';
+                // Adjust margin based on direction
                 const marginClass = currentLang === 'ar' ? 'sm:ml-6' : 'sm:mr-6'; 
 
                 button.className = `${buttonClass} w-full flex flex-col ${directionClass} items-center p-6 text-white rounded-3xl`;
                 
-                // 🛑 MODIFIED HANDLER HERE 🛑
+                // Event Handler Logic: PT Navigates, Others Add to Cart
                 if (club.name === 'Personal Training') {
-                    // Navigate to PT.html instead of adding to cart
                     button.onclick = () => {
                         window.location.href = 'PT.html'; 
                     };
                 } else {
-                    // For all other clubs, add to cart
                     button.onclick = () => addToCart(club);
                 }
 
@@ -514,6 +520,7 @@
 
                 container.appendChild(button);
             });
+            // Re-run lucide.createIcons() after adding new SVGs to the DOM
             lucide.createIcons();
         }
 
@@ -537,13 +544,14 @@
         function toggleMobileMenu() {
             mobileNav.classList.toggle('hidden'); 
             
-            // Change the menu icon
+            // Change the menu icon (menu <-> x)
             const menuIconSvg = menuToggleBtn.querySelector('svg');
             if (mobileNav.classList.contains('hidden')) {
                  menuIconSvg.outerHTML = '<svg data-lucide="menu" width="24" height="24"></svg>';
             } else {
                  menuIconSvg.outerHTML = '<svg data-lucide="x" width="24" height="24"></svg>';
             }
+            // Re-run lucide.createIcons() to render the new icon
             lucide.createIcons();
         }
 
@@ -592,9 +600,11 @@
                 let currentY = -50;
                 const speed = (window.innerHeight + 100) / (duration * 60); 
                 const driftX = (Math.random() - 0.5) * 0.5; 
+                // Calculate the safe height to prevent items from falling below the main content/above the footer
                 const footerHeight = document.querySelector('footer').offsetHeight + 20;
 
                 function animateFall() {
+                    // Stop animation when item reaches the calculated floor
                     if (currentY > window.innerHeight - footerHeight) {
                         if (body.contains(item)) {
                             body.removeChild(item);
