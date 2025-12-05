@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-translate-key="page_title">MALFIT | Notifications</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- START: Custom Styles from Calorie Page --- */
+        :root {
+            --primary-color: #4f46e5; /* Default: indigo-600 */
+            --primary-light: #eef2ff; /* Default: indigo-50 */
+            --logo-color: #4f46e5;
+            --calc-gradient-start: #4f46e5; /* Indigo */
+            --calc-gradient-end: #3b82f6; /* Blue */
+        }
+        
+        /* --- START: FEMALE THEME OVERRIDE --- */
+        .female-theme {
+            --primary-color: #ec4899; /* Pink-600 */
+            --primary-light: #fdf2f8; /* Pink-50 */
+            --logo-color: #ec4899;
+            --calc-gradient-start: #ec4899; /* Pink */
+            --calc-gradient-end: #f43f5e; /* Rose */
+        }
+        
+        /* Hide Period link until Female theme is active */
+        .hidden-until-female {
+            display: none !important;
+        }
+        /* --- END: FEMALE THEME OVERRIDE --- */
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f0f4f8; /* Softer, slightly blue background */
+            overflow-x: hidden; 
+            min-height: 100vh;
+            position: relative; 
+        }
+
+        /* Apply Arabic font when direction is RTL */
+        html[dir="rtl"] body {
+            font-family: 'Cairo', sans-serif;
+            text-align: right;
+        }
+
+        /* --- Custom Nav Link Styles (Pill-shaped) --- */
+        .nav-link {
+            text-decoration: none;
+            color: #474646;
+            font-weight: 500;
+            padding: 10px 15px; 
+            margin-right: 10px;
+            transition: color 0.2s, background-color 0.2s, transform 0.1s;
+            border-radius: 9999px; /* Pill shape */
+            white-space: nowrap;
+        }
+        /* Highlight the active link for THIS page (Notification) */
+        .nav-link.active-notification {
+            color: var(--primary-color); 
+            background-color: var(--primary-light); 
+            font-weight: 700;
+        }
+        .nav-link:hover {
+            color: var(--primary-color); 
+            background-color: var(--primary-light); 
+            transform: translateY(-1px);
+        }
+        
+        /* Adjustments for RTL layout for links */
+        html[dir="rtl"] header nav .nav-link {
+            margin-right: 0;
+            margin-left: 10px;
+        }
+        
+        /* Ensure all structural elements are above the background */
+        header, main, footer {
+            position: relative;
+            z-index: 10; 
+        }
+
+        /* --- Header Specific Styles --- */
+        header {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Stronger header shadow */
+            background-color: #ffffff;
+            transition: box-shadow 0.3s ease-in-out;
+        }
+        
+        /* --- Mobile Menu Styles --- */
+        #mobile-menu {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            background-color: #ffffff;
+            position: absolute;
+            top: 70px; 
+            right: 0;
+            left: 0;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100; 
+        }
+        #mobile-menu.active {
+            max-height: 500px;
+            opacity: 1;
+            padding: 10px 0;
+        }
+        #mobile-menu a {
+            display: block;
+            padding: 12px 20px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #333;
+            text-decoration: none;
+            text-align: left; 
+            transition: background-color 0.15s;
+        }
+        #mobile-menu a:hover {
+            background-color: var(--primary-light);
+        }
+        html[dir="rtl"] #mobile-menu a {
+            text-align: right; 
+        }
+
+        /* Icon Button Styling */
+        .icon-btn {
+            padding: 10px;
+            border-radius: 50%;
+            transition: background-color 0.2s, color 0.2s;
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+            color: #4b5563; /* gray-700 */
+        }
+        .icon-btn:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+        
+        /* Specific RTL fix for button icon placement (mr-2 equivalent for RTL) */
+        .rtl-ml-2 {
+            margin-right: 0.5rem; 
+        }
+        html[dir="rtl"] .rtl-ml-2 {
+            margin-right: 0;
+            margin-left: 0.5rem; 
+        }
+        
+        /* Centering for the main card container */
+        .min-h-main {
+            min-height: calc(100vh - 140px);
+        }
+        @media (min-width: 768px) {
+            .min-h-main {
+                min-height: calc(100vh - 120px); 
+            }
+        }
+        
+        /* --- Notification Specific Styles --- */
+        .notification-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        .notification-card:hover {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        .notification-unread {
+            border-left: 5px solid var(--primary-color); /* Highlight unread items */
+            background-color: var(--primary-light);
+        }
+        html[dir="rtl"] .notification-unread {
+            border-left: none;
+            border-right: 5px solid var(--primary-color);
+        }
+
+        /* Styling for the Mark Read button to match the theme */
+        .mark-read-btn {
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            background-color: white;
+            transition: all 0.2s;
+        }
+        .mark-read-btn:hover {
+            background-color: var(--primary-light);
+        }
+        /* --- END: Custom Styles from Calorie Page --- */
+    </style>
+</head>
+<body>
+    
+    <header class="sticky top-0 z-50 w-full flex items-center justify-between px-4 md:px-8 lg:px-16 py-3 bg-white border-b border-gray-100">
+        
+        <div class="flex items-center">
+            <h1 id="logo" class="text-3xl font-extrabold text-indigo-600 tracking-wide" data-translate-key="logo">MALFIT</h1>
+        </div>
+
+        <nav class="hidden md:flex flex-grow justify-center mx-10">
+            <a href="calories.html" class="nav-link" data-translate-key="nav_calories">Calories</a>
+            <a href="notification.html" class="nav-link active-notification" data-translate-key="nav_notification">Notification</a> 
+            <a href="period.html" id="nav-period-desktop" class="nav-link hidden-until-female" data-translate-key="nav_period">Period</a>
+            <a href="eathealrhy.html" class="nav-link" data-translate-key="nav_eat_healthy">Eat Healthy</a>
+            <a href="plane.html" class="nav-link" data-translate-key="nav_plans">Plans</a>
+            <a href="club.html" class="nav-link" data-translate-key="nav_clubs">Clubs</a>
+            <a href="survey.html" class="nav-link" data-translate-key="nav_survey">Survey</a>
+            <a href="contact us.html" class="nav-link" data-translate-key="nav_contact_us">Contact Us</a>
+        </nav>
+
+        <div class="icons-container flex items-center gap-2 md:gap-4">
+            
+            <button id="lang-toggle" class="icon-btn w-10 h-10 border-2 border-gray-300 hover:border-indigo-600" onclick="toggleLanguage()">
+                <span id="current-lang" class="text-sm font-bold">EN</span> 
+            </button>
+
+            <a href="afterthelogpage.html" class="icon-btn hover:bg-indigo-50">
+                <svg data-lucide="home" width="24" height="24"></svg>
+            </a>
+
+            <a href="accountData.html" class="icon-btn hover:bg-indigo-50">
+                <svg data-lucide="user" width="24" height="24"></svg>
+            </a>
+
+            <button id="menu-toggle" class="md:hidden icon-btn">
+                <svg data-lucide="menu" width="24" height="24"></svg>
+            </button>
+        </div>
+    </header>
+
+    <div id="mobile-menu" class="md:hidden">
+        <a href="calories.html" data-translate-key="nav_calories">Calories</a>
+        <a href="notification.html" class="bg-indigo-50 font-bold" data-translate-key="nav_notification">Notification</a> 
+        <a href="period.html" id="nav-period-mobile" class="hidden-until-female" data-translate-key="nav_period">Period</a>
+        <a href="eathealrhy.html" data-translate-key="nav_eat_healthy">Eat Healthy</a>
+        <a href="plane.html" data-translate-key="nav_plans">Plans</a>
+        <a href="club.html" data-translate-key="nav_clubs">Clubs</a>
+        <a href="survey.html" data-translate-key="nav_survey">Survey</a>
+        <a href="contact us.html" data-translate-key="nav_contact_us">Contact Us</a>
+    </div>
+
+    <main class="flex justify-center p-4 min-h-main"> 
+        <div class="w-full max-w-2xl">
+            
+            <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center" data-translate-key="notification_title">Your Notifications</h1>
+
+            <div id="notifications-list" class="space-y-4">
+                
+                <div id="notif-1" class="notification-card notification-unread bg-white p-4 rounded-lg flex justify-between items-center shadow-md">
+                    <div>
+                        <p class="font-semibold text-gray-800" data-translate-key="notif_title_1">Plan Recommendation Ready!</p>
+                        <p class="text-sm text-gray-600" data-translate-key="notif_body_1">Your new calorie goal plan has been calculated and is ready to view. Check your Plans page!</p>
+                        <p class="text-xs text-gray-400 mt-1" data-translate-key="notif_date_1">2 hours ago</p>
+                    </div>
+                    <button onclick="markAsRead(1)" class="mark-read-btn text-xs py-1 px-3 rounded-full hover:shadow-md ml-4" data-translate-key="btn_mark_read">Mark as Read</button>
+                </div>
+                
+                <div id="notif-2" class="notification-card notification-unread bg-white p-4 rounded-lg flex justify-between items-center shadow-md">
+                    <div>
+                        <p class="font-semibold text-gray-800" data-translate-key="notif_title_2">New Club Event: Yoga Session</p>
+                        <p class="text-sm text-gray-600" data-translate-key="notif_body_2">The 'Healthy Life Club' has scheduled a new event for Sunday. Tap to see details.</p>
+                        <p class="text-xs text-gray-400 mt-1" data-translate-key="notif_date_2">Yesterday</p>
+                    </div>
+                    <button onclick="markAsRead(2)" class="mark-read-btn text-xs py-1 px-3 rounded-full hover:shadow-md ml-4" data-translate-key="btn_mark_read">Mark as Read</button>
+                </div>
+
+                 <div id="notif-3" class="notification-card notification-unread bg-white p-4 rounded-lg flex justify-between items-center shadow-md">
+                    <div>
+                        <p class="font-semibold text-gray-800" data-translate-key="notif_title_3">Survey Complete!</p>
+                        <p class="text-sm text-gray-600" data-translate-key="notif_body_3">Thank you for completing the diet survey. Your personalized recommendations are updated.</p>
+                        <p class="text-xs text-gray-400 mt-1" data-translate-key="notif_date_3">3 days ago</p>
+                    </div>
+                    <button onclick="markAsRead(3)" class="mark-read-btn text-xs py-1 px-3 rounded-full hover:shadow-md ml-4" data-translate-key="btn_mark_read">Mark as Read</button>
+                </div>
+
+            </div>
+            
+            <div class="text-center mt-8">
+                <button id="mark-all-read-btn" onclick="markAllAsRead()" class="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors" data-translate-key="btn_mark_all_read">
+                    Mark All Notifications as Read
+                </button>
+            </div>
+            
+        </div>
+    </main>
+
+    <footer class="p-6 bg-white border-t border-gray-100 shadow-inner mt-8">
+        <p class="text-gray-600 text-center text-sm" data-translate-key="footer_text">&copy; 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi</p>
+    </footer>
+
+    <script src="https://unpkg.com/lucide@latest"></script> 
+
+    <script>
+        // --- START: TRANSLATION DATA ---
+        const translations = {
+            'en': {
+                'page_title': 'MALFIT | Notifications',
+                'logo': 'MALFIT',
+                'nav_calories': 'Calories',
+                'nav_notification': 'Notification',
+                'nav_period': 'Period',
+                'nav_eat_healthy': 'Eat Healthy',
+                'nav_plans': 'Plans',
+                'nav_clubs': 'Clubs',
+                'nav_survey': 'Survey',
+                'nav_contact_us': 'Contact Us',
+                'notification_title': 'Your Notifications',
+                'notif_title_1': 'Plan Recommendation Ready!',
+                'notif_body_1': 'Your new calorie goal plan has been calculated and is ready to view. Check your Plans page!',
+                'notif_date_1': '2 hours ago',
+                'notif_title_2': 'New Club Event: Yoga Session',
+                'notif_body_2': "The 'Healthy Life Club' has scheduled a new event for Sunday. Tap to see details.",
+                'notif_date_2': 'Yesterday',
+                'notif_title_3': 'Survey Complete!',
+                'notif_body_3': 'Thank you for completing the diet survey. Your personalized recommendations are updated.',
+                'notif_date_3': '3 days ago',
+                'btn_mark_read': 'Mark as Read',
+                'btn_mark_all_read': 'Mark All Notifications as Read',
+                'footer_text': '© 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi',
+                'alert_mark_all_none': 'No unread notifications to mark.',
+                'alert_mark_all_success': 'All notifications marked as read!'
+            },
+            'ar': {
+                'page_title': 'ملفت | الإشعارات',
+                'logo': 'ملفت',
+                'nav_calories': 'السعرات الحرارية',
+                'nav_notification': 'الإشعارات',
+                'nav_period': 'الدورة الشهرية',
+                'nav_eat_healthy': 'تناول طعام صحي',
+                'nav_plans': 'الخطط',
+                'nav_clubs': 'الأندية',
+                'nav_survey': 'الاستبيان',
+                'nav_contact_us': 'اتصل بنا',
+                'notification_title': 'إشعاراتك',
+                'notif_title_1': 'توصية الخطة جاهزة!',
+                'notif_body_1': 'تم احتساب خطة هدف السعرات الحرارية الجديدة الخاصة بك وهي جاهزة للعرض. تحقق من صفحة الخطط الخاصة بك!',
+                'notif_date_1': 'منذ ساعتين',
+                'notif_title_2': 'حدث جديد للنادي: جلسة يوغا',
+                'notif_body_2': "نظم 'نادي الحياة الصحية' حدثًا جديدًا يوم الأحد. انقر لرؤية التفاصيل.",
+                'notif_date_2': 'أمس',
+                'notif_title_3': 'اكتمل الاستبيان!',
+                'notif_body_3': 'شكرًا لك على إكمال استبيان النظام الغذائي. تم تحديث توصياتك الشخصية.',
+                'notif_date_3': 'منذ 3 أيام',
+                'btn_mark_read': 'وضع علامة كمقروءة',
+                'btn_mark_all_read': 'وضع علامة مقروءة على جميع الإشعارات',
+                'footer_text': '© 2025، مشروع تخرج، مادا صالح، أحمد خليفة، لورا عادل، المشرف الدكتور عبد الله محمد خالد القاضومي',
+                'alert_mark_all_none': 'لا توجد إشعارات غير مقروءة لوضع علامة عليها.',
+                'alert_mark_all_success': 'تم وضع علامة مقروءة على جميع الإشعارات!'
+            }
+        };
+        
+        let currentLang = localStorage.getItem('appLang') || 'en';
+        // --- END: TRANSLATION DATA ---
+        
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Lucide icons
+            lucide.createIcons();
+            
+            // Apply initial theme based on stored preference (or default to male/indigo)
+            const storedGender = localStorage.getItem('userGender') || 'male';
+            updateTheme(storedGender);
+            
+            // Apply the saved language immediately
+            applyTranslation(currentLang); 
+
+            // --- Mobile Menu Toggle Handler ---
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            menuToggle.addEventListener('click', () => {
+                mobileMenu.classList.toggle('active');
+            });
+
+            // Close menu when a link is clicked
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('active');
+                });
+            });
+
+            // Check Local Storage to set saved notification states
+            loadNotificationStates();
+        });
+
+
+        // --- START: LANGUAGE FUNCTIONS ---
+
+        /**
+         * Switches the language between English (en) and Arabic (ar).
+         */
+        function toggleLanguage() {
+            currentLang = (currentLang === 'en') ? 'ar' : 'en';
+            localStorage.setItem('appLang', currentLang);
+            applyTranslation(currentLang);
+        }
+        
+        /**
+         * Applies translations to all elements with a data-translate-key attribute.
+         * @param {string} lang - The target language ('en' or 'ar').
+         */
+        function applyTranslation(lang) {
+            const dictionary = translations[lang];
+            const html = document.documentElement;
+            const currentLangDisplay = document.getElementById('current-lang');
+            
+            // 1. Set HTML direction and font
+            html.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+
+            // 2. Set language button text
+            currentLangDisplay.textContent = lang.toUpperCase(); 
+
+            // 3. Translate all keyed elements
+            document.querySelectorAll('[data-translate-key]').forEach(element => {
+                const key = element.getAttribute('data-translate-key');
+                if (dictionary[key]) {
+                    // Update content for most elements
+                    element.textContent = dictionary[key]; 
+                    
+                    // Special case for page title
+                    if (key === 'page_title') {
+                        document.title = dictionary[key];
+                    }
+                }
+            });
+            
+            // Re-create lucide icons if they exist, as they can sometimes interfere with RTL layout
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                lucide.createIcons();
+            }
+        }
+        // --- END: LANGUAGE FUNCTIONS ---
+
+
+        // --- START: THEME & NOTIFICATION FUNCTIONS ---
+
+        /**
+         * Changes the theme colors (CSS variables and Tailwind classes) to pink if female.
+         */
+        function updateTheme(gender) {
+            const html = document.documentElement;
+            const logo = document.getElementById('logo');
+            const periodDesktop = document.getElementById('nav-period-desktop');
+            const periodMobile = document.getElementById('nav-period-mobile');
+            
+            // Reset classes
+            html.classList.remove('female-theme');
+            logo.classList.remove('text-pink-600');
+            logo.classList.add('text-indigo-600');
+            if (periodDesktop) periodDesktop.classList.add('hidden-until-female');
+            if (periodMobile) periodMobile.classList.add('hidden-until-female');
+
+
+            if (gender === 'female') {
+                // Change to Pink theme
+                html.classList.add('female-theme');
+                logo.classList.remove('text-indigo-600');
+                logo.classList.add('text-pink-600');
+                
+                // Show Period links
+                if (periodDesktop) periodDesktop.classList.remove('hidden-until-female');
+                if (periodMobile) periodMobile.classList.remove('hidden-until-female');
+
+            } 
+        }
+
+        // Load and apply notification states from local storage
+        function loadNotificationStates() {
+            const readNotifs = JSON.parse(localStorage.getItem('readNotifications')) || [];
+            readNotifs.forEach(id => {
+                applyReadStyle(id);
+            });
+        }
+        
+        /**
+         * Applies the "read" CSS style and removes the button.
+         */
+        function applyReadStyle(notifId) {
+             const notification = document.getElementById(`notif-${notifId}`);
+            if (notification) {
+                // Apply read styles
+                notification.classList.remove('notification-unread', 'bg-white');
+                notification.classList.add('bg-gray-50'); // Lighter background for read items
+                
+                // Find and remove the 'Mark as Read' button
+                const button = notification.querySelector('.mark-read-btn');
+                if (button) {
+                    button.remove();
+                }
+            }
+        }
+
+        /**
+         * Marks a single notification as read, applies style, AND saves the state to Local Storage.
+         * @param {number} notifId 
+         */
+        function markAsRead(notifId) {
+            const id = notifId.toString();
+
+            // 1. Apply visual change
+            applyReadStyle(id);
+
+            // 2. Save state to Local Storage
+            const readNotifs = JSON.parse(localStorage.getItem('readNotifications')) || [];
+            if (!readNotifs.includes(id)) {
+                readNotifs.push(id);
+                localStorage.setItem('readNotifications', JSON.stringify(readNotifs));
+                console.log(`Notification ${id} marked as read and saved.`);
+            }
+        }
+
+        /**
+         * Simulates marking all visible unread notifications as read and saves them.
+         */
+        function markAllAsRead() {
+            const unreadNotifications = document.querySelectorAll('.notification-unread');
+            
+            if (unreadNotifications.length === 0) {
+                // Use translated alert
+                alert(translations[currentLang]['alert_mark_all_none']);
+                return;
+            }
+
+            const readNotifs = JSON.parse(localStorage.getItem('readNotifications')) || [];
+
+            unreadNotifications.forEach(notif => {
+                const idMatch = notif.id.match(/notif-(\d+)/);
+                if (idMatch) {
+                    const id = idMatch[1];
+                    // 1. Apply visual change
+                    applyReadStyle(id);
+
+                    // 2. Save ID to the list
+                    if (!readNotifs.includes(id)) {
+                        readNotifs.push(id);
+                    }
+                }
+            });
+            
+            // 3. Update Local Storage once
+            localStorage.setItem('readNotifications', JSON.stringify(readNotifs));
+
+            // Use translated alert
+            alert(translations[currentLang]['alert_mark_all_success']);
+        }
+        // --- END: THEME & NOTIFICATION FUNCTIONS ---
+
+    </script>
+</body>
+</html>
