@@ -1,1 +1,459 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MALFIT | Shopping Cart</title>
 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com" defer></script>
+    <script src="https://unpkg.com/lucide@latest" defer></script> 
+
+    <style>
+        /* Custom styles from the original file for consistency */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        :root {
+            --primary-color: #4f46e5; /* indigo-600 */
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f0f4f8; 
+            min-height: 100vh;
+            position: relative; 
+        }
+
+        /* Reusing essential styles for header/navigation/buttons */
+        header {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            background-color: #ffffff;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+
+        .nav-link {
+            padding: 0.5rem 0.75rem;
+            color: #4b5563; 
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-link:hover {
+            color: #4f46e5; 
+        }
+        
+        .icon-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s;
+            color: #4b5563;
+            cursor: pointer;
+        }
+        
+        .lang-circle-btn {
+            border: 2px solid #d1d5db;
+            border-radius: 9999px;
+            width: 40px; 
+            height: 40px; 
+            font-weight: 600;
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.2s;
+            font-family: 'Inter', Tahoma, Arial, sans-serif;
+        }
+        .lang-circle-btn:hover {
+            border-color: #4f46e5;
+        }
+        
+        /* Styles specific to the checkout page table */
+        .cart-table th {
+            text-align: inherit; 
+            padding: 1rem 1.5rem;
+            border-bottom: 2px solid #e5e7eb;
+            font-weight: 700;
+            color: #4f46e5; /* indigo-600 */
+        }
+        .cart-table td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #f3f4f6;
+            color: #374151; /* gray-700 */
+        }
+        
+        /* Pay Now button style */
+        .pay-button {
+            background-image: linear-gradient(to right, #4f46e5 0%, #3b82f6 100%);
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.4);
+            transition: all 0.3s ease;
+        }
+        .pay-button:hover {
+            box-shadow: 0 6px 15px rgba(63, 131, 248, 0.6); 
+            transform: translateY(-1px); 
+        }
+        
+        /* Custom Mobile Menu Styling */
+        #mobile-nav a {
+            display: block;
+            padding: 12px 24px;
+            color: #4b5563;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        #mobile-nav a:hover {
+            background-color: #eef2ff; /* indigo-50 */
+            color: #4f46e5;
+        }
+    </style>
+</head>
+<body>
+    
+    <header class="sticky top-0 z-50 w-full flex items-center justify-between px-4 md:px-8 lg:px-16 py-3 bg-white border-b border-gray-100">
+        
+        <div class="flex items-center">
+            <h1 class="text-3xl font-extrabold text-indigo-600 tracking-wide">MALFIT</h1>
+        </div>
+
+        <nav class="hidden md:flex flex-grow justify-center mx-10">
+            <a href="calories.html" class="nav-link" data-translate-key="calories" id="nav-calories">Calories</a>
+            <a href="eathealrhy.html" class="nav-link" data-translate-key="eat-healthy" id="nav-eat-healthy">Eat Healthy</a>
+            <a href="plane.html" class="nav-link" data-translate-key="plans" id="nav-plans">Plans</a>
+            <a href="club.html" class="nav-link" data-translate-key="clubs" id="nav-clubs">Clubs</a> 
+            <a href="survey.html" class="nav-link" data-translate-key="survey" id="nav-survey">Survey</a>
+            <a href="contact us.html" class="nav-link" data-translate-key="contact-us" id="nav-contact-us">Contact Us</a>
+        </nav>
+
+        <div class="icons-container flex items-center gap-2 md:gap-4">
+            
+            <button id="lang-toggle" class="lang-circle-btn" title="Toggle Language">
+                <span id="current-lang" class="text-sm">ع</span> 
+            </button>
+            
+            <a href="shopping.html" class="icon-btn w-10 h-10 hover:bg-indigo-50 border-2 border-indigo-600" title="Shopping Cart">
+                <svg data-lucide="shopping-cart" width="24" height="24"></svg>
+            </a>
+
+            <a href="index.html" class="icon-btn w-10 h-10 hover:bg-indigo-50" title="Home">
+                <svg data-lucide="home" width="24" height="24"></svg>
+            </a>
+
+            <a href="account.html" class="icon-btn w-10 h-10 hover:bg-indigo-50" title="Account">
+                <svg data-lucide="user" width="24" height="24"></svg>
+            </a>
+
+            <button id="menu-toggle" class="md:hidden icon-btn w-10 h-10" title="Menu">
+                <svg data-lucide="menu" width="24" height="24"></svg>
+            </button>
+        </div>
+    </header>
+
+    <div id="mobile-nav" class="hidden md:hidden absolute w-full bg-white border-b border-gray-200 shadow-lg top-[68px] z-40">
+        <a href="calories.html" data-translate-key="calories">Calories</a>
+        <a href="eathealrhy.html" data-translate-key="eat-healthy">Eat Healthy</a>
+        <a href="plane.html" data-translate-key="plans">Plans</a>
+        <a href="club.html" data-translate-key="clubs">Clubs</a>
+        <a href="survey.html" data-translate-key="survey">Survey</a>
+        <a href="contact us.html" data-translate-key="contact-us">Contact Us</a>
+    </div>
+
+    <main class="flex items-center justify-center p-4 sm:p-10 min-h-[calc(100vh-160px)]"> 
+        
+        <div class="w-full max-w-4xl bg-white shadow-2xl rounded-3xl p-6 sm:p-10 border border-blue-50/50">
+
+            <div class="text-center mb-8">
+                <h2 id="checkout-title" class="text-3xl sm:text-4xl font-extrabold text-gray-800">
+                    Shopping Cart
+                </h2>
+                <p id="checkout-subtitle" class="text-md text-gray-500 mt-1">
+                    Review your selected club memberships before proceeding.
+                </p>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="min-w-full cart-table rounded-xl overflow-hidden shadow-lg border border-gray-100">
+                    <thead class="bg-indigo-50">
+                        <tr>
+                            <th id="th-item" class="text-left">Item</th>
+                            <th id="th-type" class="text-left hidden sm:table-cell">Type</th>
+                            <th id="th-price" class="text-right">Price</th>
+                            <th id="th-remove" class="text-center"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="cart-items-body">
+                        </tbody>
+                </table>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-end items-center mt-6 sm:mt-10 gap-4">
+                <div class="text-xl font-bold text-gray-800 p-2 border-b-2 border-pink-500">
+                    <span id="total-text">Total:</span> <span id="cart-total" class="text-indigo-600">Free</span>
+                </div>
+                
+                <button id="pay-button" class="pay-button text-white font-bold py-3 px-8 rounded-full shadow-lg text-lg w-full sm:w-auto" disabled>
+                    Proceed to Payment (Free)
+                </button>
+            </div>
+            
+            <p id="empty-cart-message" class="text-center text-gray-500 mt-6 hidden">
+                Your shopping cart is currently empty.
+            </p>
+
+        </div>
+    </main>
+    
+    <footer class="p-6 bg-white border-t border-gray-100 shadow-inner">
+        <p id="footer-text" class="text-gray-600 text-center text-sm">&copy; 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi.</p>
+    </footer>
+
+    <script>
+        // Key for localStorage (must match the key in your clubs page)
+        const CART_STORAGE_KEY = 'malfitShoppingCart';
+        
+        // --- 1. GLOBAL AND TRANSLATION LOGIC (Copied from clubs page for consistency) ---
+        
+        let currentLang = localStorage.getItem('currentLang') || 'en'; 
+
+        const langToggleBtn = document.getElementById('lang-toggle');
+        const menuToggleBtn = document.getElementById('menu-toggle');
+        const mobileNav = document.getElementById('mobile-nav');
+        const currentLangSpan = document.getElementById('current-lang');
+        const htmlElement = document.documentElement;
+
+        // Elements on this page
+        const checkoutTitle = document.getElementById('checkout-title');
+        const checkoutSubtitle = document.getElementById('checkout-subtitle');
+        const footerText = document.getElementById('footer-text'); 
+        const cartItemsBody = document.getElementById('cart-items-body');
+        const emptyCartMessage = document.getElementById('empty-cart-message');
+        const payButton = document.getElementById('pay-button');
+
+        // Static translations for this page and navigation
+        const staticTranslations = {
+            'checkout-title': {
+                'en': 'Shopping Cart',
+                'ar': 'سلة التسوق'
+            },
+            'checkout-subtitle': {
+                'en': 'Review your selected club memberships before proceeding.',
+                'ar': 'راجع عضويات النادي التي اخترتها قبل المتابعة.'
+            },
+            'th-item': { 'en': 'Item', 'ar': 'المنتج' },
+            'th-type': { 'en': 'Type', 'ar': 'النوع' },
+            'th-price': { 'en': 'Price', 'ar': 'السعر' },
+            'th-remove': { 'en': 'Remove', 'ar': 'إزالة' },
+            'total-text': { 'en': 'Total:', 'ar': 'الإجمالي:' },
+            'pay-button': { 'en': 'Proceed to Payment (Free)', 'ar': 'المتابعة للدفع (مجاني)' },
+            'empty-cart-message': { 'en': 'Your shopping cart is currently empty. Start adding clubs!', 'ar': 'سلة التسوق فارغة حالياً. ابدأ بإضافة الأندية!' },
+            'footer-text': {
+                'en': '&copy; 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi.',
+                'ar': '© 2025، مشروع تخرج، مدى صالح، أحمد خليفة، لورا عادل، المشرف الدكتور عبد الله محمد خالد القادومي.'
+            },
+            'calories': { 'en': 'Calories', 'ar': 'السعرات الحرارية' },
+            'eat-healthy': { 'en': 'Eat Healthy', 'ar': 'تناول طعامًا صحيًا' },
+            'plans': { 'en': 'Plans', 'ar': 'الخطط' },
+            'clubs': { 'en': 'Clubs', 'ar': 'الأندية' },
+            'survey': { 'en': 'Survey', 'ar': 'الاستبيان' },
+            'contact-us': { 'en': 'Contact Us', 'ar': 'اتصل بنا' }
+        };
+
+        // Custom alert function (simulates a toast notification)
+        function alertMessage(message) {
+            console.log("App Message: " + message);
+            const isRTL = htmlElement.getAttribute('dir') === 'rtl';
+            const statusMessage = document.createElement('div');
+            
+            const placementClass = isRTL ? 'bottom-4 left-4' : 'bottom-4 right-4';
+
+            statusMessage.className = `fixed ${placementClass} bg-indigo-600 text-white p-4 rounded-lg shadow-2xl transition-opacity duration-300 z-50`;
+            statusMessage.textContent = message;
+            document.body.appendChild(statusMessage);
+
+            setTimeout(() => {
+                statusMessage.style.opacity = '0';
+                statusMessage.addEventListener('transitionend', () => statusMessage.remove());
+            }, 3000);
+        }
+
+        // Function to update static page elements (headers, footer, and navigation links)
+        function updateStaticText() {
+            checkoutTitle.textContent = staticTranslations['checkout-title'][currentLang];
+            checkoutSubtitle.textContent = staticTranslations['checkout-subtitle'][currentLang];
+            footerText.textContent = staticTranslations['footer-text'][currentLang];
+            payButton.textContent = staticTranslations['pay-button'][currentLang];
+            document.getElementById('empty-cart-message').textContent = staticTranslations['empty-cart-message'][currentLang];
+            document.getElementById('total-text').textContent = staticTranslations['total-text'][currentLang];
+            
+            // Table headers
+            document.getElementById('th-item').textContent = staticTranslations['th-item'][currentLang];
+            document.getElementById('th-type').textContent = staticTranslations['th-type'][currentLang];
+            document.getElementById('th-price').textContent = staticTranslations['th-price'][currentLang];
+            document.getElementById('th-remove').textContent = staticTranslations['th-remove'][currentLang];
+            
+            // Navigation link translations
+            const navKeys = ['calories', 'eat-healthy', 'plans', 'clubs', 'survey', 'contact-us'];
+
+            navKeys.forEach(key => {
+                const desktopEl = document.getElementById(`nav-${key}`);
+                if (desktopEl) {
+                    desktopEl.textContent = staticTranslations[key][currentLang];
+                }
+                document.querySelectorAll(`[data-translate-key="${key}"]`).forEach(mobileEl => {
+                    mobileEl.textContent = staticTranslations[key][currentLang];
+                });
+            });
+
+            // Set document direction for proper RTL display
+            if (currentLang === 'ar') {
+                htmlElement.setAttribute('dir', 'rtl');
+                currentLangSpan.textContent = 'EN';
+            } else {
+                htmlElement.setAttribute('dir', 'ltr');
+                currentLangSpan.textContent = 'ع';
+            }
+        }
+
+        // Function to toggle the language state
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'ar' : 'en';
+            localStorage.setItem('currentLang', currentLang);
+            updateStaticText();
+            renderCart(); // Re-render cart items with new language
+            
+            // Close mobile menu when language is toggled, if open
+            if (!mobileNav.classList.contains('hidden')) {
+                toggleMobileMenu();
+            }
+        }
+        
+        // Function to toggle the mobile menu visibility
+        function toggleMobileMenu() {
+            mobileNav.classList.toggle('hidden'); 
+            const menuIconSvg = menuToggleBtn.querySelector('svg');
+            if (mobileNav.classList.contains('hidden')) {
+                 menuIconSvg.outerHTML = '<svg data-lucide="menu" width="24" height="24"></svg>';
+            } else {
+                 menuIconSvg.outerHTML = '<svg data-lucide="x" width="24" height="24"></svg>';
+            }
+            lucide.createIcons();
+        }
+
+        // --- 2. CART RENDERING AND LOGIC ---
+
+        /**
+         * Removes an item from the cart by its name and updates storage/UI.
+         * @param {string} itemName - The name of the item to remove (English key).
+         */
+        function removeItemFromCart(itemName) {
+            let shoppingCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
+            
+            const itemToRemove = shoppingCart.find(item => item.name === itemName);
+
+            if (itemToRemove) {
+                shoppingCart = shoppingCart.filter(item => item.name !== itemName);
+                localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(shoppingCart));
+                
+                // Show confirmation message
+                const removedName = currentLang === 'ar' ? itemToRemove.nameAr : itemToRemove.name;
+                alertMessage(currentLang === 'ar' ? `تمت إزالة: ${removedName}` : `Removed: ${removedName}`);
+            }
+            
+            renderCart();
+        }
+
+
+        /**
+         * Renders the current state of the shopping cart to the table.
+         */
+        function renderCart() {
+            const shoppingCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
+            const isRTL = currentLang === 'ar';
+            const nameKey = isRTL ? 'nameAr' : 'name';
+            const tableBody = document.getElementById('cart-items-body');
+            tableBody.innerHTML = '';
+            
+            if (shoppingCart.length === 0) {
+                document.getElementById('cart-total').textContent = isRTL ? 'مجاني' : 'Free';
+                payButton.disabled = true;
+                payButton.textContent = isRTL ? 'لا توجد عناصر للدفع' : 'No Items to Pay';
+                emptyCartMessage.classList.remove('hidden');
+                return;
+            } else {
+                payButton.disabled = false;
+                payButton.textContent = staticTranslations['pay-button'][currentLang];
+                emptyCartMessage.classList.add('hidden');
+            }
+
+            shoppingCart.forEach(item => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50 transition-colors';
+                
+                // Item Name
+                const nameCell = document.createElement('td');
+                nameCell.className = 'font-semibold';
+                nameCell.textContent = item[nameKey];
+
+                // Item Type (Hidden on small screens)
+                const typeCell = document.createElement('td');
+                typeCell.className = 'hidden sm:table-cell text-sm';
+                typeCell.textContent = item.type; // Type is currently the same in both languages
+
+                // Price (Always Free in this phase)
+                const priceCell = document.createElement('td');
+                priceCell.className = 'text-right font-mono text-lg text-green-600 font-bold';
+                priceCell.textContent = isRTL ? 'مجاني' : 'Free';
+                
+                // Remove Button
+                const removeCell = document.createElement('td');
+                removeCell.className = 'text-center';
+                const removeButton = document.createElement('button');
+                removeButton.className = 'text-red-500 hover:text-red-700 p-2 rounded-full transition-colors';
+                removeButton.innerHTML = `<svg data-lucide="trash-2" width="20" height="20"></svg>`;
+                removeButton.title = isRTL ? 'إزالة' : 'Remove';
+                
+                // Attach removal function to the button
+                removeButton.onclick = () => removeItemFromCart(item.name);
+                
+                removeCell.appendChild(removeButton);
+
+                row.appendChild(nameCell);
+                row.appendChild(typeCell);
+                row.appendChild(priceCell);
+                row.appendChild(removeCell);
+                tableBody.appendChild(row);
+            });
+            
+            // Final total update
+            document.getElementById('cart-total').textContent = isRTL ? 'مجاني' : 'Free';
+            
+            // Re-render lucide icons after injecting HTML
+            lucide.createIcons();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial setup
+            lucide.createIcons();
+            langToggleBtn.onclick = toggleLanguage;
+            menuToggleBtn.onclick = toggleMobileMenu;
+
+            // Load content based on the saved 'currentLang' value
+            updateStaticText();
+            renderCart();
+            
+            // Payment button handler (Placeholder logic for now)
+            payButton.onclick = () => {
+                if (payButton.disabled) return;
+                alertMessage(currentLang === 'ar' ? 'تمت معالجة الطلب بنجاح. سيتم توجيهك إلى صفحة التأكيد.' : 'Order processed successfully. Redirecting to confirmation page.');
+                
+                // In a real application, you would clear the cart here:
+                // localStorage.removeItem(CART_STORAGE_KEY);
+                // window.location.href = 'confirmation.html';
+            };
+        });
+    </script>
+</body>
+</html>
