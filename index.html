@@ -1,620 +1,626 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MALFIT</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Cairo:wght@400;700&display=swap');
-        body {
-            /* Fallback to Cairo for Arabic text rendering */
-            font-family: 'Inter', 'Cairo', sans-serif;
-            background-color: #f0f4f8; /* Light background for contrast */
-        }
-        /* Custom styles for the login button gradient */
-        .login-btn-gradient {
-            background-image: linear-gradient(to right, #6d28d9, #9333ea); /* Purple gradient */
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .login-btn-gradient:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(109, 40, 217, 0.4);
-        }
-        .input-focus:focus {
-            border-color: #9333ea;
-            box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.2);
-        }
-        
-        /* Style for the Language Toggle Button */
-        #lang-toggle-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px; 
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1rem;
-            color: white;
-            background-color: #6d28d9;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
-            z-index: 10001; /* Ensure it's above the card and video */
-        }
-        #lang-toggle-btn:hover {
-            background-color: #9333ea;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MALFIT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Cairo:wght@400;700&display=swap');
+        body {
+            /* Fallback to Cairo for Arabic text rendering */
+            font-family: 'Inter', 'Cairo', sans-serif;
+            background-color: #f0f4f8; /* Light background for contrast */
+        }
+        /* Custom styles for the login button gradient */
+        .login-btn-gradient {
+            background-image: linear-gradient(to right, #6d28d9, #9333ea); /* Purple gradient */
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .login-btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(109, 40, 217, 0.4);
+        }
+        .input-focus:focus {
+            border-color: #9333ea;
+            box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.2);
+        }
+        
+        /* Style for the Language Toggle Button */
+        #lang-toggle-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px; 
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1rem;
+            color: white;
+            background-color: #6d28d9;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            z-index: 10001; /* Ensure it's above the card and video */
+        }
+        #lang-toggle-btn.rtl-fix {
+             right: auto;
+             left: 20px;
+        }
+        #lang-toggle-btn:hover {
+            background-color: #9333ea;
+        }
 
-        /* ⭐️ NEW VIDEO STYLES ⭐️ */
-        #intro-video-container {
-            /* Fixes the video to the viewport */
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 10000; /* High z-index to cover the whole page */
-            background-color: black; /* Fills in edges if video doesn't perfectly match aspect ratio */
-        }
+        /* ⭐️ VIDEO STYLES ⭐️ */
+        #intro-video-container {
+            /* Fixes the video to the viewport */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10000; /* High z-index to cover the whole page */
+            background-color: black; /* Fills in edges if video doesn't perfectly match aspect ratio */
+            opacity: 1; /* Start visible */
+        }
 
-        #intro-video {
-            /* Full screen coverage */
-            min-width: 100%; 
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            object-fit: cover; 
-        }
+        #intro-video {
+            /* Full screen coverage */
+            min-width: 100%; 
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            object-fit: cover; 
+        }
 
-        /* Utility class to truly hide the content */
-        .hidden-full {
-            display: none !important;
-        }
-        
-    </style>
+        /* Utility class to truly hide the content (Keep custom class for video fade-out) */
+        .hidden-full {
+            display: none !important;
+        }
+        
+    </style>
 
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    
-    <script>
-        // 🚨 IMPORTANT: REPLACE WITH YOUR ACTUAL FIREBASE CONFIG 
-        const firebaseConfig = {
-  apiKey: "AIzaSyAJrDZrl1jeKFeEsDTM_lUTxxwW7lib5U0",
-  authDomain: "malfit-app.firebaseapp.com",
-  projectId: "malfit-app",
-  storageBucket: "malfit-app.firebasestorage.app",
-  messagingSenderId: "118730063574",
-  appId: "1:118730063574:web:1a34284a69ae0e7097d377"
-};
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    
+    <script>
+        // 🚨 IMPORTANT: REPLACE WITH YOUR ACTUAL FIREBASE CONFIG 
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJrDZrl1jeKFeEsDTM_lUTxxwW7lib5U0",
+            authDomain: "malfit-app.firebaseapp.com",
+            projectId: "malfit-app",
+            storageBucket: "malfit-app.firebasestorage.app",
+            messagingSenderId: "118730063574",
+            appId: "1:118730063574:web:1a34284a69ae0e7097d377"
+        };
 
-        // Initialize Firebase services
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = app.auth();
-        const db = app.firestore(); // For saving extra user data
-    </script>
+        // Initialize Firebase services
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = app.auth();
+        const db = app.firestore(); // For saving extra user data
+    </script>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
 
-    <div id="intro-video-container" style="display: none;">
-        <video id="intro-video" autoplay muted playsinline>
-                        <source src="video/MAL.mp4" type="video/mp4">
-        </video>
-    </div>
+    <div id="intro-video-container">
+        <video id="intro-video" autoplay muted playsinline>
+            <source src="video/MAL.mp4" type="video/mp4">
+        </video>
+    </div>
 
-    <button id="lang-toggle-btn" aria-label="Toggle language">ع</button>
+    <button id="lang-toggle-btn" aria-label="Toggle language">ع</button>
 
-    <div id="auth-content-container" class="hidden-full flex items-center justify-center min-h-screen w-full">
-        <div class="w-full max-w-md bg-white rounded-xl shadow-2xl p-8 space-y-6 relative">
+    <div id="auth-content-container" class="hidden flex items-center justify-center min-h-screen w-full">
+        <div class="w-full max-w-md bg-white rounded-xl shadow-2xl p-8 space-y-6 relative">
 
-            <h1 id="form-title" data-i18n-key="formTitleLogin" class="text-3xl font-bold text-center text-gray-800">Log In</h1>
-            <p id="message-area" class="text-center text-sm font-medium h-6"></p>
+            <h1 id="form-title" data-i18n-key="formTitleLogin" class="text-3xl font-bold text-center text-gray-800">Log In</h1>
+            <p id="message-area" class="text-center text-sm font-medium h-6"></p>
 
-            <form id="auth-form" class="space-y-4">
+            <form id="auth-form" class="space-y-4">
 
-                <div id="signup-fields" class="space-y-4 hidden">
-                    <div class="flex space-x-4">
-                        <div class="w-1/2">
-                            <label for="first-name" data-i18n-key="firstNameLabel" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                            <input type="text" id="first-name" name="first-name"
-                                data-i18n-placeholder-key="firstNamePlaceholder"
-                                placeholder="John"
-                                class="input-focus w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-150">
-                        </div>
-                        <div class="w-1/2">
-                            <label for="last-name" data-i18n-key="lastNameLabel" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                            <input type="text" id="last-name" name="last-name"
-                                data-i18n-placeholder-key="lastNamePlaceholder"
-                                placeholder="Doe"
-                                class="input-focus w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-150">
-                        </div>
-                    </div>
+                <div id="signup-fields" class="space-y-4 hidden">
+                    <div class="flex space-x-4">
+                        <div class="w-1/2">
+                            <label for="first-name" data-i18n-key="firstNameLabel" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                            <input type="text" id="first-name" name="first-name"
+                                data-i18n-placeholder-key="firstNamePlaceholder"
+                                placeholder="John"
+                                class="input-focus w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-150">
+                        </div>
+                        <div class="w-1/2">
+                            <label for="last-name" data-i18n-key="lastNameLabel" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                            <input type="text" id="last-name" name="last-name"
+                                data-i18n-placeholder-key="lastNamePlaceholder"
+                                placeholder="Doe"
+                                class="input-focus w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-150">
+                        </div>
+                    </div>
 
-                    <div>
-                        <label for="dob" data-i18n-key="dobLabel" class="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
-                        <input type="date" id="dob" name="dob"
-                            class="input-focus w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-150">
-                    </div>
-                    
-                    <div>
-                        <label data-i18n-key="genderLabel" class="block text-sm font-medium text-gray-700 mb-2">Gender</label>
-                        <div class="flex space-x-6">
-                            <div class="flex items-center">
-                                <input id="gender-female" name="gender" type="radio" value="female" class="text-purple-600 focus:ring-purple-500">
-                                <label for="gender-female" data-i18n-key="femaleLabel" class="ml-2 block text-sm text-gray-700">Female</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input id="gender-male" name="gender" type="radio" value="male" class="text-purple-600 focus:ring-purple-500">
-                                <label for="gender-male" data-i18n-key="maleLabel" class="ml-2 block text-sm text-gray-700">Male</label>
-                            </div>
-                        </div>
-                    </div>
+                    <div>
+                        <label for="dob" data-i18n-key="dobLabel" class="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+                        <input type="date" id="dob" name="dob"
+                            class="input-focus w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-150">
+                    </div>
+                    
+                    <div>
+                        <label data-i18n-key="genderLabel" class="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+                        <div class="flex space-x-6">
+                            <div class="flex items-center">
+                                <input id="gender-female" name="gender" type="radio" value="female" class="text-purple-600 focus:ring-purple-500">
+                                <label for="gender-female" data-i18n-key="femaleLabel" class="ml-2 block text-sm text-gray-700">Female</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="gender-male" name="gender" type="radio" value="male" class="text-purple-600 focus:ring-purple-500">
+                                <label for="gender-male" data-i18n-key="maleLabel" class="ml-2 block text-sm text-gray-700">Male</label>
+                            </div>
+                        </div>
+                    </div>
 
-                </div>
-                <div>
-                    <label for="email" data-i18n-key="emailLabel" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <input type="email" id="email" name="email" required 
-                            placeholder="you@example.com"
-                            class="input-focus w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-150">
-                </div>
+                </div>
+                <div>
+                    <label for="email" data-i18n-key="emailLabel" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" id="email" name="email" required 
+                            placeholder="you@example.com"
+                            class="input-focus w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-150">
+                </div>
 
-                <div>
-                    <label for="password" data-i18n-key="passwordLabel" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                    <input type="password" id="password" name="password" required 
-                            placeholder="••••••••"
-                            class="input-focus w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-150">
-                </div>
+                <div>
+                    <label for="password" data-i18n-key="passwordLabel" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="password" name="password" required 
+                            placeholder="••••••••"
+                            class="input-focus w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-150">
+                </div>
 
-                <div id="confirm-password-group" class="hidden">
-                    <label for="confirm-password" data-i18n-key="confirmPasswordLabel" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
-                    <input type="password" id="confirm-password" name="confirm-password"
-                            data-i18n-placeholder-key="confirmPasswordPlaceholder"
-                            placeholder="Confirm Password"
-                            class="input-focus w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-150">
-                </div>
+                <div id="confirm-password-group" class="hidden">
+                    <label for="confirm-password" data-i18n-key="confirmPasswordLabel" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                    <input type="password" id="confirm-password" name="confirm-password"
+                            data-i18n-placeholder-key="confirmPasswordPlaceholder"
+                            placeholder="Confirm Password"
+                            class="input-focus w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-150">
+                </div>
 
-                <button type="submit" id="main-auth-btn" data-i18n-key="mainAuthBtnLogin"
-                        class="login-btn-gradient w-full text-white font-semibold py-2.5 rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-purple-500/50 transition duration-300">
-                    Log In
-                </button>
+                <button type="submit" id="main-auth-btn" data-i18n-key="mainAuthBtnLogin"
+                        class="login-btn-gradient w-full text-white font-semibold py-2.5 rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-purple-500/50 transition duration-300">
+                    Log In
+                </button>
 
-                <div id="forgot-password-group" class="text-center">
-                    <a href="#" class="text-sm text-purple-600 hover:text-purple-800 transition duration-150" data-i18n-key="forgotPassword">Forgot Password?</a>
-                </div>
+                <div id="forgot-password-group" class="text-center">
+                    <a href="#" class="text-sm text-purple-600 hover:text-purple-800 transition duration-150" data-i18n-key="forgotPassword">Forgot Password?</a>
+                </div>
 
-            </form>
+            </form>
 
-            <div class="flex items-center">
-                <div class="flex-grow border-t border-gray-300"></div>
-                <span class="flex-shrink mx-4 text-gray-500 text-sm" data-i18n-key="orSeparator">OR</span>
-                <div class="flex-grow border-t border-gray-300"></div>
-            </div>
-            
-            <div class="space-y-3">
-                
-                <button id="toggle-form-btn" data-i18n-key="toggleBtnCreate"
-                        class="w-full bg-gray-100 text-gray-800 font-semibold py-2.5 rounded-lg border border-gray-300 hover:bg-gray-200 transition duration-150 focus:outline-none focus:ring-2 focus:ring-gray-400">
-                    Create Account
-                </button>
+            <div class="flex items-center">
+                <div class="flex-grow border-t border-gray-300"></div>
+                <span class="flex-shrink mx-4 text-gray-500 text-sm" data-i18n-key="orSeparator">OR</span>
+                <div class="flex-grow border-t border-gray-300"></div>
+            </div>
+            
+            <div class="space-y-3">
+                
+                <button id="toggle-form-btn" data-i18n-key="toggleBtnCreate"
+                        class="w-full bg-gray-100 text-gray-800 font-semibold py-2.5 rounded-lg border border-gray-300 hover:bg-gray-200 transition duration-150 focus:outline-none focus:ring-2 focus:ring-gray-400">
+                    Create Account
+                </button>
 
-                <button data-i18n-key="guestSignIn" id="go-home-btn"
-                        class="w-full bg-white text-purple-600 font-semibold py-2.5 rounded-lg border-2 border-purple-600 hover:bg-purple-50 transition duration-150 focus:outline-none focus:ring-2 focus:ring-purple-600/50">
-                    Sign In as Guest
-                </button>
+                <button data-i18n-key="guestSignIn" id="go-home-btn"
+                        class="w-full bg-white text-purple-600 font-semibold py-2.5 rounded-lg border-2 border-purple-600 hover:bg-purple-50 transition duration-150 focus:outline-none focus:ring-2 focus:ring-purple-600/50">
+                    Sign In as Guest
+                </button>
 
-            </div>
-        </div>
-    </div>
-
-
-    <script>
-        const videoContainer = document.getElementById('intro-video-container');
-        const videoElement = document.getElementById('intro-video');
-        const authContentContainer = document.getElementById('auth-content-container');
-
-        // Existing elements
-        const form = document.getElementById('auth-form');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const formTitle = document.getElementById('form-title');
-        const mainAuthBtn = document.getElementById('main-auth-btn');
-        const toggleFormBtn = document.getElementById('toggle-form-btn');
-        const messageArea = document.getElementById('message-area');
-        const langToggleBtn = document.getElementById('lang-toggle-btn');
-        const rootHtml = document.documentElement;
-
-        // New fields for sign-up
-        const firstNameInput = document.getElementById('first-name');
-        const lastNameInput = document.getElementById('last-name');
-        const dobInput = document.getElementById('dob');
-        const confirmPasswordInput = document.getElementById('confirm-password');
-        const signupFields = document.getElementById('signup-fields');
-        const confirmPasswordGroup = document.getElementById('confirm-password-group');
-        const forgotPasswordGroup = document.getElementById('forgot-password-group');
-
-        // --- Localization Data (Unchanged) ---
-        const translations = {
-            'en': {
-                langName: "E",
-                dir: "ltr",
-                formTitleLogin: "Log In",
-                formTitleCreate: "Create Account",
-                emailLabel: "Email",
-                passwordLabel: "Password",
-                mainAuthBtnLogin: "Log In",
-                mainAuthBtnSignup: "Sign Up",
-                forgotPassword: "Forgot Password?",
-                orSeparator: "OR",
-                toggleBtnCreate: "Create Account",
-                toggleBtnBack: "Back to Log In",
-                guestSignIn: "Sign In as Guest",
-                msgWelcome: "Welcome! Please log in or create an account.",
-                msgLoginSuccess: "Login successful! Redirecting...",
-                msgPassError: "Error: Password must be at least 6 characters.",
-                msgLoginError: "Error: Invalid email or password.",
-                msgSignupSuccess: "Account created successfully! You can now log in.",
-                msgGuestSignIn: "Signing in as Guest...",
-                msgGuestWelcome: "Welcome Guest! You are now signed in.",
-                msgProcessing: "Processing...",
-                // New strings for sign-up (Labels)
-                firstNameLabel: "First Name",
-                lastNameLabel: "Last Name",
-                dobLabel: "Date of Birth",
-                genderLabel: "Gender",
-                femaleLabel: "Female",
-                maleLabel: "Male",
-                confirmPasswordLabel: "Confirm Password",
-                msgPassRequirements: "Password must be 8+ chars, with 1 capital, 1 small, 1 number, and 1 special char (@$!%*?&).",
-                msgPasswordMismatch: "Error: Passwords do not match.",
-                // New strings for sign-up (Placeholders)
-                firstNamePlaceholder: "John",
-                lastNamePlaceholder: "Doe",
-                confirmPasswordPlaceholder: "Confirm Password",
-            },
-            'ar': {
-                langName: "ع",
-                dir: "rtl",
-                formTitleLogin: "تسجيل الدخول",
-                formTitleCreate: "إنشاء حساب",
-                emailLabel: "البريد الإلكتروني",
-                passwordLabel: "كلمة المرور",
-                mainAuthBtnLogin: "تسجيل الدخول",
-                mainAuthBtnSignup: "إنشاء حساب",
-                forgotPassword: "هل نسيت كلمة المرور؟",
-                orSeparator: "أو",
-                toggleBtnCreate: "إنشاء حساب",
-                toggleBtnBack: "العودة لتسجيل الدخول",
-                guestSignIn: "تسجيل دخول كضيف",
-                msgWelcome: "مرحباً! الرجاء تسجيل الدخول أو إنشاء حساب.",
-                msgLoginSuccess: "تم تسجيل الدخول بنجاح! جارى التحويل...",
-                msgPassError: "خطأ: يجب أن تتكون كلمة المرور من 6 أحرف على الأقل.",
-                msgLoginError: "خطأ: بريد إلكتروني أو كلمة مرور غير صالحة.",
-                msgSignupSuccess: "تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول.",
-                msgGuestSignIn: "جاري تسجيل الدخول كضيف...",
-                msgGuestWelcome: "مرحباً أيها الضيف! لقد سجلت الدخول الآن.",
-                msgProcessing: "جاري المعالجة...",
-                // New strings for sign-up (Labels)
-                firstNameLabel: "الاسم الأول",
-                lastNameLabel: "اسم العائلة",
-                dobLabel: "تاريخ الميلاد",
-                genderLabel: "الجنس",
-                femaleLabel: "أنثى",
-                maleLabel: "ذكر",
-                confirmPasswordLabel: "تأكيد كلمة المرور",
-                msgPassRequirements: "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل، وتحتوي على حرف كبير واحد، وحرف صغير واحد، ورقم واحد، وحرف خاص واحد (@$!%*?&).",
-                msgPasswordMismatch: "خطأ: كلمات المرور غير متطابقة.",
-                // New strings for sign-up (Placeholders)
-                firstNamePlaceholder: "أحمد",
-                lastNamePlaceholder: "علي",
-                confirmPasswordPlaceholder: "تأكيد كلمة المرور",
-            }
-        };
-
-        let currentLang = 'en'; 
-        let isLoginMode = true; 
-        
-        // --- Core Translation Function (Unchanged) ---
-        function applyTranslations() {
-            const langData = translations[currentLang];
-            
-            rootHtml.setAttribute('dir', langData.dir);
-            rootHtml.setAttribute('lang', currentLang);
-
-            langToggleBtn.textContent = (currentLang === 'en' ? 'ع' : 'E');
-
-            document.querySelectorAll('[data-i18n-key]').forEach(el => {
-                const key = el.getAttribute('data-i18n-key');
-                if (langData[key] !== undefined) {
-                    el.textContent = langData[key];
-                }
-            });
-
-            document.querySelectorAll('[data-i18n-placeholder-key]').forEach(el => {
-                const key = el.getAttribute('data-i18n-placeholder-key');
-                if (langData[key] !== undefined) {
-                    el.setAttribute('placeholder', langData[key]);
-                }
-            });
-
-            updateFormTexts();
-
-            showMessage(langData.msgWelcome, 'text-gray-500');
-        }
-
-        /**
-         * Hides the video container and reveals the main content when the video ends 
-         * or when an error occurs.
-         */
-        function handleVideoEnd() {
-            // Only run this logic if the video container is currently visible
-            if (!videoContainer.classList.contains('hidden-full')) {
-                
-                // 🛠️ CHANGE: Remove inline style to allow opacity transition
-                videoContainer.style.display = 'fixed';
-                videoContainer.style.transition = 'opacity 1s ease-out';
-                videoContainer.style.opacity = '0';
-
-                // Wait for the transition to finish before setting display: none
-                setTimeout(() => {
-                    videoContainer.classList.add('hidden-full');
-                    // Show the main content container
-                    authContentContainer.classList.remove('hidden-full');
-                    videoContainer.style.display = 'none'; // Ensure it's hidden after transition
-                }, 1000); 
-                
-                // Resume the main body styles
-                document.body.classList.remove('overflow-hidden');
-                console.log('Video finished/error and form is now visible.');
-            } else {
-                // Fallback: if video failed immediately, just show the form
-                videoContainer.classList.add('hidden-full');
-                authContentContainer.classList.remove('hidden-full');
-                document.body.classList.remove('overflow-hidden');
-            }
-        }
-
-        function updateFormTexts() {
-            const langData = translations[currentLang];
-            
-            if (isLoginMode) {
-                formTitle.textContent = langData.formTitleLogin;
-                mainAuthBtn.textContent = langData.mainAuthBtnLogin;
-                toggleFormBtn.textContent = langData.toggleBtnCreate;
-            } else {
-                formTitle.textContent = langData.formTitleCreate;
-                mainAuthBtn.textContent = langData.mainAuthBtnSignup;
-                toggleFormBtn.textContent = langData.toggleBtnBack;
-            }
-        }
-
-        function isPasswordStrong(password) {
-            // Requires 8+ chars, 1 capital, 1 small, 1 number, 1 special char
-            const requirements = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-            return requirements.test(password);
-        }
-
-        function showMessage(message, colorClass) {
-            messageArea.textContent = message;
-            messageArea.className = `text-center text-sm font-medium h-6 ${colorClass}`;
-        }
-        
-        // ---------------------------------------------
-        // 🚀 FIREBASE: Log In Function (Replaced Mock)
-        // ---------------------------------------------
-        /**
-         * Attempts to log in the user using Firebase Authentication.
-         */
-        function handleLogin(email, password) {
-            const langData = translations[currentLang];
-            
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    // Login successful
-                    const user = userCredential.user;
-                    showMessage(langData.msgLoginSuccess + ` (${user.email})`, 'text-green-600');
-                    
-                    // ⭐️ REAL REDIRECT: Redirect the user after successful login
-                    setTimeout(() => {
-                        window.location.href = 'afterthelogpage.html'; 
-                    }, 1500); 
-                })
-                .catch((error) => {
-                    // Handle login errors
-                    let errorMessage = langData.msgLoginError;
-                    
-                    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                        errorMessage = langData.msgLoginError; // Generic fail message
-                    } else if (error.code === 'auth/invalid-email') {
-                         errorMessage = "Error: Invalid email format.";
-                    }
-                    showMessage(errorMessage, 'text-red-600');
-                    console.error("Login Error:", error.message);
-                });
-        }
-
-        // ---------------------------------------------
-        // 🚀 FIREBASE: Create Account Function (Replaced Mock)
-        // ---------------------------------------------
-        /**
-         * Creates a new user account in Firebase Auth and stores additional data in Firestore.
-         */
-        function handleCreateAccount(email, password, confirmPassword) {
-            const langData = translations[currentLang];
-
-            // 1. Client-Side Validation (Password Match & Strength)
-            if (password !== confirmPassword) {
-                showMessage(langData.msgPasswordMismatch, 'text-red-600');
-                return;
-            }
-            if (!isPasswordStrong(password)) {
-                showMessage(langData.msgPassRequirements, 'text-red-600');
-                return;
-            }
-            
-            // 2. Gather all user data from the form fields
-            const userData = {
-                firstName: firstNameInput.value.trim(),
-                lastName: lastNameInput.value.trim(),
-                dob: dobInput.value,
-                gender: document.querySelector('input[name="gender"]:checked') ? document.querySelector('input[name="gender"]:checked').value : null,
-                email: email,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp() // Firestore timestamp
-            };
-            
-            // 3. Create User in Firebase Authentication
-            auth.createUserWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    
-                    // 4. Store additional user data in Firestore
-                    return db.collection("users").doc(user.uid).set(userData);
-                })
-                .then(() => {
-                    // Success!
-                    showMessage(langData.msgSignupSuccess, 'text-green-600');
-                    // Switch back to login form
-                    setTimeout(() => {
-                         toggleFormMode();
-                    }, 1000);
-                })
-                .catch((error) => {
-                    // Handle creation errors
-                    let errorMessage = "Error creating account.";
-                    if (error.code === 'auth/email-already-in-use') {
-                        errorMessage = "Error: This email is already registered.";
-                    } else if (error.code === 'auth/weak-password') {
-                         errorMessage = langData.msgPassRequirements;
-                    }
-                    showMessage(errorMessage, 'text-red-600');
-                    console.error("Signup Error:", error.message);
-                });
-        }
+            </div>
+        </div>
+    </div>
 
 
-        // ---------------------------------------------
-        // 🚀 FIREBASE: Toggle Mode Function (Enhanced)
-        // ---------------------------------------------
-        function toggleFormMode() {
-            isLoginMode = !isLoginMode;
-            
-            // --- SHOW/HIDE GROUPS ---
-            signupFields.classList.toggle('hidden', isLoginMode);
-            confirmPasswordGroup.classList.toggle('hidden', isLoginMode);
-            forgotPasswordGroup.classList.toggle('hidden', !isLoginMode);
-            
-            // --- REQUIRED ATTRIBUTES & CLEARING FIELDS ---
-            // Set 'required' attribute for sign-up fields
-            [firstNameInput, lastNameInput, dobInput, confirmPasswordInput].forEach(input => {
-                input.required = !isLoginMode;
-                input.value = ''; // Clear input fields
-            });
+    <script>
+        const videoContainer = document.getElementById('intro-video-container');
+        const videoElement = document.getElementById('intro-video');
+        const authContentContainer = document.getElementById('auth-content-container');
 
-            // Handle 'required' for the gender radios
-            document.getElementById('gender-female').required = !isLoginMode;
-            document.getElementById('gender-male').required = !isLoginMode;
-            
-            // Clear radio selection when switching back to Login mode
-            document.getElementById('gender-female').checked = false;
-            document.getElementById('gender-male').checked = false;
-            
-            // Clear general login fields
-            emailInput.value = '';
-            passwordInput.value = '';
-            
-            // Update button/title text and message
-            updateFormTexts(); 
-            messageArea.textContent = '';
-            const langData = translations[currentLang];
-            showMessage(langData.msgWelcome, 'text-gray-500');
-        }
-        
-        // ---------------------------------------------
-        // 🚀 FIREBASE: Guest Sign In Function (Replaced Mock)
-        // ---------------------------------------------
-        /**
-         * Handles Guest Sign In (uses Firebase Anonymous Authentication)
-         */
-         function signInAsGuest() {
-            const langData = translations[currentLang];
-            showMessage(langData.msgGuestSignIn, 'text-gray-500');
-            
-            auth.signInAnonymously()
-                .then(() => {
-                    showMessage(langData.msgGuestWelcome, 'text-blue-600');
-                    // ⭐️ REAL REDIRECT: Redirect the user after successful anonymous login
-                    setTimeout(() => {
-                        window.location.href = '../home/home.html'; 
-                    }, 1500); 
-                })
-                .catch((error) => {
-                    let errorMessage = "Error signing in as guest.";
-                    if (error.code === 'auth/operation-not-allowed') {
-                        errorMessage = "Guest sign-in is disabled in Firebase settings.";
-                    }
-                    showMessage(errorMessage, 'text-red-600');
-                    console.error("Guest Sign-in Error:", error.message);
-                });
-        }
-        
-        function toggleLanguage() {
-            currentLang = (currentLang === 'en' ? 'ar' : 'en');
-            applyTranslations();
-        }
+        // Existing elements
+        const form = document.getElementById('auth-form');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const formTitle = document.getElementById('form-title');
+        const mainAuthBtn = document.getElementById('main-auth-btn');
+        const toggleFormBtn = document.getElementById('toggle-form-btn');
+        const messageArea = document.getElementById('message-area');
+        const langToggleBtn = document.getElementById('lang-toggle-btn');
+        const rootHtml = document.documentElement;
+
+        // New fields for sign-up
+        const firstNameInput = document.getElementById('first-name');
+        const lastNameInput = document.getElementById('last-name');
+        const dobInput = document.getElementById('dob');
+        const confirmPasswordInput = document.getElementById('confirm-password');
+        const signupFields = document.getElementById('signup-fields');
+        const confirmPasswordGroup = document.getElementById('confirm-password-group');
+        const forgotPasswordGroup = document.getElementById('forgot-password-group');
+        const genderRadios = document.querySelectorAll('input[name="gender"]');
+
+        // --- Localization Data (Unchanged) ---
+        const translations = {
+            'en': {
+                langName: "E",
+                dir: "ltr",
+                formTitleLogin: "Log In",
+                formTitleCreate: "Create Account",
+                emailLabel: "Email",
+                passwordLabel: "Password",
+                mainAuthBtnLogin: "Log In",
+                mainAuthBtnSignup: "Sign Up",
+                forgotPassword: "Forgot Password?",
+                orSeparator: "OR",
+                toggleBtnCreate: "Create Account",
+                toggleBtnBack: "Back to Log In",
+                guestSignIn: "Sign In as Guest",
+                msgWelcome: "Welcome! Please log in or create an account.",
+                msgLoginSuccess: "Login successful! Redirecting...",
+                msgPassError: "Error: Password must be at least 6 characters.",
+                msgLoginError: "Error: Invalid email or password.",
+                msgSignupSuccess: "Account created successfully! Switching to login...",
+                msgGuestSignIn: "Signing in as Guest...",
+                msgGuestWelcome: "Welcome Guest! Redirecting...",
+                msgProcessing: "Processing...",
+                // New strings for sign-up (Labels)
+                firstNameLabel: "First Name",
+                lastNameLabel: "Last Name",
+                dobLabel: "Date of Birth",
+                genderLabel: "Gender",
+                femaleLabel: "Female",
+                maleLabel: "Male",
+                confirmPasswordLabel: "Confirm Password",
+                msgPassRequirements: "Password must be 8+ chars, with 1 capital, 1 small, 1 number, and 1 special char.",
+                msgPasswordMismatch: "Error: Passwords do not match.",
+                msgIncompleteSignup: "Please fill in all required fields (First Name, Last Name, DOB, Gender).",
+                // New strings for sign-up (Placeholders)
+                firstNamePlaceholder: "John",
+                lastNamePlaceholder: "Doe",
+                confirmPasswordPlaceholder: "Confirm Password",
+            },
+            'ar': {
+                langName: "ع",
+                dir: "rtl",
+                formTitleLogin: "تسجيل الدخول",
+                formTitleCreate: "إنشاء حساب",
+                emailLabel: "البريد الإلكتروني",
+                passwordLabel: "كلمة المرور",
+                mainAuthBtnLogin: "تسجيل الدخول",
+                mainAuthBtnSignup: "إنشاء حساب",
+                forgotPassword: "هل نسيت كلمة المرور؟",
+                orSeparator: "أو",
+                toggleBtnCreate: "إنشاء حساب",
+                toggleBtnBack: "العودة لتسجيل الدخول",
+                guestSignIn: "تسجيل دخول كضيف",
+                msgWelcome: "مرحباً! الرجاء تسجيل الدخول أو إنشاء حساب.",
+                msgLoginSuccess: "تم تسجيل الدخول بنجاح! جارى التحويل...",
+                msgPassError: "خطأ: يجب أن تتكون كلمة المرور من 6 أحرف على الأقل.",
+                msgLoginError: "خطأ: بريد إلكتروني أو كلمة مرور غير صالحة.",
+                msgSignupSuccess: "تم إنشاء الحساب بنجاح! جارى التحويل لتسجيل الدخول...",
+                msgGuestSignIn: "جاري تسجيل الدخول كضيف...",
+                msgGuestWelcome: "مرحباً أيها الضيف! جارى التحويل...",
+                msgProcessing: "جاري المعالجة...",
+                // New strings for sign-up (Labels)
+                firstNameLabel: "الاسم الأول",
+                lastNameLabel: "اسم العائلة",
+                dobLabel: "تاريخ الميلاد",
+                genderLabel: "الجنس",
+                femaleLabel: "أنثى",
+                maleLabel: "ذكر",
+                confirmPasswordLabel: "تأكيد كلمة المرور",
+                msgPassRequirements: "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل، وتحتوي على حرف كبير واحد، وحرف صغير واحد، ورقم واحد، وحرف خاص واحد.",
+                msgPasswordMismatch: "خطأ: كلمات المرور غير متطابقة.",
+                msgIncompleteSignup: "الرجاء ملء جميع الحقول المطلوبة (الاسم الأول، اسم العائلة، تاريخ الميلاد، الجنس).",
+                // New strings for sign-up (Placeholders)
+                firstNamePlaceholder: "أحمد",
+                lastNamePlaceholder: "علي",
+                confirmPasswordPlaceholder: "تأكيد كلمة المرور",
+            }
+        };
+
+        let currentLang = 'en'; 
+        let isLoginMode = true; 
+        
+        // --- Core Translation Function (Enhanced) ---
+        function applyTranslations() {
+            const langData = translations[currentLang];
+            
+            rootHtml.setAttribute('dir', langData.dir);
+            rootHtml.setAttribute('lang', currentLang);
+
+            langToggleBtn.textContent = (currentLang === 'en' ? 'ع' : 'E');
+            
+            // 🛠️ ENHANCEMENT: Toggle RTL class for language button position
+            langToggleBtn.classList.toggle('rtl-fix', currentLang === 'ar');
 
 
-        // --- Initialization ---
+            document.querySelectorAll('[data-i18n-key]').forEach(el => {
+                const key = el.getAttribute('data-i18n-key');
+                if (langData[key] !== undefined) {
+                    el.textContent = langData[key];
+                }
+            });
 
-        // 🛠️ CHANGE: Added check for videoElement before adding listeners
-        if (videoElement) {
-            videoElement.addEventListener('ended', handleVideoEnd);
-            videoElement.addEventListener('error', handleVideoEnd);
-        }
-        
-        // 🛠️ CHANGE: The style attribute on the video container handles hiding/showing now
-        // Remove the 'overflow-hidden' if video is manually hidden by default style='display:none'
-        if (videoContainer.style.display !== 'none' && videoContainer.classList.contains('hidden-full') == false) {
-            document.body.classList.add('overflow-hidden');
-        } else {
-            // Ensure the form is visible if the video is skipped by default
-            authContentContainer.classList.remove('hidden-full');
-        }
-        
-        document.getElementById('go-home-btn').addEventListener('click', function(e) {
-            e.preventDefault(); // Prevent default link behavior
-            signInAsGuest();
-        });
+            document.querySelectorAll('[data-i18n-placeholder-key]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder-key');
+                if (langData[key] !== undefined) {
+                    el.setAttribute('placeholder', langData[key]);
+                }
+            });
 
-        toggleFormBtn.addEventListener('click', toggleFormMode);
-        langToggleBtn.addEventListener('click', toggleLanguage);
-        
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const langData = translations[currentLang];
-            showMessage(langData.msgProcessing, 'text-gray-500');
+            updateFormTexts();
 
-            const email = emailInput.value.trim();
-            const password = passwordInput.value.trim();
-            const confirmPassword = confirmPasswordInput.value.trim();
+            showMessage(langData.msgWelcome, 'text-gray-500');
+        }
 
-            if (isLoginMode) {
-                handleLogin(email, password);
-            } else {
-                handleCreateAccount(email, password, confirmPassword);
-            }
-        });
+        /**
+         * Hides the video container and reveals the main content when the video ends 
+         * or when an error occurs.
+         */
+        function handleVideoEnd() {
+            // Check if the auth content is already visible to prevent re-running
+            if (authContentContainer.classList.contains('hidden')) {
+                
+                // Set video container for opacity transition
+                videoContainer.style.transition = 'opacity 1s ease-out';
+                videoContainer.style.opacity = '0';
 
-        applyTranslations();
-        
-    </script>
+                // Wait for the transition to finish before hiding the container fully
+                setTimeout(() => {
+                    videoContainer.classList.add('hidden-full');
+                    // Show the main content container
+                    authContentContainer.classList.remove('hidden');
+                    document.body.classList.remove('overflow-hidden');
+                }, 1000); 
+                
+                document.body.classList.remove('overflow-hidden');
+            }
+        }
+
+        function updateFormTexts() {
+            const langData = translations[currentLang];
+            
+            if (isLoginMode) {
+                formTitle.textContent = langData.formTitleLogin;
+                mainAuthBtn.textContent = langData.mainAuthBtnLogin;
+                toggleFormBtn.textContent = langData.toggleBtnCreate;
+            } else {
+                formTitle.textContent = langData.formTitleCreate;
+                mainAuthBtn.textContent = langData.mainAuthBtnSignup;
+                toggleFormBtn.textContent = langData.toggleBtnBack;
+            }
+        }
+
+        function isPasswordStrong(password) {
+            // Requires 8+ chars, 1 capital, 1 small, 1 number, 1 special char
+            const requirements = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            return requirements.test(password);
+        }
+
+        function isSignupDataComplete() {
+            // 🛠️ ENHANCEMENT: Check that all sign-up fields are filled
+            const isGenderSelected = document.querySelector('input[name="gender"]:checked');
+            return firstNameInput.value.trim() && lastNameInput.value.trim() && dobInput.value && isGenderSelected;
+        }
+
+        function showMessage(message, colorClass) {
+            messageArea.textContent = message;
+            messageArea.className = `text-center text-sm font-medium h-6 ${colorClass}`;
+        }
+        
+        // ---------------------------------------------
+        // 🚀 FIREBASE: Log In Function 
+        // ---------------------------------------------
+        function handleLogin(email, password) {
+            const langData = translations[currentLang];
+            
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    showMessage(langData.msgLoginSuccess + ` (${user.email})`, 'text-green-600');
+                    
+                    // ⭐️ REAL REDIRECT: Redirect the user after successful login
+                    setTimeout(() => {
+                        window.location.href = '../home/home.html'; 
+                    }, 1500); 
+                })
+                .catch((error) => {
+                    let errorMessage = langData.msgLoginError;
+                    
+                    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                        errorMessage = langData.msgLoginError; 
+                    } else if (error.code === 'auth/invalid-email') {
+                         errorMessage = "Error: Invalid email format.";
+                    }
+                    showMessage(errorMessage, 'text-red-600');
+                    console.error("Login Error:", error.message);
+                });
+        }
+
+        // ---------------------------------------------
+        // 🚀 FIREBASE: Create Account Function 
+        // ---------------------------------------------
+        function handleCreateAccount(email, password, confirmPassword) {
+            const langData = translations[currentLang];
+
+            // 1. Client-Side Validation (Complete Data, Password Match & Strength)
+            if (!isSignupDataComplete()) {
+                showMessage(langData.msgIncompleteSignup, 'text-red-600');
+                return;
+            }
+            if (password !== confirmPassword) {
+                showMessage(langData.msgPasswordMismatch, 'text-red-600');
+                return;
+            }
+            if (!isPasswordStrong(password)) {
+                showMessage(langData.msgPassRequirements, 'text-red-600');
+                return;
+            }
+            
+            // 2. Gather all user data from the form fields
+            const userData = {
+                firstName: firstNameInput.value.trim(),
+                lastName: lastNameInput.value.trim(),
+                dob: dobInput.value,
+                gender: document.querySelector('input[name="gender"]:checked').value,
+                email: email,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp() // Firestore timestamp
+            };
+            
+            // 3. Create User in Firebase Authentication
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    
+                    // 4. Store additional user data in Firestore
+                    return db.collection("users").doc(user.uid).set(userData);
+                })
+                .then(() => {
+                    // Success!
+                    showMessage(langData.msgSignupSuccess, 'text-green-600');
+                    // Switch back to login form
+                    setTimeout(() => {
+                        toggleFormMode();
+                    }, 1000);
+                })
+                .catch((error) => {
+                    // Handle creation errors
+                    let errorMessage = "Error creating account.";
+                    if (error.code === 'auth/email-already-in-use') {
+                        errorMessage = "Error: This email is already registered.";
+                    } else if (error.code === 'auth/weak-password') {
+                         errorMessage = langData.msgPassRequirements;
+                    } else {
+                         // Fallback for other errors like 'auth/invalid-email'
+                        errorMessage = `Error: ${error.message.split('(auth/')[0].trim() || 'Please check your input.'}`;
+                    }
+                    showMessage(errorMessage, 'text-red-600');
+                    console.error("Signup Error:", error.message);
+                });
+        }
+
+
+        // ---------------------------------------------
+        // 🚀 FIREBASE: Toggle Mode Function 
+        // ---------------------------------------------
+        function toggleFormMode() {
+            isLoginMode = !isLoginMode;
+            
+            // --- SHOW/HIDE GROUPS ---
+            signupFields.classList.toggle('hidden', isLoginMode);
+            confirmPasswordGroup.classList.toggle('hidden', isLoginMode);
+            forgotPasswordGroup.classList.toggle('hidden', !isLoginMode);
+            
+            // --- REQUIRED ATTRIBUTES & CLEARING FIELDS ---
+            [firstNameInput, lastNameInput, dobInput, confirmPasswordInput].forEach(input => {
+                input.required = !isLoginMode;
+                input.value = ''; // Clear input fields
+            });
+
+            // Handle 'required' for the gender radios
+            genderRadios.forEach(radio => {
+                radio.required = !isLoginMode;
+                radio.checked = false; // Clear radio selection
+            });
+            
+            // Clear general login fields
+            emailInput.value = '';
+            passwordInput.value = '';
+            
+            // Update button/title text and message
+            updateFormTexts(); 
+            messageArea.textContent = '';
+            const langData = translations[currentLang];
+            showMessage(langData.msgWelcome, 'text-gray-500');
+        }
+        
+        // ---------------------------------------------
+        // 🚀 FIREBASE: Guest Sign In Function 
+        // ---------------------------------------------
+        function signInAsGuest() {
+            const langData = translations[currentLang];
+            showMessage(langData.msgGuestSignIn, 'text-gray-500');
+            
+            auth.signInAnonymously()
+                .then(() => {
+                    showMessage(langData.msgGuestWelcome, 'text-blue-600');
+                    // ⭐️ REAL REDIRECT: Redirect the user after successful anonymous login
+                    setTimeout(() => {
+                        window.location.href = '../home/home.html'; 
+                    }, 1500); 
+                })
+                .catch((error) => {
+                    let errorMessage = "Error signing in as guest.";
+                    if (error.code === 'auth/operation-not-allowed') {
+                        errorMessage = "Guest sign-in is disabled in Firebase settings.";
+                    }
+                    showMessage(errorMessage, 'text-red-600');
+                    console.error("Guest Sign-in Error:", error.message);
+                });
+        }
+        
+        function toggleLanguage() {
+            currentLang = (currentLang === 'en' ? 'ar' : 'en');
+            applyTranslations();
+        }
+
+
+        // --- Initialization ---
+
+        // 🛠️ FIX: Video logic initialization
+        if (videoElement) {
+            videoElement.addEventListener('ended', handleVideoEnd);
+            videoElement.addEventListener('error', handleVideoEnd);
+            // Also call handleVideoEnd immediately if the video can't start (e.g., if there's no source)
+            videoElement.addEventListener('stalled', handleVideoEnd); 
+
+            // Prevent scrolling while video is playing
+            document.body.classList.add('overflow-hidden');
+            
+        } else {
+            // Fallback if video element doesn't exist
+            authContentContainer.classList.remove('hidden');
+            videoContainer.classList.add('hidden-full');
+            document.body.classList.remove('overflow-hidden');
+        }
+        
+        document.getElementById('go-home-btn').addEventListener('click', function(e) {
+            e.preventDefault(); 
+            signInAsGuest();
+        });
+
+        toggleFormBtn.addEventListener('click', toggleFormMode);
+        langToggleBtn.addEventListener('click', toggleLanguage);
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const langData = translations[currentLang];
+            showMessage(langData.msgProcessing, 'text-gray-500');
+
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
+            const confirmPassword = confirmPasswordInput.value.trim();
+
+            if (isLoginMode) {
+                handleLogin(email, password);
+            } else {
+                handleCreateAccount(email, password, confirmPassword);
+            }
+        });
+
+        // Initialize translation on load
+        applyTranslations();
+        
+    </script>
 
 </body>
 </html>
