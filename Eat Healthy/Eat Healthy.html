@@ -4,74 +4,105 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-translate-key="page_title">MALFIT | Health</title>
-    <link rel="icon" type="image/png" href="C:\Users\mada saleh\Desktop\Fitness Website\img\favicon\favicon\favicon.ico" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="shortcut icon" href="/favicon.ico" />
+    
+    <link rel="icon" type="image/x-icon" href="/img/favicon.ico" sizes="96x96" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script> 
 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* Custom styles copied and simplified from your original design for the overall look */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-        
+        /* Define Arabic font application based on RTL direction */
+        html[dir="rtl"] body {
+            font-family: 'Cairo', sans-serif;
+        }
+
+        /* --- Mobile Menu Styles (REQUIRED for 'active' class to work) --- */
+        #mobile-menu {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            top: 67px; /* Adjust based on header height */
+            left: 0;
+            right: 0;
+            z-index: 40;
+        }
+        #mobile-menu.active {
+            max-height: 500px; /* Sufficient height to show content */
+            opacity: 1;
+            padding: 10px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        #mobile-menu a {
+            display: block;
+            padding: 10px 20px;
+            color: #4f46e5;
+            text-decoration: none;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        /* Original styles below */
         :root {
             --primary-color: #4f46e5; /* indigo-600 */
             --primary-light: #eef2ff; /* indigo-50 */
         }
         
-        body { 
-            font-family: 'Inter', sans-serif; 
+        body { 
+            font-family: 'Inter', sans-serif; 
             background-color: #f0f4f8; /* Softer background */
-            overflow-x: hidden; 
+            overflow-x: hidden; 
             min-height: 100vh;
-            position: relative; 
+            position: relative; 
         }
 
         /* --- Falling Item Styles (Moving Background) --- */
         .falling-item {
             position: absolute;
             user-select: none;
-            pointer-events: none; 
-            opacity: 0.3; 
+            pointer-events: none; 
+            opacity: 0.3; 
             transition: opacity 2s ease-out;
-            z-index: 0; 
-            text-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
+            z-index: 0; 
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
         }
         
         /* Ensure all structural elements are above the moving background */
         header, main, footer {
             position: relative;
-            z-index: 10; 
+            z-index: 10; 
         }
         
         /* Define a container that strictly holds the main content and prevents items from falling into the footer */
         #page-content-wrapper {
             position: relative;
-            min-height: calc(100vh - 80px); 
-            overflow: hidden; 
+            min-height: calc(100vh - 80px); 
+            overflow: hidden; 
         }
         
         /* --- Header Specific Styles --- */
         header {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             background-color: #ffffff;
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
         }
 
         /* Navigation Links Style */
         .nav-link {
             padding: 0.5rem 0.75rem;
-            color: #4b5563; 
+            color: #4b5563; 
             font-size: 0.95rem;
             font-weight: 500;
             transition: color 0.2s;
         }
         .nav-link:hover {
-            color: #4f46e5; 
+            color: #4f46e5; 
         }
         
         /* General styling for header icons/buttons */
@@ -89,10 +120,10 @@
         .lang-circle-btn {
             border: 2px solid #d1d5db; /* Gray-300 border */
             border-radius: 9999px; /* Fully circular */
-            width: 40px; 
-            height: 40px; 
+            width: 40px; 
+            height: 40px; 
             font-weight: 600;
-            display: flex; 
+            display: flex; 
             align-items: center;
             justify-content: center;
             transition: border-color 0.2s;
@@ -104,16 +135,16 @@
 
         /* --- Main Button Styling (LARGER SIZE) --- */
         .main-btn {
-            background-image: linear-gradient(to right, #4f46e5 0%, #3b82f6 100%); 
+            background-image: linear-gradient(to right, #4f46e5 0%, #3b82f6 100%); 
             transition: all 0.3s ease;
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
-            padding: 2.5rem 1.25rem; 
-            border-radius: 1.5rem; 
+            padding: 2.5rem 1.25rem; 
+            border-radius: 1.5rem; 
         }
         .main-btn:hover {
-            box-shadow: 0 8px 18px rgba(63, 131, 248, 0.5); 
-            transform: translateY(-2px); 
+            box-shadow: 0 8px 18px rgba(63, 131, 248, 0.5); 
+            transform: translateY(-2px); 
             opacity: 0.95;
         }
         
@@ -144,7 +175,7 @@
         <div class="icons-container flex items-center gap-2 md:gap-4">
             
             <button id="lang-toggle" class="lang-circle-btn">
-                <span id="current-lang" class="text-sm">EN</span> 
+                <span id="current-lang" class="text-sm">EN</span> 
             </button>
 
             <a href="Home/Home.html.html" class="icon-btn w-10 h-10 hover:bg-indigo-50">
@@ -155,18 +186,24 @@
                 <svg data-lucide="user" width="24" height="24"></svg>
             </a>
 
-            <button id="menu-toggle" class="md:hidden icon-btn w-10 h-10">
+            <button id="menu-toggle" class="md:hidden icon-btn w-10 h-10 hover:bg-indigo-50">
                 <svg data-lucide="menu" width="24" height="24"></svg>
             </button>
         </div>
     </header>
 
     <div id="mobile-menu" class="md:hidden">
+        <a href="calories.html" data-translate-key="nav_calories">Calories</a>
+        <a href="eathealrhy.html" data-translate-key="nav_eat_healthy">Eat Healthy</a>
+        <a href="plane.html" data-translate-key="nav_plans">Plans</a>
+        <a href="club.html" data-translate-key="nav_clubs">Clubs</a>
+        <a href="survey.html" data-translate-key="nav_survey">Survey</a>
+        <a href="contact us.html" data-translate-key="nav_contact_us">Contact Us</a>
     </div>
 
     <div id="page-content-wrapper">
     
-        <main class="flex items-center justify-center p-4 min-h-main"> 
+        <main class="flex items-center justify-center p-4 min-h-main"> 
             
             <div class="w-full max-w-5xl bg-white shadow-2xl rounded-3xl p-10 sm:p-16 border border-blue-50/50">
 
@@ -196,11 +233,14 @@
 
             </div>
         </main>
-    </div> 
+    </div> 
     
     <footer class="p-6 bg-white border-t border-gray-100 shadow-inner">
         <p class="text-gray-600 text-center text-sm" data-translate-key="footer_text">&copy; 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi</p>
     </footer>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script> 
 
     <script>
         // --- Translation Data ---
@@ -236,8 +276,6 @@
                 'order': 'اطلب طعامًا صحيًا',
                 'footer_text': '© 2025، مشروع تخرج، مدى صالح، أحمد خليفة، لورا عادل، المشرف الدكتور عبد الله محمد خالد القادومي',
                 'lang_code': 'EN', // Display 'EN' to switch to English
-                
-                
             }
         };
 
@@ -271,11 +309,6 @@
                         element.textContent = langData.lang_code;
                     } else if (element.tagName === 'TITLE') {
                         document.title = langData[key];
-                    } else if (element.tagName === 'OPTION') {
-                        // Special handling for select options (like activity levels)
-                        if (element.value === 'male') element.textContent = langData.option_male;
-                        else if (element.value === 'female') element.textContent = langData.option_female;
-                        else if (key.startsWith('activity_')) element.textContent = langData[key];
                     } else {
                         element.textContent = langData[key];
                     }
@@ -290,7 +323,7 @@
             // --- 1. MALFIT Mobile Menu Toggle Handler ---
             const menuToggle = document.getElementById('menu-toggle');
             const mobileMenu = document.getElementById('mobile-menu');
-            const langToggle = document.getElementById('lang-toggle'); 
+            const langToggle = document.getElementById('lang-toggle'); 
 
             menuToggle.addEventListener('click', () => {
                 mobileMenu.classList.toggle('active');
@@ -307,10 +340,7 @@
             langToggle.addEventListener('click', () => {
                 const newLang = (currentLang === 'en') ? 'ar' : 'en';
                 updateContent(newLang);
-                // After switching language, recalculate plan to update warning/result text if visible
-                if (!document.getElementById('result-box').classList.contains('hidden')) {
-                    calculatePlan();
-                }
+                // Note: The original code contained a call to calculatePlan() which is not defined here.
             });
             
             // --- 3. Initial Language Load & Icon Replacement ---
@@ -322,34 +352,32 @@
             // --- 4. Falling Food Background Animation Script ---
             const produceEmojis = ['🍎', '🍊', '🍋', '🍇', '🍓', '🍍', '🥦', '🥕', '🥬', '🌶️', '🌽', '🥝'];
             const body = document.body;
-            const maxItems = 40; 
+            const maxItems = 40; 
             let itemsOnScreen = 0;
 
             function createFallingItem() {
                 if (itemsOnScreen >= maxItems) return;
 
                 const emoji = produceEmojis[Math.floor(Math.random() * produceEmojis.length)];
-                // Smaller size range for subtlety
-                const size = Math.floor(Math.random() * 15) + 12; 
+                const size = Math.floor(Math.random() * 15) + 12; 
                 const initialX = Math.random() * window.innerWidth;
-                // Faster duration for slightly more noticeable movement
-                const duration = Math.random() * 8 + 4; 
-                const rotation = Math.random() * 360; 
+                const duration = Math.random() * 8 + 4; 
+                const rotation = Math.random() * 360; 
                 
                 const item = document.createElement('div');
                 item.className = 'falling-item';
                 item.innerHTML = emoji;
                 item.style.fontSize = `${size}px`;
                 item.style.left = `${initialX}px`;
-                item.style.top = `-50px`; 
+                item.style.top = `-50px`; 
                 item.style.transform = `rotate(${rotation}deg)`;
                 
                 body.appendChild(item);
                 itemsOnScreen++;
 
                 let currentY = -50;
-                const speed = (window.innerHeight + 100) / (duration * 60); 
-                const driftX = (Math.random() - 0.5) * 0.5; 
+                const speed = (window.innerHeight + 100) / (duration * 60); 
+                const driftX = (Math.random() - 0.5) * 0.5; 
 
                 function animateFall() {
                     if (currentY > window.innerHeight) {
@@ -375,7 +403,6 @@
 
             function spawnLoop() {
                 createFallingItem();
-                // Spawn a new item every 100ms to 500ms
                 const delay = Math.random() * 400 + 100;
                 setTimeout(spawnLoop, delay);
             }
