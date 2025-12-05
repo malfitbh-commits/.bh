@@ -1,472 +1,472 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-translate-key="page_title">MALFIT</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-translate-key="page_title">MALFIT</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script> 
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script> 
 
-    <style>
-        /* Custom styles for the falling items and overall look */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-        
-        :root {
-            --primary-color: #4f46e5; /* indigo-600 */
-            --primary-light: #eef2ff; /* indigo-50 */
-        }
-        
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #f0f4f8; /* Softer, slightly blue background */
-            overflow-x: hidden; 
-            min-height: 100vh;
-            position: relative; 
-        }
+    <style>
+        /* Custom styles for the falling items and overall look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        :root {
+            --primary-color: #4f46e5; /* indigo-600 */
+            --primary-light: #eef2ff; /* indigo-50 */
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f0f4f8; /* Softer, slightly blue background */
+            overflow-x: hidden; 
+            min-height: 100vh;
+            position: relative; 
+        }
 
-        /* Apply Arabic font when direction is RTL */
-        html[dir="rtl"] body {
-            font-family: 'Cairo', sans-serif;
-            text-align: right;
-        }
+        /* Apply Arabic font when direction is RTL */
+        html[dir="rtl"] body {
+            font-family: 'Cairo', sans-serif;
+            text-align: right;
+        }
 
-        /* --- Custom Nav Link Styles (Pill-shaped) --- */
-        .nav-link {
-            text-decoration: none;
-            color: #474646;
-            font-weight: 500;
-            padding: 10px 15px; 
-            margin-right: 10px;
-            transition: color 0.2s, background-color 0.2s, transform 0.1s;
-            border-radius: 9999px; /* Pill shape */
-            white-space: nowrap;
-        }
-        .nav-link:hover {
-            color: var(--primary-color); 
-            background-color: var(--primary-light); 
-            transform: translateY(-1px);
-        }
-        
-        /* Adjustments for RTL layout for links */
-        html[dir="rtl"] header nav .nav-link {
-            margin-right: 0;
-            margin-left: 10px;
-        }
+        /* --- Custom Nav Link Styles (Pill-shaped) --- */
+        .nav-link {
+            text-decoration: none;
+            color: #474646;
+            font-weight: 500;
+            padding: 10px 15px; 
+            margin-right: 10px;
+            transition: color 0.2s, background-color 0.2s, transform 0.1s;
+            border-radius: 9999px; /* Pill shape */
+            white-space: nowrap;
+        }
+        .nav-link:hover {
+            color: var(--primary-color); 
+            background-color: var(--primary-light); 
+            transform: translateY(-1px);
+        }
+        
+        /* Adjustments for RTL layout for links */
+        html[dir="rtl"] header nav .nav-link {
+            margin-right: 0;
+            margin-left: 10px;
+        }
 
-        /* --- Falling Item Styles (Background Layer) --- */
-        .falling-item {
-            position: absolute;
-            user-select: none;
-            pointer-events: none; 
-            opacity: 0.5; /* More subtle opacity */
-            transition: opacity 2s ease-out;
-            z-index: 0; 
-            text-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Slight shadow to lift them */
-        }
-        
-        /* Ensure all structural elements are above the falling background */
-        header, main, footer {
-            position: relative;
-            z-index: 10; 
-        }
+        /* --- Falling Item Styles (Background Layer) --- */
+        .falling-item {
+            position: absolute;
+            user-select: none;
+            pointer-events: none; 
+            opacity: 0.5; /* More subtle opacity */
+            transition: opacity 2s ease-out;
+            z-index: 0; 
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Slight shadow to lift them */
+        }
+        
+        /* Ensure all structural elements are above the falling background */
+        header, main, footer {
+            position: relative;
+            z-index: 10; 
+        }
 
-        /* --- Header Specific Styles --- */
-        header {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Stronger header shadow */
-            background-color: #ffffff;
-            transition: box-shadow 0.3s ease-in-out;
-        }
-        
-        /* --- Mobile Menu Styles --- */
-        #mobile-menu {
-            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
-            max-height: 0;
-            overflow: hidden;
-            opacity: 0;
-            background-color: #ffffff;
-            position: absolute;
-            top: 70px; /* Adjusted for taller header */
-            right: 0;
-            left: 0;
-            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
-            z-index: 100; 
-        }
-        #mobile-menu.active {
-            max-height: 500px;
-            opacity: 1;
-            padding: 10px 0;
-        }
-        #mobile-menu a {
-            display: block;
-            padding: 12px 20px;
-            border-bottom: 1px solid #f3f4f6;
-            color: #333;
-            text-decoration: none;
-            text-align: left; 
-            transition: background-color 0.15s;
-        }
-        #mobile-menu a:hover {
-            background-color: var(--primary-light);
-        }
-        html[dir="rtl"] #mobile-menu a {
-            text-align: right; 
-        }
+        /* --- Header Specific Styles --- */
+        header {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Stronger header shadow */
+            background-color: #ffffff;
+            transition: box-shadow 0.3s ease-in-out;
+        }
+        
+        /* --- Mobile Menu Styles --- */
+        #mobile-menu {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            background-color: #ffffff;
+            position: absolute;
+            top: 70px; /* Adjusted for taller header */
+            right: 0;
+            left: 0;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100; 
+        }
+        #mobile-menu.active {
+            max-height: 500px;
+            opacity: 1;
+            padding: 10px 0;
+        }
+        #mobile-menu a {
+            display: block;
+            padding: 12px 20px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #333;
+            text-decoration: none;
+            text-align: left; 
+            transition: background-color 0.15s;
+        }
+        #mobile-menu a:hover {
+            background-color: var(--primary-light);
+        }
+        html[dir="rtl"] #mobile-menu a {
+            text-align: right; 
+        }
 
-        /* Icon Button Styling */
-        .icon-btn {
-            padding: 10px;
-            border-radius: 50%;
-            transition: background-color 0.2s, color 0.2s;
-            display: flex; /* Ensure SVG is centered */
-            align-items: center;
-            justify-content: center;
-            color: #4b5563; /* gray-700 */
-        }
-        .icon-btn:hover {
-            background-color: var(--primary-light);
-            color: var(--primary-color);
-        }
-        
-        /* Specific RTL fix for button icon placement (mr-2 equivalent for RTL) */
-        html[dir="rtl"] .rtl-ml-2 {
-            margin-right: 0;
-            margin-left: 0.5rem; 
-        }
-        
-        /* Enhanced Contact Button Gradient */
-        .contact-btn {
-            background-image: linear-gradient(to right, #4f46e5 0%, #3b82f6 100%); /* Indigo to Blue */
-            transition: all 0.2s ease;
-        }
-        .contact-btn:hover {
-            box-shadow: 0 8px 15px rgba(63, 131, 248, 0.4);
-            transform: scale(1.02);
-            opacity: 0.95;
-        }
-        
-        /* Centering for the main card container */
-        .min-h-main {
-            /* Ensures main content takes up remaining screen space */
-            min-height: calc(100vh - 140px);
-        }
-        @media (min-width: 768px) {
-            .min-h-main {
-                /* Adjusted for desktop header height */
-                min-height: calc(100vh - 120px); 
-            }
-        }
-    </style>
+        /* Icon Button Styling */
+        .icon-btn {
+            padding: 10px;
+            border-radius: 50%;
+            transition: background-color 0.2s, color 0.2s;
+            display: flex; /* Ensure SVG is centered */
+            align-items: center;
+            justify-content: center;
+            color: #4b5563; /* gray-700 */
+        }
+        .icon-btn:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+        
+        /* Specific RTL fix for button icon placement (mr-2 equivalent for RTL) */
+        html[dir="rtl"] .rtl-ml-2 {
+            margin-right: 0;
+            margin-left: 0.5rem; 
+        }
+        
+        /* Enhanced Contact Button Gradient */
+        .contact-btn {
+            background-image: linear-gradient(to right, #4f46e5 0%, #3b82f6 100%); /* Indigo to Blue */
+            transition: all 0.2s ease;
+        }
+        .contact-btn:hover {
+            box-shadow: 0 8px 15px rgba(63, 131, 248, 0.4);
+            transform: scale(1.02);
+            opacity: 0.95;
+        }
+        
+        /* Centering for the main card container */
+        .min-h-main {
+            /* Ensures main content takes up remaining screen space */
+            min-height: calc(100vh - 140px);
+        }
+        @media (min-width: 768px) {
+            .min-h-main {
+                /* Adjusted for desktop header height */
+                min-height: calc(100vh - 120px); 
+            }
+        }
+    </style>
 </head>
 <body>
-    
-    <header class="sticky top-0 z-50 w-full flex items-center justify-between px-4 md:px-8 lg:px-16 py-3 bg-white border-b border-gray-100">
-        
-        <div class="flex items-center">
-            <h1 class="text-3xl font-extrabold text-indigo-600 tracking-wide" data-translate-key="logo">MALFIT</h1>
-        </div>
+    
+    <header class="sticky top-0 z-50 w-full flex items-center justify-between px-4 md:px-8 lg:px-16 py-3 bg-white border-b border-gray-100">
+        
+        <div class="flex items-center">
+            <h1 class="text-3xl font-extrabold text-indigo-600 tracking-wide" data-translate-key="logo">MALFIT</h1>
+        </div>
 
-        <nav id="desktop-nav" class="hidden md:flex flex-grow justify-center mx-10">
-            </nav>
+        <nav id="desktop-nav" class="hidden md:flex flex-grow justify-center mx-10">
+            </nav>
 
-        <div class="icons-container flex items-center gap-2 md:gap-4">
-            
-            <button id="lang-toggle" class="icon-btn w-10 h-10 border-2 border-gray-300 hover:border-indigo-600">
-                <span id="current-lang" class="text-sm font-bold">EN</span> 
-            </button>
+        <div class="icons-container flex items-center gap-2 md:gap-4">
+            
+            <button id="lang-toggle" class="icon-btn w-10 h-10 border-2 border-gray-300 hover:border-indigo-600">
+                <span id="current-lang" class="text-sm font-bold">EN</span> 
+            </button>
 
-            <a href="Home/Home.html" class="icon-btn hover:bg-indigo-50">
-                <svg data-lucide="home" width="24" height="24"></svg>
-            </a>
+            <a href="Home/Home.html" class="icon-btn hover:bg-indigo-50">
+                <svg data-lucide="home" width="24" height="24"></svg>
+            </a>
 
-            <a href="Account/Account.html" class="icon-btn hover:bg-indigo-50">
-                <svg data-lucide="user" width="24" height="24"></svg>
-            </a>
+            <a href="Account/Account.html" class="icon-btn hover:bg-indigo-50">
+                <svg data-lucide="user" width="24" height="24"></svg>
+            </a>
 
-            <button id="menu-toggle" class="md:hidden icon-btn">
-                <svg data-lucide="menu" width="24" height="24"></svg>
-            </button>
-        </div>
-    </header>
+            <button id="menu-toggle" class="md:hidden icon-btn">
+                <svg data-lucide="menu" width="24" height="24"></svg>
+            </button>
+        </div>
+    </header>
 
-    <div id="mobile-menu" class="md:hidden">
-        </div>
+    <div id="mobile-menu" class="md:hidden">
+        </div>
 
-    <main class="flex items-center justify-center p-4 min-h-main"> 
-        <div class="w-full max-w-xl bg-white shadow-2xl rounded-3xl p-8 md:p-12 border border-blue-50/50 transform transition-all duration-300 hover:shadow-indigo-200/50">
+    <main class="flex items-center justify-center p-4 min-h-main"> 
+        <div class="w-full max-w-xl bg-white shadow-2xl rounded-3xl p-8 md:p-12 border border-blue-50/50 transform transition-all duration-300 hover:shadow-indigo-200/50">
 
-            <div class="text-center">
-                <div class="mx-auto w-16 h-16 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-full flex items-center justify-center shadow-lg">
-                    <svg data-lucide="mail-open" width="28" height="28" stroke="white" stroke-width="2.5"></svg>
-                </div>
+            <div class="text-center">
+                <div class="mx-auto w-16 h-16 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-full flex items-center justify-center shadow-lg">
+                    <svg data-lucide="mail-open" width="28" height="28" stroke="white" stroke-width="2.5"></svg>
+                </div>
 
-                <h1 class="mt-6 text-4xl font-extrabold text-gray-900 leading-tight" data-translate-key="card_title">Get in Touch</h1>
-                <p class="mt-3 text-lg text-gray-500 max-w-md mx-auto" data-translate-key="card_description">We are happy to answer any questions you may have regarding our plans, clubs, or calorie tracking features.</p>
-            </div>
+                <h1 class="mt-6 text-4xl font-extrabold text-gray-900 leading-tight" data-translate-key="card_title">Get in Touch</h1>
+                <p class="mt-3 text-lg text-gray-500 max-w-md mx-auto" data-translate-key="card_description">We are happy to answer any questions you may have regarding our plans, clubs, or calorie tracking features.</p>
+            </div>
 
-            <div class="mt-10">
-                <a id="email-contact-link"
-                    target="_blank"
-                    class="contact-btn w-full flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-2xl shadow-xl text-white">
-                    <span class="rtl-ml-2 mr-2" data-translate-key="btn_send_email">Send Email</span>
-                    <svg data-lucide="send" width="20" height="20" stroke="currentColor" stroke-width="2"></svg>
-                </a>
-            </div>
+            <div class="mt-10">
+                <a id="email-contact-link"
+                    target="_blank"
+                    class="contact-btn w-full flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-2xl shadow-xl text-white">
+                    <span class="rtl-ml-2 mr-2" data-translate-key="btn_send_email">Send Email</span>
+                    <svg data-lucide="send" width="20" height="20" stroke="currentColor" stroke-width="2"></svg>
+                </a>
+            </div>
 
-            <p class="mt-8 text-center text-sm text-gray-400" data-translate-key="card_footer">
-                For urgent matters, expect a reply within 24 hours. Our support team is available Sunday to Thursday.
-            </p>
-        </div>
-    </main>
+            <p class="mt-8 text-center text-sm text-gray-400" data-translate-key="card_footer">
+                For urgent matters, expect a reply within 24 hours. Our support team is available Sunday to Thursday.
+            </p>
+        </div>
+    </main>
 
-    <footer class="p-6 bg-white border-t border-gray-100 shadow-inner">
-        <p class="text-gray-600 text-center text-sm" data-translate-key="footer_text">&copy; 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi</p>
-    </footer>
+    <footer class="p-6 bg-white border-t border-gray-100 shadow-inner">
+        <p class="text-gray-600 text-center text-sm" data-translate-key="footer_text">&copy; 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi</p>
+    </footer>
 
 
-    <script>
-        // --- Navigation Data (Define links once) ---
-        const navData = [
-            { href: "Calories/Calories.html", key: "nav_calories" },
-            { href: "Eat Healthy/Eat Healthy.html", key: "nav_eat_healthy" },
-            { href: "Plans/Plans.html", key: "nav_plans" },
-            { href: "Clubs/Clubs.html", key: "nav_clubs" },
-            { href: "Survey/Survey.html", key: "nav_survey" },
-            { href: "Contact Us/Contact Us.html", key: "nav_contact_us" }
-        ];
+    <script>
+        // --- Navigation Data (Define links once) ---
+        const navData = [
+            { href: "Calories/Calories.html", key: "nav_calories" },
+            { href: "Eat Healthy/Eat Healthy.html", key: "nav_eat_healthy" },
+            { href: "Plans/Plans.html", key: "nav_plans" },
+            { href: "Clubs/Clubs.html", key: "nav_clubs" },
+            { href: "Survey/Survey.html", key: "nav_survey" },
+            { href: "Contact Us/Contact Us.html", key: "nav_contact_us" }
+        ];
 
-        // The constant email address
-        const CONTACT_EMAIL = 'malfit.bh@gmail.com';
+        // The constant email address
+        const CONTACT_EMAIL = 'malfit.bh@gmail.com';
 
-        // --- Translation Data (NEW) ---
-        const translations = {
-            'en': {
-                'page_title': 'MALFIT | Contact Us',
-                'logo': 'MALFIT',
-                'nav_calories': 'Calories',
-                'nav_eat_healthy': 'Eat Healthy',
-                'nav_plans': 'Plans',
-                'nav_clubs': 'Clubs',
-                'nav_survey': 'Survey',
-                'nav_contact_us': 'Contact Us',
-                'card_title': 'Get in Touch',
-                'card_description': 'We are happy to answer any questions you may have regarding our plans, clubs, or calorie tracking features.',
-                'btn_send_email': 'Send Email',
-                'card_footer': 'For urgent matters, expect a reply within 24 hours. Our support team is available Sunday to Thursday.',
-                'footer_text': '© 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi',
-                'lang_code': 'AR', // Display 'AR' to switch to Arabic
-                // NEW EMAIL KEYS
-                'email_subject': 'Website Inquiry Regarding Support',
-                'email_body_prefix': 'Hello Team,\n\nI am writing to you about...'
-            },
-            'ar': {
-                'page_title': 'ملفت | اتصل بنا',
-                'logo': 'ملفت',
-                'nav_calories': 'السعرات الحرارية',
-                'nav_eat_healthy': 'تناول طعام صحي',
-                'nav_plans': 'الخطط',
-                'nav_clubs': 'الأندية',
-                'nav_survey': 'الاستبيان',
-                'nav_contact_us': 'اتصل بنا',
-                'card_title': 'تواصل معنا',
-                'card_description': 'يسعدنا الإجابة على أي أسئلة قد تكون لديكم بخصوص خططنا أو الأندية أو ميزات تتبع السعرات الحرارية.',
-                'btn_send_email': 'إرسال بريد إلكتروني',
-                'card_footer': 'للمسائل العاجلة، توقعوا رداً خلال 24 ساعة. فريق الدعم متاح من الأحد إلى الخميس.',
-                'footer_text': '© 2025، مشروع تخرج، مدى صالح، أحمد خليفة، لورا عادل، المشرف الدكتور عبد الله محمد خالد القادومي',
-                'lang_code': 'EN',  // Display 'EN' to switch to English
-                // NEW EMAIL KEYS
-                'email_subject': 'استفسار من الموقع بخصوص الدعم',
-                'email_body_prefix': 'أهلاً بالفريق،\n\nأكتب إليكم بخصوص...'
-            }
-        };
+        // --- Translation Data (NEW) ---
+        const translations = {
+            'en': {
+                'page_title': 'MALFIT | Contact Us',
+                'logo': 'MALFIT',
+                'nav_calories': 'Calories',
+                'nav_eat_healthy': 'Eat Healthy',
+                'nav_plans': 'Plans',
+                'nav_clubs': 'Clubs',
+                'nav_survey': 'Survey',
+                'nav_contact_us': 'Contact Us',
+                'card_title': 'Get in Touch',
+                'card_description': 'We are happy to answer any questions you may have regarding our plans, clubs, or calorie tracking features.',
+                'btn_send_email': 'Send Email',
+                'card_footer': 'For urgent matters, expect a reply within 24 hours. Our support team is available Sunday to Thursday.',
+                'footer_text': '© 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi',
+                'lang_code': 'AR', // Display 'AR' to switch to Arabic
+                // NEW EMAIL KEYS
+                'email_subject': 'Website Inquiry Regarding Support',
+                'email_body_prefix': 'Hello Team,\n\nI am writing to you about...'
+            },
+            'ar': {
+                'page_title': 'ملفت | اتصل بنا',
+                'logo': 'ملفت',
+                'nav_calories': 'السعرات الحرارية',
+                'nav_eat_healthy': 'تناول طعام صحي',
+                'nav_plans': 'الخطط',
+                'nav_clubs': 'الأندية',
+                'nav_survey': 'الاستبيان',
+                'nav_contact_us': 'اتصل بنا',
+                'card_title': 'تواصل معنا',
+                'card_description': 'يسعدنا الإجابة على أي أسئلة قد تكون لديكم بخصوص خططنا أو الأندية أو ميزات تتبع السعرات الحرارية.',
+                'btn_send_email': 'إرسال بريد إلكتروني',
+                'card_footer': 'للمسائل العاجلة، توقعوا رداً خلال 24 ساعة. فريق الدعم متاح من الأحد إلى الخميس.',
+                'footer_text': '© 2025، مشروع تخرج، مدى صالح، أحمد خليفة، لورا عادل، المشرف الدكتور عبد الله محمد خالد القادومي',
+                'lang_code': 'EN',  // Display 'EN' to switch to English
+                // NEW EMAIL KEYS
+                'email_subject': 'استفسار من الموقع بخصوص الدعم',
+                'email_body_prefix': 'أهلاً بالفريق،\n\nأكتب إليكم بخصوص...'
+            }
+        };
 
-        let currentLang = localStorage.getItem('malfitMainLang') || 'en';
-        
-        // Utility function to convert Lucide icons
-        function replaceLucideIcons() {
-            lucide.createIcons();
-        }
+        let currentLang = localStorage.getItem('malfitMainLang') || 'en';
+        
+        // Utility function to convert Lucide icons
+        function replaceLucideIcons() {
+            lucide.createIcons();
+        }
 
-        /**
-         * Dynamically generates the navigation links for both desktop and mobile menus.
-         */
-        function generateNavigation() {
-            const desktopNav = document.getElementById('desktop-nav');
-            const mobileMenu = document.getElementById('mobile-menu');
+        /**
+         * Dynamically generates the navigation links for both desktop and mobile menus.
+         */
+        function generateNavigation() {
+            const desktopNav = document.getElementById('desktop-nav');
+            const mobileMenu = document.getElementById('mobile-menu');
 
-            // Clear existing content
-            desktopNav.innerHTML = '';
-            mobileMenu.innerHTML = '';
+            // Clear existing content
+            desktopNav.innerHTML = '';
+            mobileMenu.innerHTML = '';
 
-            navData.forEach(link => {
-                const navLinkDesktop = document.createElement('a');
-                navLinkDesktop.href = link.href;
-                navLinkDesktop.className = 'nav-link'; // Desktop-specific class for pill shape
-                navLinkDesktop.setAttribute('data-translate-key', link.key);
-                // Text will be updated by updateContent()
-                desktopNav.appendChild(navLinkDesktop);
+            navData.forEach(link => {
+                const navLinkDesktop = document.createElement('a');
+                navLinkDesktop.href = link.href;
+                navLinkDesktop.className = 'nav-link'; // Desktop-specific class for pill shape
+                navLinkDesktop.setAttribute('data-translate-key', link.key);
+                // Text will be updated by updateContent()
+                desktopNav.appendChild(navLinkDesktop);
 
-                const navLinkMobile = document.createElement('a');
-                navLinkMobile.href = link.href;
-                navLinkMobile.setAttribute('data-translate-key', link.key);
-                // Mobile links inherit block/padding styles from CSS #mobile-menu a
-                mobileMenu.appendChild(navLinkMobile);
-            });
-        }
+                const navLinkMobile = document.createElement('a');
+                navLinkMobile.href = link.href;
+                navLinkMobile.setAttribute('data-translate-key', link.key);
+                // Mobile links inherit block/padding styles from CSS #mobile-menu a
+                mobileMenu.appendChild(navLinkMobile);
+            });
+        }
 
-        /**
-         * Dynamically updates the mailto link's href attribute based on the current language.
-         * @param {string} lang - The target language code ('en' or 'ar').
-         */
-        function updateEmailLink(lang) {
-            const langData = translations[lang];
-            const emailLink = document.getElementById('email-contact-link');
+        /**
+         * Dynamically updates the mailto link's href attribute based on the current language.
+         * @param {string} lang - The target language code ('en' or 'ar').
+         */
+        function updateEmailLink(lang) {
+            const langData = translations[lang];
+            const emailLink = document.getElementById('email-contact-link');
 
-            if (!emailLink) return;
+            if (!emailLink) return;
 
-            // Construct the subject and body from translation keys
-            const subject = encodeURIComponent(langData.email_subject || 'Website Inquiry');
-            // Adding two newlines (%0A%0A) after the prefix for formatting
-            const body = encodeURIComponent(langData.email_body_prefix + '\n\nThank you.');
+            // Construct the subject and body from translation keys
+            const subject = encodeURIComponent(langData.email_subject || 'Website Inquiry');
+            // Adding two newlines (%0A%0A) after the prefix for formatting
+            const body = encodeURIComponent(langData.email_body_prefix + '\n\nThank you.');
 
-            // Construct the final mailto href using the constant email
-            // Use mail.google.com/mail/u/0/?view=cm&fs=1 to open Gmail tab
-            const mailtoLink = `https://mail.google.com/mail/u/0/?view=cm&fs=1&to=${CONTACT_EMAIL}&su=${subject}&body=${body}`;
+            // Construct the final mailto href using the constant email
+            // Use mail.google.com/mail/u/0/?view=cm&fs=1 to open Gmail tab
+            const mailtoLink = `https://mail.google.com/mail/u/0/?view=cm&fs=1&to=${CONTACT_EMAIL}&su=${subject}&body=${body}`;
 
-            emailLink.href = mailtoLink;
-        }
+            emailLink.href = mailtoLink;
+        }
 
-        /**
-         * Updates the content of the page based on the selected language and handles RTL layout.
-         * @param {string} lang - The target language code ('en' or 'ar').
-         */
-        function updateContent(lang) {
-            currentLang = lang;
-            const dir = (lang === 'ar') ? 'rtl' : 'ltr';
-            const langData = translations[lang];
-            const html = document.documentElement;
+        /**
+         * Updates the content of the page based on the selected language and handles RTL layout.
+         * @param {string} lang - The target language code ('en' or 'ar').
+         */
+        function updateContent(lang) {
+            currentLang = lang;
+            const dir = (lang === 'ar') ? 'rtl' : 'ltr';
+            const langData = translations[lang];
+            const html = document.documentElement;
 
-            // 1. Update HTML language and direction attributes
-            html.setAttribute('lang', lang);
-            html.setAttribute('dir', dir);
-            
-            // 2. Update all translated elements
-            document.querySelectorAll('[data-translate-key]').forEach(element => {
-                const key = element.getAttribute('data-translate-key');
-                if (langData[key]) {
-                    // Update content only if it's not the language code span
-                    if (element.id === 'current-lang') {
-                        element.textContent = langData.lang_code;
-                    } else if (element.tagName === 'TITLE') {
-                        document.title = langData[key];
-                    } else {
-                        element.textContent = langData[key];
-                    }
-                }
-            });
+            // 1. Update HTML language and direction attributes
+            html.setAttribute('lang', lang);
+            html.setAttribute('dir', dir);
+            
+            // 2. Update all translated elements
+            document.querySelectorAll('[data-translate-key]').forEach(element => {
+                const key = element.getAttribute('data-translate-key');
+                if (langData[key]) {
+                    // Update content only if it's not the language code span
+                    if (element.id === 'current-lang') {
+                        element.textContent = langData.lang_code;
+                    } else if (element.tagName === 'TITLE') {
+                        document.title = langData[key];
+                    } else {
+                        element.textContent = langData[key];
+                    }
+                }
+            });
 
-            // 3. Update the Email Link
-            updateEmailLink(lang);
+            // 3. Update the Email Link
+            updateEmailLink(lang);
 
-            // 4. Persist the selection
-            localStorage.setItem('malfitMainLang', lang);
-        }
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            // --- 0. Generate Navigation Structure ---
-            generateNavigation();
+            // 4. Persist the selection
+            localStorage.setItem('malfitMainLang', lang);
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- 0. Generate Navigation Structure ---
+            generateNavigation();
 
-            // --- 1. MALFIT Mobile Menu Toggle Handler ---
-            const menuToggle = document.getElementById('menu-toggle');
-            const mobileMenu = document.getElementById('mobile-menu');
-            const langToggle = document.getElementById('lang-toggle'); 
+            // --- 1. MALFIT Mobile Menu Toggle Handler ---
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const langToggle = document.getElementById('lang-toggle'); 
 
-            menuToggle.addEventListener('click', () => {
-                mobileMenu.classList.toggle('active');
-            });
-            
-            // Close menu when a link is clicked
-            mobileMenu.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', () => {
-                    mobileMenu.classList.remove('active');
-                });
-            });
-            
-            // --- 2. Language Toggle Handler ---
-            langToggle.addEventListener('click', () => {
-                const newLang = (currentLang === 'en') ? 'ar' : 'en';
-                updateContent(newLang);
-            });
-            
-            // --- 3. Initial Language Load & Icon Replacement ---
-            // Load saved language or default to English
-            updateContent(currentLang);
-            // Replace placeholder SVGs with Lucide Icons (only needed once DOM is ready)
-            replaceLucideIcons();
+            menuToggle.addEventListener('click', () => {
+                mobileMenu.classList.toggle('active');
+            });
+            
+            // Close menu when a link is clicked
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('active');
+                });
+            });
+            
+            // --- 2. Language Toggle Handler ---
+            langToggle.addEventListener('click', () => {
+                const newLang = (currentLang === 'en') ? 'ar' : 'en';
+                updateContent(newLang);
+            });
+            
+            // --- 3. Initial Language Load & Icon Replacement ---
+            // Load saved language or default to English
+            updateContent(currentLang);
+            // Replace placeholder SVGs with Lucide Icons (only needed once DOM is ready)
+            replaceLucideIcons();
 
-            // --- 4. Falling Food Background Animation Script (Unchanged) ---
-            const produceEmojis = ['🍎', '🍊', '🍋', '🍇', '🍓', '🍍', '🥦', '🥕', '🥬', '🌶️', '🌽', '🥝'];
-            const body = document.body;
-            const maxItems = 40; 
-            let itemsOnScreen = 0;
+            // --- 4. Falling Food Background Animation Script (Unchanged) ---
+            const produceEmojis = ['🍎', '🍊', '🍋', '🍇', '🍓', '🍍', '🥦', '🥕', '🥬', '🌶️', '🌽', '🥝'];
+            const body = document.body;
+            const maxItems = 40; 
+            let itemsOnScreen = 0;
 
-            function createFallingItem() {
-                if (itemsOnScreen >= maxItems) return;
+            function createFallingItem() {
+                if (itemsOnScreen >= maxItems) return;
 
-                const emoji = produceEmojis[Math.floor(Math.random() * produceEmojis.length)];
-                // Smaller size range for subtlety
-                const size = Math.floor(Math.random() * 15) + 12; 
-                const initialX = Math.random() * window.innerWidth;
-                // Faster duration for slightly more noticeable movement
-                const duration = Math.random() * 8 + 4; 
-                const rotation = Math.random() * 360; 
-                
-                const item = document.createElement('div');
-                item.className = 'falling-item';
-                item.innerHTML = emoji;
-                item.style.fontSize = `${size}px`;
-                item.style.left = `${initialX}px`;
-                item.style.top = `-50px`; 
-                item.style.transform = `rotate(${rotation}deg)`;
-                
-                body.appendChild(item);
-                itemsOnScreen++;
+                const emoji = produceEmojis[Math.floor(Math.random() * produceEmojis.length)];
+                // Smaller size range for subtlety
+                const size = Math.floor(Math.random() * 15) + 12; 
+                const initialX = Math.random() * window.innerWidth;
+                // Faster duration for slightly more noticeable movement
+                const duration = Math.random() * 8 + 4; 
+                const rotation = Math.random() * 360; 
+                
+                const item = document.createElement('div');
+                item.className = 'falling-item';
+                item.innerHTML = emoji;
+                item.style.fontSize = `${size}px`;
+                item.style.left = `${initialX}px`;
+                item.style.top = `-50px`; 
+                item.style.transform = `rotate(${rotation}deg)`;
+                
+                body.appendChild(item);
+                itemsOnScreen++;
 
-                let currentY = -50;
-                const speed = (window.innerHeight + 100) / (duration * 60); 
-                const driftX = (Math.random() - 0.5) * 0.5; 
+                let currentY = -50;
+                const speed = (window.innerHeight + 100) / (duration * 60); 
+                const driftX = (Math.random() - 0.5) * 0.5; 
 
-                function animateFall() {
-                    if (currentY > window.innerHeight) {
-                        if (body.contains(item)) {
-                            body.removeChild(item);
-                        }
-                        itemsOnScreen--;
-                        return;
-                    }
+                function animateFall() {
+                    if (currentY > window.innerHeight) {
+                        if (body.contains(item)) {
+                            body.removeChild(item);
+                        }
+                        itemsOnScreen--;
+                        return;
+                    }
 
-                    currentY += speed;
-                    let currentX = parseFloat(item.style.left) || initialX;
-                    currentX += driftX;
+                    currentY += speed;
+                    let currentX = parseFloat(item.style.left) || initialX;
+                    currentX += driftX;
 
-                    item.style.top = `${currentY}px`;
-                    item.style.left = `${currentX}px`;
-                    
-                    requestAnimationFrame(animateFall);
-                }
+                    item.style.top = `${currentY}px`;
+                    item.style.left = `${currentX}px`;
+                    
+                    requestAnimationFrame(animateFall);
+                }
 
-                requestAnimationFrame(animateFall);
-            }
+                requestAnimationFrame(animateFall);
+            }
 
-            function spawnLoop() {
-                createFallingItem();
-                // Spawn a new item every 100ms to 500ms
-                const delay = Math.random() * 400 + 100;
-                setTimeout(spawnLoop, delay);
-            }
+            function spawnLoop() {
+                createFallingItem();
+                // Spawn a new item every 100ms to 500ms
+                const delay = Math.random() * 400 + 100;
+                setTimeout(spawnLoop, delay);
+            }
 
-            spawnLoop();
-        });
-    </script>
+            spawnLoop();
+        });
+    </script>
 </body>
 </html>
