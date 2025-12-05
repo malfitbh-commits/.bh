@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script> 
+    <script src="https://unpkg.com/lucide@latest" defer></script> 
 
     <style>
         /* Custom styles from the previous file */
@@ -19,6 +19,8 @@
             --logo-color: #4f46e5;
             --calc-gradient-start: #4f46e5; /* Indigo */
             --calc-gradient-end: #3b82f6; /* Blue */
+            --result-text-color: #3730a3; /* Indigo-800 */
+            --result-highlight-color: #4338ca; /* Indigo-700 */
         }
         
         /* --- START: FEMALE THEME OVERRIDE --- */
@@ -28,6 +30,8 @@
             --logo-color: #ec4899;
             --calc-gradient-start: #ec4899; /* Pink */
             --calc-gradient-end: #f43f5e; /* Rose */
+            --result-text-color: #9d174d; /* Pink-800 */
+            --result-highlight-color: #be185d; /* Pink-700 */
         }
         
         /* Hide Period link until Female theme is active */
@@ -191,6 +195,17 @@
             border-left: none;
             border-right: 4px solid var(--primary-color); /* Uses CSS Variable */
         }
+        
+        /* Result Box inner content styling using CSS variables */
+        .result-inner-box {
+             background-color: var(--primary-light);
+        }
+        .result-title-style {
+            color: var(--result-text-color);
+        }
+        .result-number-style {
+            color: var(--result-highlight-color);
+        }
     </style>
 </head>
 <body>
@@ -198,17 +213,16 @@
     <header class="sticky top-0 z-50 w-full flex items-center justify-between px-4 md:px-8 lg:px-16 py-3 bg-white border-b border-gray-100">
         
         <div class="flex items-center">
-            <a href="afterthelogpage.html" id="logo" class="text-3xl font-extrabold text-indigo-600 tracking-wide" data-translate-key="logo" aria-label="Go to Homepage">MALFIT</a>
+            <a href="../Home/Home.html" id="logo" class="text-3xl font-extrabold text-indigo-600 tracking-wide" data-translate-key="logo" aria-label="Go to Homepage">MALFIT</a>
         </div>
 
         <nav class="hidden md:flex flex-grow justify-center mx-10">
-           <a href="Calories/Calories.html" data-translate-key="nav_calories">Calories</a>
-            <a href="Period/Period.html" id="nav-period-mobile" class="hidden-until-female" data-translate-key="nav_period">Period</a>
-            <a href="Eat Healthy/Eathealrhy.html" data-translate-key="nav_eat_healthy">Eat Healthy</a>
-            <a href="Plans/Plans.html" data-translate-key="nav_plans">Plans</a>
-            <a href="Clubs/Club.html" data-translate-key="nav_clubs">Clubs</a>
-            <a href="Survey/Survey.html" data-translate-key="nav_survey">Survey</a>
-            <a href="Contact Us/Contact us.html" data-translate-key="nav_contact_us">Contact Us</a>
+            <a href="Calories.html" class="nav-link active-calorie" data-translate-key="nav_calories">Calories</a>
+            <a href="../Period/Period.html" id="nav-period-desktop" class="nav-link hidden-until-female" data-translate-key="nav_period">Period</a> <a href="../Eat Healthy/Eat Healthy.html" class="nav-link" data-translate-key="nav_eat_healthy">Eat Healthy</a>
+            <a href="../Plans/Plans.html" class="nav-link" data-translate-key="nav_plans">Plans</a>
+            <a href="../Clubs/Clubs.html" class="nav-link" data-translate-key="nav_clubs">Clubs</a>
+            <a href="../Survey/Survey.html" class="nav-link" data-translate-key="nav_survey">Survey</a>
+            <a href="../Contact Us/Contact Us.html" class="nav-link" data-translate-key="nav_contact_us">Contact Us</a>
         </nav>
 
         <div class="icons-container flex items-center gap-2 md:gap-4">
@@ -217,11 +231,11 @@
                 <span id="current-lang" class="text-sm font-bold">EN</span> 
             </button>
 
-            <a href="Home/Home.html" class="icon-btn hover:bg-indigo-50" aria-label="Home">
+            <a href="../Home/Home.html" class="icon-btn hover:bg-indigo-50" aria-label="Home">
                 <svg data-lucide="home" width="24" height="24" aria-hidden="true"></svg>
             </a>
 
-            <a href="accountData.html" class="icon-btn hover:bg-indigo-50" aria-label="Account Settings">
+            <a href="../Account/Account.html" class="icon-btn hover:bg-indigo-50" aria-label="Account Settings">
                 <svg data-lucide="user" width="24" height="24" aria-hidden="true"></svg>
             </a>
 
@@ -232,13 +246,13 @@
     </header>
 
     <div id="mobile-menu" class="md:hidden">
-        <a href="Calories/Calories.html" data-translate-key="nav_calories">Calories</a>
-        <a href="Period/Period.html" id="nav-period-mobile" class="hidden-until-female" data-translate-key="nav_period">Period</a>
-        <a href="Eat Healthy/Eathealrhy.html" data-translate-key="nav_eat_healthy">Eat Healthy</a>
-        <a href="Plans/Plans.html" data-translate-key="nav_plans">Plans</a>
-        <a href="Clubs/Club.html" data-translate-key="nav_clubs">Clubs</a>
-        <a href="Survey/Survey.html" data-translate-key="nav_survey">Survey</a>
-        <a href="Contact Us/Contact us.html" data-translate-key="nav_contact_us">Contact Us</a>
+        <a href="Calories.html" data-translate-key="nav_calories">Calories</a>
+        <a href="../Period/Period.html" id="nav-period-mobile" class="hidden-until-female" data-translate-key="nav_period">Period</a>
+        <a href="../Eat Healthy/Eat Healthy.html" data-translate-key="nav_eat_healthy">Eat Healthy</a>
+        <a href="../Plans/Plans.html" data-translate-key="nav_plans">Plans</a>
+        <a href="../Clubs/Clubs.html" data-translate-key="nav_clubs">Clubs</a>
+        <a href="../Survey/Survey.html" data-translate-key="nav_survey">Survey</a>
+        <a href="../Contact Us/Contact Us.html" data-translate-key="nav_contact_us">Contact Us</a>
     </div>
 
     <main class="flex items-center justify-center p-4 min-h-main"> 
@@ -323,16 +337,16 @@
             </div>
 
             <div id="result-box" class="mt-8 p-6 result-box-style rounded-lg hidden">
-                <h2 class="text-xl font-bold text-indigo-800 mb-3" data-translate-key="result_title">Your Simple Plan</h2>
+                <h2 class="text-xl font-bold result-title-style mb-3" data-translate-key="result_title">Your Simple Plan</h2>
                 
                 <p class="text-gray-700 mb-3">
                     <span class="font-semibold" data-translate-key="result_maintenance">Calories to Stay the Same:</span> 
                     <span id="tdee-output"></span> kcal
                 </p>
 
-                <div class="bg-indigo-200 p-4 rounded-md">
-                    <p class="text-lg font-bold text-indigo-900" data-translate-key="result_daily_goal">Your Target Daily Calorie Goal is:</p>
-                    <p class="text-4xl font-extrabold text-indigo-700 mt-1"><span id="target-calories-output"></span> kcal</p>
+                <div class="result-inner-box p-4 rounded-md">
+                    <p class="text-lg font-bold result-title-style" data-translate-key="result_daily_goal">Your Target Daily Calorie Goal is:</p>
+                    <p class="text-4xl font-extrabold result-number-style mt-1"><span id="target-calories-output"></span> kcal</p>
                 </div>
                 
                 <button onclick="saveCaloriePlan()" class="contact-btn w-full flex items-center justify-center px-4 py-3 text-base font-semibold rounded-xl shadow-lg text-white mt-4 transition-all duration-200">
@@ -501,7 +515,11 @@
                 const translation = translations[currentLang][key];
                 
                 if (element.tagName === 'INPUT' && element.hasAttribute('placeholder')) {
+                    // Update placeholder
                     element.setAttribute('placeholder', translation || element.getAttribute('placeholder'));
+                } else if (element.tagName === 'OPTION') {
+                    // Update select options
+                    element.textContent = translation || element.textContent;
                 } else if (element.tagName === 'TITLE') {
                     document.title = translation || element.textContent;
                 } else if (translation) {
@@ -512,7 +530,7 @@
             // Update the language toggle button text
             document.getElementById('current-lang').textContent = translations[currentLang].lang_code;
 
-            // Re-apply theme to ensure class dependencies are updated (e.g., in result-box)
+            // Re-apply theme to ensure class dependencies are updated 
             const genderSelect = document.getElementById('gender');
             if (genderSelect) {
                 updateTheme(genderSelect.value);
@@ -528,11 +546,34 @@
         function toggleLanguage() {
             currentLang = currentLang === 'en' ? 'ar' : 'en';
             localStorage.setItem('malfitLang', currentLang); // Save preference
+            
+            // Close mobile menu when language is toggled, if open
+            if (document.getElementById('mobile-menu').classList.contains('active')) {
+                toggleMobileMenu();
+            }
             applyTranslations();
         }
 
         /**
-         * Toggles the visibility of cycle tracking fields based on gender selection.
+         * Toggles the mobile menu visibility.
+         */
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobile-menu');
+            const menuIconSvg = document.querySelector('#menu-toggle svg');
+            mobileNav.classList.toggle('active'); 
+            
+            // Change the menu icon
+            if (mobileNav.classList.contains('active')) {
+                 menuIconSvg.outerHTML = '<svg data-lucide="x" width="24" height="24" aria-hidden="true"></svg>';
+            } else {
+                 menuIconSvg.outerHTML = '<svg data-lucide="menu" width="24" height="24" aria-hidden="true"></svg>';
+            }
+            lucide.createIcons();
+        }
+
+
+        /**
+         * Toggles the visibility of cycle tracking fields and links based on gender selection.
          */
         function toggleCycleTrackingFields() {
             const gender = document.getElementById('gender').value;
@@ -546,18 +587,12 @@
         }
 
         /**
-         * Changes the theme colors (CSS variables and Tailwind classes) to pink if female.
-         * Hides/shows the "Period" header link.
+         * Changes the theme colors (CSS variables) to pink if female.
          * @param {string} gender - The selected gender ('male' or 'female').
          */
         function updateTheme(gender) {
             const html = document.documentElement;
             const logo = document.getElementById('logo');
-            const resultBox = document.getElementById('result-box');
-            
-            // This line handles the result box inner color change for dynamic content
-            let resultBoxInner = resultBox ? resultBox.querySelector('div.p-4') : null;
-            
             const iconContainer = document.getElementById('calculator-icon-container');
             const periodDesktop = document.getElementById('nav-period-desktop');
             const periodMobile = document.getElementById('nav-period-mobile');
@@ -570,14 +605,6 @@
                 iconContainer.classList.remove('from-indigo-500', 'to-blue-500');
                 iconContainer.classList.add('from-pink-500', 'to-rose-500');
                 
-                // Update result box background class for Pink
-                if (resultBoxInner) {
-                    resultBoxInner.classList.replace('bg-indigo-200', 'bg-pink-200');
-                }
-                resultBox.classList.replace('text-indigo-800', 'text-pink-800');
-                resultBox.querySelector('#target-calories-output').parentNode.classList.replace('text-indigo-700', 'text-pink-700');
-
-
                 // Show Period links
                 if (periodDesktop) periodDesktop.classList.remove('hidden-until-female');
                 if (periodMobile) periodMobile.classList.remove('hidden-until-female');
@@ -589,14 +616,6 @@
                 iconContainer.classList.remove('from-pink-500', 'to-rose-500');
                 iconContainer.classList.add('from-indigo-500', 'to-blue-500');
                 
-                // Update result box background class back to indigo
-                if (resultBoxInner) {
-                    resultBoxInner.classList.replace('bg-pink-200', 'bg-indigo-200'); 
-                }
-                resultBox.classList.replace('text-pink-800', 'text-indigo-800');
-                resultBox.querySelector('#target-calories-output').parentNode.classList.replace('text-pink-700', 'text-indigo-700');
-
-
                 // Hide Period links
                 if (periodDesktop) periodDesktop.classList.add('hidden-until-female');
                 if (periodMobile) periodMobile.classList.add('hidden-until-female');
@@ -618,183 +637,154 @@
 
             const resultBox = document.getElementById('result-box');
             const warningBox = document.getElementById('warning-box');
+            const warningMessageEl = document.getElementById('warning-message');
+            
             warningBox.classList.add('hidden');
             resultBox.classList.add('hidden');
             
-            // Determine Goal Type (Loss/Maintenance/Gain)
-            let goalType;
-            if (goalWeight > 0) {
-                // If goal weight is positive (e.g., 5kg loss), the intent is 'lose'
-                goalType = 'lose'; 
-            } else if (goalWeight === 0) {
-                // If user wants to lose 0kg, the goal is 'maintain' (requires specific handling or user intent adjustment)
-                // For simplicity here, we assume if goalWeight is 0, the user wants maintenance.
-                goalType = 'maintain';
-            } else {
-                // Not covered in this calculator, but conceptually could be 'gain'
-                goalType = 'lose'; // Fallback to 'lose' for safety
-            }
-
-            // 1. Input Validation (Checks for NaN, minimums, and positive goals/time)
-            if (isNaN(age) || isNaN(height) || isNaN(weight) || isNaN(goalWeight) || isNaN(timeFrameWeeks) || 
-                age < 15 || height < 100 || weight < 40 || timeFrameWeeks <= 0 || goalWeight < 0) { // Goal weight cannot be negative for loss calc
+            // --- 1. Input Validation ---
+            if (isNaN(age) || isNaN(height) || isNaN(weight) || isNaN(activityMultiplier) || isNaN(goalWeight) || isNaN(timeFrameWeeks) || 
+                age < 15 || height < 100 || weight < 40 || goalWeight < 0.5 || timeFrameWeeks < 1) {
                 
+                warningMessageEl.textContent = translations[currentLang]['warning_fill_fields'];
                 warningBox.classList.remove('hidden');
-                document.getElementById('warning-message').textContent = translations[currentLang].warning_fill_fields;
                 return;
             }
-            
-            // If the goal is 0, calculate maintenance only
-            if (goalWeight === 0) {
-                goalType = 'maintain';
-            }
 
-            // 2. Calculate BMR (Mifflin-St Jeor Equation)
+            // --- 2. Basal Metabolic Rate (BMR) - Mifflin-St Jeor Equation ---
             let bmr;
             if (gender === 'male') {
+                // BMR = 10 * weight (kg) + 6.25 * height (cm) - 5 * age (y) + 5
                 bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
             } else {
+                // BMR = 10 * weight (kg) + 6.25 * height (cm) - 5 * age (y) - 161
                 bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
             }
 
-            // 3. Calculate TDEE (Maintenance Calories)
+            // --- 3. Total Daily Energy Expenditure (TDEE) ---
             const tdee = bmr * activityMultiplier;
-            const roundedTdee = Math.round(tdee);
-
-            let targetCalories;
-            let finalDailyDeficit;
-            let finalWeeklyLoss;
-            let safeMinimum = (gender === 'male') ? MIN_CALORIES_MALE : MIN_CALORIES_FEMALE; 
-            let warningMessageKey = '';
-            let resultingWeeks = timeFrameWeeks;
-
-
-            if (goalType === 'maintain') {
-                // Target calories is just maintenance
-                targetCalories = roundedTdee;
-                finalDailyDeficit = 0;
-                finalWeeklyLoss = 0;
-            } else { // goalType is 'lose'
-                // 4. Calculate Required Deficit for Loss
-                const totalTimeDays = timeFrameWeeks * 7;
-                const totalDeficitKcal = goalWeight * KCAL_PER_KG_FAT;
-                const dailyDeficit = totalDeficitKcal / totalTimeDays;
-                
-                // 5. Calculate Target Calories
-                targetCalories = tdee - dailyDeficit;
-                
-                // 6. Safety & Reality Checks
-                if (targetCalories < safeMinimum) {
-                    // Adjust to the safe minimum
-                    targetCalories = safeMinimum;
-                    const resultingDailyDeficit = tdee - safeMinimum;
-                    // Calculate the new, safer time frame required for the original goal
-                    resultingWeeks = totalDeficitKcal / resultingDailyDeficit / 7;
-                    
-                    warningMessageKey = 'warning_goal_too_fast';
-                } else if ((dailyDeficit * 7 / KCAL_PER_KG_FAT) > 1.2) { 
-                    warningMessageKey = 'warning_loss_fast';
-                } else if (targetCalories <= 0) {
-                    // Final safety net check
-                    targetCalories = roundedTdee - 500; 
-                    warningMessageKey = 'warning_error';
-                }
-
-                // Update output based on the (potentially adjusted) target calories
-                finalDailyDeficit = Math.round(roundedTdee - targetCalories);
-                finalWeeklyLoss = (finalDailyDeficit * 7 / KCAL_PER_KG_FAT).toFixed(2);
-            }
             
-            // Finalize target calories
-            const finalTargetCalories = Math.round(targetCalories);
+            // Save TDEE for global reference
+            lastTdee = Math.round(tdee); 
+            
+            // --- 4. Calorie Deficit/Target Calculation ---
+            
+            // Total calorie deficit needed: Goal weight (kg) * 7700 kcal/kg
+            const totalCalorieDeficit = goalWeight * KCAL_PER_KG_FAT;
+            
+            // Total days in time frame
+            const totalDays = timeFrameWeeks * 7;
+            
+            // Daily Calorie Deficit needed: Total deficit / Total days
+            const dailyDeficitNeeded = totalCalorieDeficit / totalDays;
+            
+            // Target Daily Calorie Goal
+            let targetCalories = tdee - dailyDeficitNeeded;
+            
+            // Target Weekly Loss (kg)
+            const targetWeeklyLoss = goalWeight / timeFrameWeeks; 
+            
+            // Determine safe minimum
+            const safeMinimum = gender === 'male' ? MIN_CALORIES_MALE : MIN_CALORIES_FEMALE;
 
-            // 7. Store results globally for the savePlan function
-            lastTdee = roundedTdee;
+            // --- 5. Health and Warning Checks ---
+            
+            // Check 1: If target is too low (aggressive goal)
+            if (targetCalories < safeMinimum) {
+                // Calculate the number of weeks needed for the safe minimum calorie target
+                const safeDailyDeficit = tdee - safeMinimum;
+                const safeDailyDeficitCapped = Math.max(safeDailyDeficit, 1); // Avoid division by zero
+                
+                const resultingWeeks = (totalCalorieDeficit / safeDailyDeficitCapped) / 7;
+                
+                // Show aggressive goal warning
+                let warningMsg = translations[currentLang]['warning_goal_too_fast'];
+                warningMsg = warningMsg.replace('{safeMinimum}', safeMinimum).replace('{resultingWeeks}', Math.ceil(resultingWeeks));
+                
+                warningMessageEl.textContent = warningMsg;
+                warningBox.classList.remove('hidden');
+                
+                // Recalculate and cap the target
+                targetCalories = safeMinimum;
+            } 
+            
+            // Check 2: If the weekly loss is too fast (over 1kg/week is often considered rapid)
+            else if (targetWeeklyLoss > 1.2) { 
+                 warningMessageEl.textContent = translations[currentLang]['warning_loss_fast'];
+                 warningBox.classList.remove('hidden');
+            }
+
+            // --- 6. Final Output and State Save ---
+            
+            // Round the final results
+            const finalTargetCalories = Math.round(targetCalories);
+            const finalTdee = Math.round(tdee);
+            const finalWeeklyLoss = targetWeeklyLoss.toFixed(2);
+            
+            // Save final values to global state for 'Add to Plan'
+            lastTdee = finalTdee;
             lastTargetCalories = finalTargetCalories;
             lastGoalWeight = goalWeight;
-            lastTimeFrameWeeks = timeFrameWeeks;
-            lastGoalType = goalType;
+            lastTimeFrameWeeks = timeFrameWeeks; 
+            lastGoalType = 'lose'; // This calculator only sets 'lose' goals
 
-            // 8. Display Results
-            document.getElementById('tdee-output').textContent = roundedTdee.toLocaleString();
-            document.getElementById('target-calories-output').textContent = finalTargetCalories.toLocaleString();
-            document.getElementById('weekly-loss-output').textContent = finalWeeklyLoss > 0 ? finalWeeklyLoss : '0.00'; 
-            
+            // Update result box UI
+            document.getElementById('tdee-output').textContent = finalTdee;
+            document.getElementById('target-calories-output').textContent = finalTargetCalories;
+            document.getElementById('weekly-loss-output').textContent = finalWeeklyLoss;
+
+            // Display result box
             resultBox.classList.remove('hidden');
             
-            // 9. Display Warning if applicable
-            if (warningMessageKey) {
-                warningBox.classList.remove('hidden');
-                let message = translations[currentLang][warningMessageKey];
-                
-                if (warningMessageKey === 'warning_goal_too_fast') {
-                    message = message.replace('{safeMinimum}', safeMinimum.toLocaleString()).replace('{resultingWeeks}', resultingWeeks.toFixed(1));
-                } else if (warningMessageKey === 'warning_error') {
-                    message = message.replace('{fallbackTarget}', Math.round(roundedTdee - 500).toLocaleString());
-                }
-                
-                document.getElementById('warning-message').textContent = message;
-            }
-            
-            // Re-create Lucide icons after injecting HTML
-            lucide.createIcons();
+            // Ensure theme is applied to result box colors (in case of female theme)
+            updateTheme(gender);
         }
 
         /**
-         * Saves the last calculated plan to Local Storage
-         * and redirects the user to the Plans page.
+         * Saves the last calculated plan to localStorage for use on the Plans page.
          */
         function saveCaloriePlan() {
+            // Check if calculation was performed
             if (lastTargetCalories === 0) {
-                alert(translations[currentLang].warning_no_plan_to_save || "Please calculate a plan first.");
+                alert(translations[currentLang]['warning_no_plan_to_save']);
                 return;
             }
 
-            let goalTypeText;
-            if (lastGoalType === 'maintain') {
-                goalTypeText = 'maintain';
-            } else if (lastGoalType === 'lose') {
-                goalTypeText = 'lose';
-            } else {
-                 goalTypeText = 'gain';
-            }
-            
-            const planData = {
+            const plan = {
+                type: 'Calorie Goal',
+                gender: document.getElementById('gender').value,
+                currentWeight: parseFloat(document.getElementById('weight').value),
+                goalWeight: lastGoalWeight,
+                timeFrameWeeks: lastTimeFrameWeeks,
                 tdee: lastTdee,
-                target: lastTargetCalories, // Using 'target' to match the plans.html card structure
-                type: goalTypeText,
-                dateSaved: new Date().toISOString()
+                targetCalories: lastTargetCalories,
+                goalType: lastGoalType, // 'lose'
+                dateSaved: new Date().toISOString().split('T')[0]
             };
 
-            // Save the calorie plan data to Local Storage under a specific key
-            localStorage.setItem('savedCalorieGoal', JSON.stringify(planData));
-
-            alert(translations[currentLang].alert_plan_saved || "Plan saved successfully! Redirecting to Plans page.");
-            window.location.href = 'Plans/Plans.html'; // Ensure this points to your plans page
-        }
-
-        /**
-         * Toggles the mobile menu open/closed.
-         */
-        function toggleMobileMenu() {
-            document.getElementById('mobile-menu').classList.toggle('active');
+            // Save the plan to a designated key in localStorage
+            // NOTE: For a real app, you might want an array of plans. Here, we overwrite the current goal.
+            localStorage.setItem('malfitCaloriePlan', JSON.stringify(plan));
+            
+            // Alert and redirect
+            alert(translations[currentLang]['alert_plan_saved']);
+            window.location.href = '../Plans/Plans.html'; 
         }
 
         // --- INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
-            
-            // 1. Apply initial language and theme
+            // Apply translations and update theme on load
             applyTranslations(); 
-            toggleCycleTrackingFields(); // Initial toggle based on default/saved gender
-
-            // 2. Event Listeners
-            document.getElementById('menu-toggle').addEventListener('click', toggleMobileMenu);
-            document.getElementById('lang-toggle').addEventListener('click', toggleLanguage);
+            document.getElementById('lang-toggle').onclick = toggleLanguage;
+            document.getElementById('menu-toggle').onclick = toggleMobileMenu;
             
-            // Add listeners to close menu when link is clicked
-            document.getElementById('mobile-menu').querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', toggleMobileMenu);
-            });
+            // Initial theme and cycle field setup
+            const genderSelect = document.getElementById('gender');
+            updateTheme(genderSelect.value); 
+            toggleCycleTrackingFields();
+            
+            // Create Lucide icons
+            lucide.createIcons();
         });
     </script>
 </body>
