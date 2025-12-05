@@ -1,95 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MALFIT</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Cairo:wght@400;700&display=swap');
-        body {
-            /* Fallback to Cairo for Arabic text rendering */
-            font-family: 'Inter', 'Cairo', sans-serif;
-            background-color: #f0f4f8; /* Light background for contrast */
-        }
-        /* Custom styles for the login button gradient */
-        .login-btn-gradient {
-            background-image: linear-gradient(to right, #6d28d9, #9333ea); /* Purple gradient */
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .login-btn-gradient:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(109, 40, 217, 0.4);
-        }
-        .input-focus:focus {
-            border-color: #9333ea;
-            box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.2);
-        }
-        
-        /* Style for the Language Toggle Button */
-        #lang-toggle-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px; 
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1rem;
-            color: white;
-            background-color: #6d28d9;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
-            z-index: 10001; /* Ensure it's above the card and video */
-        }
-        #lang-toggle-btn:hover {
-            background-color: #9333ea;
-        }
-
-        /* ⭐️ VIDEO STYLES ⭐️ */
-        #intro-video-container {
-            /* Fixes the video to the viewport */
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 10000; /* High z-index to cover the whole page */
-            background-color: black;
-            opacity: 1; /* Initial opacity for fade-out */
-            transition: opacity 1s ease-out; /* Add transition for smooth fade */
-        }
-
-        #intro-video {
-            /* Full screen coverage */
-            min-width: 100%; 
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            object-fit: cover; 
-        }
-
-        /* Utility class to truly hide the content */
-        .hidden-full {
-            display: none !important;
-        }
-        
-    </style>
-
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <title data-translate-key="page_title">MALFIT | Account</title>
     
-    <script>
-        // 🚨 IMPORTANT: REPLACE WITH YOUR ACTUAL FIREBASE CONFIG  
+    <link rel="icon" type="image/png" href="/img/favicon/favicon/favicon.ico" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/lucide@latest"></script> 
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script type="module">
+        // Import only the necessary modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        
+        // --- 1. Global Setup ---
         const firebaseConfig = {
             apiKey: "AIzaSyAJrDZrl1jeKFeEsDTM_lUTxxwW7lib5U0",
             authDomain: "malfit-app.firebaseapp.com",
@@ -98,510 +32,854 @@
             messagingSenderId: "118730063574",
             appId: "1:118730063574:web:1a34284a69ae0e7097d377"
         };
+        
+        let app = null;
+        let db = null;
+        let auth = null;
+        let userId = null;
+        let isAuthReady = false;
+        
+        // Global state for reactivity (initial guest data)
+        let profileState = {
+            firstName: 'Guest',
+            lastName: 'User',
+            dateOfBirth: '',
+            gender: 'other',
+            photoBase64: null,
+            joinDate: new Date().toISOString().split('T')[0],
+            email: 'guest@malfit.com'
+        };
 
-        // Initialize Firebase services
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = app.auth();
-        const db = app.firestore(); // For saving extra user data
-    </script>
-</head>
-<body class="flex items-center justify-center min-h-screen p-4 overflow-hidden">
-    <div id="intro-video-container">
-        <video id="intro-video" autoplay muted playsinline>
-            <source src="C:\Users\mada saleh\Desktop\Fitness Website\work\MAL.mp4" type="video/mp4">
-        </video>
-    </div>
-
-    <button id="lang-toggle-btn" aria-label="Toggle language">ع</button>
-
-    <div id="auth-content-container" class="hidden-full flex items-center justify-center min-h-screen w-full">
-        <div class="w-full max-w-md bg-white rounded-xl shadow-2xl p-8 space-y-6 relative">
-
-            <h1 id="form-title" data-i18n-key="formTitleLogin" class="text-3xl font-bold text-center text-gray-800">Log In</h1>
-            <p id="message-area" class="text-center text-sm font-medium h-6"></p>
-
-            <form id="auth-form" class="space-y-4">
-
-                <div id="signup-fields" class="space-y-4 hidden">
-                    <div class="flex space-x-4">
-                        <div class="w-1/2">
-                            <label for="first-name" data-i18n-key="firstNameLabel" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                            <input type="text" id="first-name" name="first-name"
-                                data-i18n-placeholder-key="firstNamePlaceholder"
-                                placeholder="John"
-                                class="input-focus w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-150">
-                        </div>
-                        <div class="w-1/2">
-                            <label for="last-name" data-i18n-key="lastNameLabel" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                            <input type="text" id="last-name" name="last-name"
-                                data-i18n-placeholder-key="lastNamePlaceholder"
-                                placeholder="Doe"
-                                class="input-focus w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-150">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label for="dob" data-i18n-key="dobLabel" class="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
-                        <input type="date" id="dob" name="dob"
-                            class="input-focus w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-150">
-                    </div>
-                    
-                    <div>
-                        <label data-i18n-key="genderLabel" class="block text-sm font-medium text-gray-700 mb-2">Gender</label>
-                        <div class="flex space-x-6">
-                            <div class="flex items-center">
-                                <input id="gender-female" name="gender" type="radio" value="female" class="text-purple-600 focus:ring-purple-500">
-                                <label for="gender-female" data-i18n-key="femaleLabel" class="ml-2 block text-sm text-gray-700">Female</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input id="gender-male" name="gender" type="radio" value="male" class="text-purple-600 focus:ring-purple-500">
-                                <label for="gender-male" data-i18n-key="maleLabel" class="ml-2 block text-sm text-gray-700">Male</label>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div>
-                    <label for="email" data-i18n-key="emailLabel" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <input type="email" id="email" name="email" required 
-                            placeholder="you@example.com"
-                            class="input-focus w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-150">
-                </div>
-
-                <div>
-                    <label for="password" data-i18n-key="passwordLabel" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                    <input type="password" id="password" name="password" required 
-                            placeholder="••••••••"
-                            class="input-focus w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-150">
-                </div>
-
-                <div id="confirm-password-group" class="hidden">
-                    <label for="confirm-password" data-i18n-key="confirmPasswordLabel" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
-                    <input type="password" id="confirm-password" name="confirm-password"
-                            data-i18n-placeholder-key="confirmPasswordPlaceholder"
-                            placeholder="Confirm Password"
-                            class="input-focus w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-150">
-                </div>
-
-                <button type="submit" id="main-auth-btn" data-i18n-key="mainAuthBtnLogin"
-                        class="login-btn-gradient w-full text-white font-semibold py-2.5 rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-purple-500/50 transition duration-300">
-                    Log In
-                </button>
-
-                <div id="forgot-password-group" class="text-center">
-                    <a href="#" class="text-sm text-purple-600 hover:text-purple-800 transition duration-150" data-i18n-key="forgotPassword">Forgot Password?</a>
-                </div>
-
-            </form>
-
-            <div class="flex items-center">
-                <div class="flex-grow border-t border-gray-300"></div>
-                <span class="flex-shrink mx-4 text-gray-500 text-sm" data-i18n-key="orSeparator">OR</span>
-                <div class="flex-grow border-t border-gray-300"></div>
-            </div>
-            
-            <div class="space-y-3">
-                
-                <button id="toggle-form-btn" data-i18n-key="toggleBtnCreate"
-                        class="w-full bg-gray-100 text-gray-800 font-semibold py-2.5 rounded-lg border border-gray-300 hover:bg-gray-200 transition duration-150 focus:outline-none focus:ring-2 focus:ring-gray-400">
-                    Create Account
-                </button>
-
-                <button data-i18n-key="guestSignIn" id="go-home-btn"
-                        class="w-full bg-white text-purple-600 font-semibold py-2.5 rounded-lg border-2 border-purple-600 hover:bg-purple-50 transition duration-150 focus:outline-none focus:ring-2 focus:ring-purple-600/50">
-                    Sign In as Guest
-                </button>
-
-            </div>
-        </div>
-    </div>
-
-
-    <script>
-        const videoContainer = document.getElementById('intro-video-container');
-        const videoElement = document.getElementById('intro-video');
-        const authContentContainer = document.getElementById('auth-content-container');
-
-        // Existing elements
-        const form = document.getElementById('auth-form');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const formTitle = document.getElementById('form-title');
-        const mainAuthBtn = document.getElementById('main-auth-btn');
-        const toggleFormBtn = document.getElementById('toggle-form-btn');
-        const messageArea = document.getElementById('message-area');
-        const langToggleBtn = document.getElementById('lang-toggle-btn');
-        const rootHtml = document.documentElement;
-
-        // New fields for sign-up
-        const firstNameInput = document.getElementById('first-name');
-        const lastNameInput = document.getElementById('last-name');
-        const dobInput = document.getElementById('dob');
-        const confirmPasswordInput = document.getElementById('confirm-password');
-        const signupFields = document.getElementById('signup-fields');
-        const confirmPasswordGroup = document.getElementById('confirm-password-group');
-        const forgotPasswordGroup = document.getElementById('forgot-password-group');
-
-        // --- Localization Data ---
-        const translations = {
-            'en': {
-                langName: "E",
-                dir: "ltr",
-                formTitleLogin: "Log In",
-                formTitleCreate: "Create Account",
-                emailLabel: "Email",
-                passwordLabel: "Password",
-                mainAuthBtnLogin: "Log In",
-                mainAuthBtnSignup: "Sign Up",
-                forgotPassword: "Forgot Password?",
-                orSeparator: "OR",
-                toggleBtnCreate: "Create Account",
-                toggleBtnBack: "Back to Log In",
-                guestSignIn: "Sign In as Guest",
-                msgWelcome: "Welcome! Please log in or create an account.",
-                msgLoginSuccess: "Login successful! Redirecting...",
-                msgPassError: "Error: Password must be at least 6 characters.",
-                msgLoginError: "Error: Invalid email or password.",
-                msgSignupSuccess: "Account created successfully! You can now log in.",
-                msgGuestSignIn: "Signing in as Guest...",
-                msgGuestWelcome: "Welcome Guest! You are now signed in.",
-                msgProcessing: "Processing...",
-                // UPDATED: Password requirement message changed
-                msgPassRequirements: "Password must be at least 6 characters.",
-                msgPasswordMismatch: "Error: Passwords do not match.",
-                // New strings for sign-up (Labels)
-                firstNameLabel: "First Name",
-                lastNameLabel: "Last Name",
-                dobLabel: "Date of Birth",
-                genderLabel: "Gender",
-                femaleLabel: "Female",
-                maleLabel: "Male",
-                confirmPasswordLabel: "Confirm Password",
-                // New strings for sign-up (Placeholders)
-                firstNamePlaceholder: "John",
-                lastNamePlaceholder: "Doe",
-                confirmPasswordPlaceholder: "Confirm Password",
+        // Define color schemes
+        const colorSchemes = {
+            male: {
+                primary: '#4f46e5', // indigo-600
+                light: '#eef2ff',   // indigo-50
+                // Tailwind-specific classes for non-css-variable elements (logo/buttons)
+                logoClass: 'text-indigo-600',
+                btnClass: 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100',
+                contactGradient: 'linear-gradient(to right, #4f46e5 0%, #3b82f6 100%)'
             },
-            'ar': {
-                langName: "ع",
-                dir: "rtl",
-                formTitleLogin: "تسجيل الدخول",
-                formTitleCreate: "إنشاء حساب",
-                emailLabel: "البريد الإلكتروني",
-                passwordLabel: "كلمة المرور",
-                mainAuthBtnLogin: "تسجيل الدخول",
-                mainAuthBtnSignup: "إنشاء حساب",
-                forgotPassword: "هل نسيت كلمة المرور؟",
-                orSeparator: "أو",
-                toggleBtnCreate: "إنشاء حساب",
-                toggleBtnBack: "العودة لتسجيل الدخول",
-                guestSignIn: "تسجيل دخول كضيف",
-                msgWelcome: "مرحباً! الرجاء تسجيل الدخول أو إنشاء حساب.",
-                msgLoginSuccess: "تم تسجيل الدخول بنجاح! جارى التحويل...",
-                msgPassError: "خطأ: يجب أن تتكون كلمة المرور من 6 أحرف على الأقل.",
-                msgLoginError: "خطأ: بريد إلكتروني أو كلمة مرور غير صالحة.",
-                msgSignupSuccess: "تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول.",
-                msgGuestSignIn: "جاري تسجيل الدخول كضيف...",
-                msgGuestWelcome: "مرحباً أيها الضيف! لقد سجلت الدخول الآن.",
-                msgProcessing: "جاري المعالجة...",
-                // UPDATED: Password requirement message changed
-                msgPassRequirements: "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل.",
-                msgPasswordMismatch: "خطأ: كلمات المرور غير متطابقة.",
-                // New strings for sign-up (Labels)
-                firstNameLabel: "الاسم الأول",
-                lastNameLabel: "اسم العائلة",
-                dobLabel: "تاريخ الميلاد",
-                genderLabel: "الجنس",
-                femaleLabel: "أنثى",
-                maleLabel: "ذكر",
-                confirmPasswordLabel: "تأكيد كلمة المرور",
-                // New strings for sign-up (Placeholders)
-                firstNamePlaceholder: "أحمد",
-                lastNamePlaceholder: "علي",
-                confirmPasswordPlaceholder: "تأكيد كلمة المرور",
+            female: {
+                primary: '#ec4899', // pink-500
+                light: '#fdf2f8',   // pink-50
+                logoClass: 'text-pink-500',
+                btnClass: 'bg-pink-50 text-pink-700 hover:bg-pink-100',
+                contactGradient: 'linear-gradient(to right, #ec4899 0%, #f472b6 100%)' // pink gradient
+            },
+            default: { // Used for other/guest
+                primary: '#4f46e5',
+                light: '#eef2ff',
+                logoClass: 'text-indigo-600',
+                btnClass: 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100',
+                contactGradient: 'linear-gradient(to right, #4f46e5 0%, #3b82f6 100%)'
+            }
+        };
+        
+        // --- 2. Utility Functions ---
+        
+        /** Constructs the reference to the user's profile document. */
+        const getProfileDocRef = () => {
+            if (db && userId) {
+                return doc(db, 'users', userId);
+            }
+            return null;
+        };
+
+        /** Toggles the form between view-only (disabled) and editable (enabled). */
+        const toggleEditMode = (isEditable) => {
+            const formElements = document.querySelectorAll('#profile-form input, #profile-form select');
+            const statusMessage = document.getElementById('status-message');
+            const editButtonContainer = document.getElementById('edit-button-container');
+            const saveCancelContainer = document.getElementById('save-cancel-container');
+            
+            formElements.forEach(el => {
+                if (el.id !== 'email') { 
+                    el.disabled = !isEditable;
+                }
+                if (el.id === 'profile_image') {
+                    el.disabled = !isEditable;
+                    const group = el.closest('.input-group');
+                    if (group) group.classList.toggle('hidden', !isEditable);
+                }
+            });
+            
+            if (editButtonContainer) editButtonContainer.classList.toggle('hidden', isEditable);
+            if (saveCancelContainer) saveCancelContainer.classList.toggle('hidden', !isEditable);
+
+            // Re-render the UI when exiting edit mode to ensure form fields reflect the saved state
+            if (!isEditable) {
+                renderProfileUI(profileState); 
             }
         };
 
-        let currentLang = 'en'; 
-        let isLoginMode = true; 
-        
-        // --- Core Translation Function (Unchanged) ---
-        function applyTranslations() {
-            const langData = translations[currentLang];
+        /** Updates the displayed UI elements and form inputs based on the current profileState. */
+        const renderProfileUI = (profile) => {
+            // --- Determine Color Scheme ---
+            const genderKey = profile.gender === 'female' ? 'female' : 'default';
+            const scheme = colorSchemes[genderKey];
             
-            rootHtml.setAttribute('dir', langData.dir);
-            rootHtml.setAttribute('lang', currentLang);
+            // Set CSS variables for colors
+            document.documentElement.style.setProperty('--primary-color', scheme.primary);
+            document.documentElement.style.setProperty('--primary-light', scheme.light);
+            document.documentElement.style.setProperty('--contact-gradient', scheme.contactGradient);
 
-            langToggleBtn.textContent = (currentLang === 'en' ? 'ع' : 'E');
-
-            document.querySelectorAll('[data-i18n-key]').forEach(el => {
-                const key = el.getAttribute('data-i18n-key');
-                if (langData[key] !== undefined) {
-                    el.textContent = langData[key];
-                }
-            });
-
-            document.querySelectorAll('[data-i18n-placeholder-key]').forEach(el => {
-                const key = el.getAttribute('data-i18n-placeholder-key');
-                if (langData[key] !== undefined) {
-                    el.setAttribute('placeholder', langData[key]);
-                }
-            });
-
-            updateFormTexts();
-
-            showMessage(langData.msgWelcome, 'text-gray-500');
-        }
-
-        /**
-         * Hides the video container and reveals the main content when the video ends 
-         * or when an error occurs.
-         */
-        function handleVideoEnd() {
-            // Start the opacity fade on the video container
-            videoContainer.style.opacity = '0';
-
-            // Show the main content container
-            authContentContainer.classList.remove('hidden-full');
-            
-            // Wait for the transition to finish (1s defined in CSS) before cleaning up
-            setTimeout(() => {
-                videoContainer.classList.add('hidden-full');
-                // Remove the overflow-hidden class to re-enable scrolling on the body
-                document.body.classList.remove('overflow-hidden');
-            }, 1000); 
-            
-            console.log('Video finished and form is now visible.');
-        }
-
-        function updateFormTexts() {
-            const langData = translations[currentLang];
-            
-            if (isLoginMode) {
-                formTitle.textContent = langData.formTitleLogin;
-                mainAuthBtn.textContent = langData.mainAuthBtnLogin;
-                toggleFormBtn.textContent = langData.toggleBtnCreate;
-            } else {
-                formTitle.textContent = langData.formTitleCreate;
-                mainAuthBtn.textContent = langData.mainAuthBtnSignup;
-                toggleFormBtn.textContent = langData.toggleBtnBack;
+            // Update Header/Logo/Buttons with Tailwind classes (using color schemes)
+            const logo = document.getElementById('malfit-logo');
+            if (logo) {
+                logo.className = `text-3xl font-extrabold tracking-wide ${scheme.logoClass}`;
             }
-        }
-
-        // 🟢 MODIFIED: Password strength requirement reduced to minimum Firebase length (6 characters)
-        function isPasswordStrong(password) {
-            // Firebase requires a minimum of 6 characters for a password
-            return password.length >= 6;
-        }
-
-        function showMessage(message, colorClass) {
-            messageArea.textContent = message;
-            messageArea.className = `text-center text-sm font-medium h-6 ${colorClass}`;
-        }
-        
-        // ---------------------------------------------
-        // 🚀 FIREBASE: Log In Function 
-        // ---------------------------------------------
-        /**
-         * Attempts to log in the user using Firebase Authentication.
-         */
-        function handleLogin(email, password) {
-            const langData = translations[currentLang];
+            const editButton = document.getElementById('edit-profile-btn');
+            if (editButton) {
+                editButton.className = `flex items-center px-4 py-2 rounded-lg font-medium transition disabled:opacity-50 disabled:cursor-not-allowed text-white shadow-lg contact-btn`;
+                // Set the default text color (white) for the main button
+                editButton.style.backgroundColor = 'var(--primary-color)'; 
+            }
             
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    // Login successful
-                    const user = userCredential.user;
-                    showMessage(langData.msgLoginSuccess + ` (${user.email})`, 'text-green-600');
-                    
-                    // ⭐️ REAL REDIRECT: Redirect the user after successful login
-                    setTimeout(() => {
-                        window.location.href = 'afterthelogpage.html'; 
-                    }, 1500); 
-                })
-                .catch((error) => {
-                    // Handle login errors
-                    let errorMessage = langData.msgLoginError;
-                    
-                    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                        errorMessage = langData.msgLoginError; // Generic fail message
-                    } else if (error.code === 'auth/invalid-email') {
-                         errorMessage = "Error: Invalid email format.";
-                    }
-                    showMessage(errorMessage, 'text-red-600');
-                    console.error("Login Error:", error.message);
-                });
-        }
+            // Update Profile Content
+            const profileImg = document.getElementById('profile-img-preview');
+            if (profileImg) profileImg.src = profile.photoBase64 || "https://placehold.co/120x120/bdbdbd/ffffff?text=MALFIT";
 
-        // ---------------------------------------------
-        // 🚀 FIREBASE: Create Account Function 
-        // ---------------------------------------------
-        /**
-         * Creates a new user account in Firebase Auth and stores additional data in Firestore.
-         */
-        function handleCreateAccount(email, password, confirmPassword) {
-            const langData = translations[currentLang];
+            const userFullName = document.getElementById('user-full-name');
+            if (userFullName) userFullName.textContent = `${profile.firstName || 'Guest'} ${profile.lastName || 'User'}`;
+            
+            const userJoinDate = document.getElementById('user-join-date');
+            if (userJoinDate) userJoinDate.textContent = `Joined: ${profile.joinDate || 'N/A'}`;
+            
+            const userIdDisplay = document.getElementById('user-id-display');
+            if (userIdDisplay) userIdDisplay.textContent = `User ID: ${userId || 'N/A'}`;
 
-            // 1. Client-Side Validation (Password Match & Strength)
-            if (password !== confirmPassword) {
-                showMessage(langData.msgPasswordMismatch, 'text-red-600');
+            // Update form inputs (initial values when not in edit mode)
+            const firstNameInput = document.getElementById('firstName');
+            if (firstNameInput) firstNameInput.value = profile.firstName || '';
+            
+            const lastNameInput = document.getElementById('lastName');
+            if (lastNameInput) lastNameInput.value = profile.lastName || '';
+            
+            const emailInput = document.getElementById('email');
+            if (emailInput) emailInput.value = profile.email || 'N/A';
+            
+            const dateOfBirthInput = document.getElementById('dateOfBirth');
+            if (dateOfBirthInput) dateOfBirthInput.value = profile.dateOfBirth || '';
+            
+            const genderSelect = document.getElementById('gender');
+            if (genderSelect) genderSelect.value = profile.gender || 'other';
+            
+            // Toggle visibility of period link based on gender
+            const periodLinkDesktop = document.getElementById('period-link');
+            const periodLinkMobile = document.getElementById('period-link-mobile');
+            const isFemale = profile.gender === 'female';
+            
+            if (periodLinkDesktop) periodLinkDesktop.classList.toggle('hidden', !isFemale);
+            if (periodLinkMobile) periodLinkMobile.classList.toggle('hidden', !isFemale);
+            
+            replaceLucideIcons();
+            
+            // Ensure we are not in edit mode by default after load/sync
+            toggleEditMode(false); 
+        };
+
+        /** Handles saving data to Firestore. */
+        const handleSaveProfile = async () => {
+            const statusMessage = document.getElementById('status-message');
+            const saveButton = document.getElementById('save-btn');
+            
+            if (!isAuthReady || !userId) {
+                statusMessage.className = 'text-sm p-2 rounded text-red-700 bg-red-100 mb-4 block';
+                statusMessage.textContent = 'Error: Must be logged in to save profile.';
+                setTimeout(() => statusMessage.classList.add('hidden'), 5000);
                 return;
             }
-            // 🟢 MODIFIED: Now checks for minimum 6 characters (Firebase requirement)
-            if (!isPasswordStrong(password)) {
-                showMessage(langData.msgPassRequirements, 'text-red-600');
+
+            statusMessage.classList.remove('hidden');
+            
+            saveButton.disabled = true;
+            saveButton.innerHTML = `<svg class="animate-spin w-5 h-5 mr-3 rtl-ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Saving...`;
+            statusMessage.className = 'text-sm p-2 rounded text-blue-700 bg-blue-100 mb-4 block';
+            statusMessage.textContent = 'Saving changes...';
+
+            try {
+                const profileRef = getProfileDocRef();
+                
+                // Get current form values
+                const newProfileData = {
+                    firstName: document.getElementById('firstName').value,
+                    lastName: document.getElementById('lastName').value,
+                    dateOfBirth: document.getElementById('dateOfBirth').value,
+                    gender: document.getElementById('gender').value,
+                    photoBase64: profileState.photoBase64,
+                    email: profileState.email, 
+                    joinDate: profileState.joinDate 
+                };
+
+                await setDoc(profileRef, newProfileData, { merge: true });
+                
+                // Update local state immediately before exiting edit mode
+                profileState = { ...profileState, ...newProfileData };
+
+                statusMessage.className = 'text-sm p-2 rounded text-green-700 bg-green-100 mb-4 block';
+                statusMessage.textContent = 'Profile successfully updated!';
+                
+                // Exit edit mode, which will trigger renderProfileUI using the new state
+                toggleEditMode(false); 
+                
+            } catch (error) {
+                console.error("Failed to save profile:", error);
+                statusMessage.className = 'text-sm p-2 rounded text-red-700 bg-red-100 mb-4 block';
+                statusMessage.textContent = `Error saving profile: ${error.message}`;
+                // Re-enable editing if save fails
+                toggleEditMode(true); 
+            } finally {
+                saveButton.innerHTML = `<svg data-lucide="save" class="w-5 h-5 mr-2 rtl-ml-2"></svg>Save Changes`;
+                saveButton.disabled = false;
+                replaceLucideIcons(); 
+                setTimeout(() => statusMessage.classList.add('hidden'), 5000);
+            }
+        };
+
+        /** Handles converting the selected file to Base64 for storage. */
+        const handlePhotoUpload = (event) => {
+            const file = event.target.files[0];
+            const statusMessage = document.getElementById('status-message');
+            
+            if (!file) return;
+
+            if (file.size > 1024 * 1024) { // Max 1MB
+                statusMessage.classList.remove('hidden');
+                statusMessage.className = 'text-sm p-2 rounded text-red-700 bg-red-100 mb-4 block';
+                statusMessage.textContent = 'Image file is too large (> 1MB). Please choose a smaller image.';
+                setTimeout(() => statusMessage.classList.add('hidden'), 5000);
                 return;
             }
-            
-            // 2. Gather all user data from the form fields
-            const userData = {
-                firstName: firstNameInput.value.trim(),
-                lastName: lastNameInput.value.trim(),
-                dob: dobInput.value,
-                gender: document.querySelector('input[name="gender"]:checked') ? document.querySelector('input[name="gender"]:checked').value : null,
-                email: email,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp() // Firestore timestamp
+
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                profileState.photoBase64 = reader.result;
+                const profileImg = document.getElementById('profile-img-preview');
+                if (profileImg) profileImg.src = reader.result;
+                
+                statusMessage.classList.remove('hidden');
+                statusMessage.className = 'text-sm p-2 rounded text-blue-700 bg-blue-100 mb-4 block';
+                statusMessage.textContent = 'Picture loaded. Click "Save Changes" to save it permanently.';
             };
-            
-            // 3. Create User in Firebase Authentication
-            auth.createUserWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    
-                    // 4. Store additional user data in Firestore
-                    return db.collection("users").doc(user.uid).set(userData);
-                })
-                .then(() => {
-                    // Success!
-                    showMessage(langData.msgSignupSuccess, 'text-green-600');
-                    // Switch back to login form
-                    setTimeout(() => {
-                         toggleFormMode();
-                    }, 1000);
-                })
-                .catch((error) => {
-                    // Handle creation errors
-                    let errorMessage = "Error creating account.";
-                    if (error.code === 'auth/email-already-in-use') {
-                        errorMessage = "Error: This email is already registered.";
-                    } else if (error.code === 'auth/weak-password') {
-                         // This error still occurs if the password is less than 6 chars
-                         errorMessage = langData.msgPassRequirements;
-                    }
-                    showMessage(errorMessage, 'text-red-600');
-                    console.error("Signup Error:", error.message);
-                });
-        }
+            reader.onerror = () => {
+                statusMessage.classList.remove('hidden');
+                statusMessage.className = 'text-sm p-2 rounded text-red-700 bg-red-100 mb-4 block';
+                statusMessage.textContent = 'Error reading file.';
+            };
 
-
-        // ---------------------------------------------
-        // 🚀 FIREBASE: Toggle Mode Function 
-        // ---------------------------------------------
-        function toggleFormMode() {
-            isLoginMode = !isLoginMode;
-            
-            // --- SHOW/HIDE GROUPS ---
-            signupFields.classList.toggle('hidden', isLoginMode);
-            confirmPasswordGroup.classList.toggle('hidden', isLoginMode);
-            forgotPasswordGroup.classList.toggle('hidden', !isLoginMode);
-            
-            // --- REQUIRED ATTRIBUTES & CLEARING FIELDS ---
-            // Set 'required' attribute for sign-up fields
-            [firstNameInput, lastNameInput, dobInput, confirmPasswordInput].forEach(input => {
-                input.required = !isLoginMode;
-                input.value = ''; // Clear input fields
-            });
-
-            // Handle 'required' for the gender radios
-            document.getElementById('gender-female').required = !isLoginMode;
-            document.getElementById('gender-male').required = !isLoginMode;
-            
-            // Clear radio selection when switching back to Login mode
-            document.getElementById('gender-female').checked = false;
-            document.getElementById('gender-male').checked = false;
-            
-            // Clear general login fields
-            emailInput.value = '';
-            passwordInput.value = '';
-            
-            // Update button/title text and message
-            updateFormTexts(); 
-            messageArea.textContent = '';
-            const langData = translations[currentLang];
-            showMessage(langData.msgWelcome, 'text-gray-500');
-        }
+            reader.readAsDataURL(file);
+        };
         
-        // ---------------------------------------------
-        // 🚀 FIREBASE: Guest Sign In Function 
-        // ---------------------------------------------
-        /**
-         * Handles Guest Sign In (uses Firebase Anonymous Authentication)
-         */
-         function signInAsGuest() {
-            const langData = translations[currentLang];
-            showMessage(langData.msgGuestSignIn, 'text-gray-500');
-            
-            auth.signInAnonymously()
-                .then(() => {
-                    showMessage(langData.msgGuestWelcome, 'text-blue-600');
-                    // ⭐️ REAL REDIRECT: Redirect the user after successful anonymous login
-                    setTimeout(() => {
-                        window.location.href = 'afterthelogpage.html'; 
-                    }, 1500); 
-                })
-                .catch((error) => {
-                    let errorMessage = "Error signing in as guest.";
-                    if (error.code === 'auth/operation-not-allowed') {
-                        errorMessage = "Guest sign-in is disabled in Firebase settings.";
-                    }
-                    showMessage(errorMessage, 'text-red-600');
-                    console.error("Guest Sign-in Error:", error.message);
-                });
-        }
-        
-        function toggleLanguage() {
-            currentLang = (currentLang === 'en' ? 'ar' : 'en');
-            applyTranslations();
-        }
-
-
-        // --- Initialization ---
-
-        // Hide main content until video is done
-        authContentContainer.classList.add('hidden-full');
-        
-        // Event listeners for video end/error
-        videoElement.addEventListener('ended', handleVideoEnd);
-        videoElement.addEventListener('error', handleVideoEnd);
-        
-        // Event listeners for form actions
-        document.getElementById('go-home-btn').addEventListener('click', function() {
-            signInAsGuest();
-        });
-
-        toggleFormBtn.addEventListener('click', toggleFormMode);
-        langToggleBtn.addEventListener('click', toggleLanguage);
-        
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const langData = translations[currentLang];
-            showMessage(langData.msgProcessing, 'text-gray-500');
-
-            const email = emailInput.value.trim();
-            const password = passwordInput.value.trim();
-            const confirmPassword = confirmPasswordInput.value.trim();
-
-            if (isLoginMode) {
-                handleLogin(email, password);
-            } else {
-                handleCreateAccount(email, password, confirmPassword);
+        /** Handles logging the user out. */
+        const handleLogout = async () => {
+            try {
+                await signOut(auth);
+                window.location.href = 'index.html'; 
+            } catch (error) {
+                console.error("Logout failed:", error);
+                alert("Logout failed: " + error.message);
             }
-        });
+        };
+        
+        // --- 3. Firebase Initialization and Authentication ---
 
-        // Initial setup
-        applyTranslations();
+        const initializeFirebase = () => {
+            if (!firebaseConfig) {
+                console.error("Firebase configuration is missing.");
+                return;
+            }
+
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+            
+            onAuthStateChanged(auth, async (user) => {
+                const loadingContainer = document.getElementById('loading-container');
+                const mainContent = document.getElementById('main-content');
+                const editButton = document.getElementById('edit-profile-btn');
+                
+                if (user) {
+                    userId = user.uid;
+                    isAuthReady = true;
+
+                    if (!user.isAnonymous) {
+                        profileState.email = user.email || 'N/A';
+                        setupProfileListener();
+                        if (editButton) {
+                            editButton.disabled = false;
+                            editButton.title = "";
+                        }
+                    } else {
+                        profileState.email = 'guest@malfit.com';
+                        // Guest user cannot save, but we display the default UI
+                        renderProfileUI(profileState);
+                        if (editButton) {
+                            editButton.disabled = true;
+                            editButton.title = "Login required to edit profile.";
+                        }
+                    }
+
+                } else {
+                    console.warn("No user found. Redirecting to login page.");
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const uidFromUrl = urlParams.get('uid');
+                    
+                    if (uidFromUrl) {
+                        // Attempt to load profile if UID is passed, though sign-in is safer
+                        userId = uidFromUrl;
+                        isAuthReady = true;
+                        setupProfileListener();
+                        if (editButton) editButton.disabled = false;
+                    } else {
+                        if (loadingContainer) loadingContainer.innerHTML = `<div class="text-center p-10 text-red-600 bg-red-100 rounded-lg">Not logged in. Redirecting...</div>`;
+                        setTimeout(() => {
+                           window.location.href = 'index.html'; 
+                        }, 2000);
+                        return;
+                    }
+                }
+                
+                if (loadingContainer) loadingContainer.classList.add('hidden');
+                if (mainContent) mainContent.classList.remove('hidden');
+            });
+        };
+        
+        // --- 4. Firestore Real-time Listener ---
+
+        const setupProfileListener = () => {
+            const profileRef = getProfileDocRef();
+            if (!profileRef) return;
+
+            onSnapshot(profileRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    profileState = { ...profileState, ...data }; 
+                } else {
+                    // Initialize document structure for a new user if it doesn't exist
+                    profileState = { 
+                        ...profileState, 
+                        joinDate: profileState.joinDate || new Date().toISOString().split('T')[0],
+                        firstName: profileState.firstName || 'New',
+                        lastName: profileState.lastName || 'User',
+                    };
+                }
+                
+                renderProfileUI(profileState);
+
+            }, (error) => {
+                console.error("Error setting up profile listener:", error);
+                const statusMessage = document.getElementById('status-message');
+                if (statusMessage) {
+                    statusMessage.classList.remove('hidden');
+                    statusMessage.className = 'text-sm p-2 rounded text-red-700 bg-red-100 mb-4 block';
+                    statusMessage.textContent = `Error loading data: ${error.message}`;
+                }
+            });
+        };
+
+        // --- 5. Lucide Icon Creation ---
+        function replaceLucideIcons() {
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                lucide.createIcons();
+            }
+        }
+        
+        // --- 6. Falling Item Background Animation Script ---
+        const fitnessEmojis = ['🏋️', '🍎', '💧', '🥗', '🧘', '👟', '🥕', '💪', '🍌', '🥛'];
+        const body = document.body;
+        const maxItems = 40; 
+        let itemsOnScreen = 0;
+
+        function createFallingItem() {
+            if (itemsOnScreen >= maxItems) return;
+
+            const emoji = fitnessEmojis[Math.floor(Math.random() * fitnessEmojis.length)];
+            const size = Math.floor(Math.random() * 15) + 12; 
+            const initialX = Math.random() * window.innerWidth;
+            const duration = Math.random() * 8 + 4; 
+            const rotation = Math.random() * 360; 
+            
+            const item = document.createElement('div');
+            item.className = 'falling-item';
+            item.innerHTML = emoji;
+            item.style.fontSize = `${size}px`;
+            item.style.left = `${initialX}px`;
+            item.style.top = `-50px`; 
+            item.style.transform = `rotate(${rotation}deg)`;
+            
+            body.appendChild(item);
+            itemsOnScreen++;
+
+            let currentY = -50;
+            const speed = (window.innerHeight + 100) / (duration * 60); 
+            const driftX = (Math.random() - 0.5) * 0.5; 
+            const footer = document.querySelector('footer');
+            const footerHeight = footer ? footer.offsetHeight + 20 : 50; 
+
+            function animateFall() {
+                if (currentY > window.innerHeight - footerHeight) {
+                    if (body.contains(item)) {
+                        body.removeChild(item);
+                    }
+                    itemsOnScreen--;
+                    return;
+                }
+
+                currentY += speed;
+                let currentX = parseFloat(item.style.left) || initialX;
+                currentX += driftX;
+
+                item.style.top = `${currentY}px`;
+                item.style.left = `${currentX}px`;
+                
+                requestAnimationFrame(animateFall);
+            }
+
+            requestAnimationFrame(animateFall);
+        }
+
+        function spawnLoop() {
+            createFallingItem();
+            const delay = Math.random() * 400 + 100;
+            setTimeout(spawnLoop, delay);
+        }
+        
+        // --- 7. Event Listeners for DOM Interactions ---
+        
+        window.addEventListener('load', () => {
+            initializeFirebase();
+            
+            const profileForm = document.getElementById('profile-form');
+            if (profileForm) {
+                profileForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    handleSaveProfile();
+                });
+            }
+
+            const profileImageInput = document.getElementById('profile_image');
+            if (profileImageInput) {
+                profileImageInput.addEventListener('change', handlePhotoUpload);
+            }
+            
+            const logoutLink = document.getElementById('logout-link');
+            if (logoutLink) {
+                 logoutLink.addEventListener('click', (e) => {
+                     e.preventDefault();
+                     handleLogout();
+                    });
+            }
+
+            const editButton = document.getElementById('edit-profile-btn');
+            if (editButton) {
+                editButton.addEventListener('click', () => toggleEditMode(true));
+            }
+            
+            const cancelButton = document.getElementById('cancel-btn');
+            if (cancelButton) {
+                // When cancelling, we use the profileState to restore the original values
+                cancelButton.addEventListener('click', () => toggleEditMode(false));
+            }
+            
+            // Mobile Menu Toggle
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (menuToggle && mobileMenu) {
+                menuToggle.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('active');
+                    if (mobileMenu.classList.contains('active')) {
+                        menuToggle.querySelector('svg').outerHTML = '<svg data-lucide="x" width="24" height="24"></svg>';
+                    } else {
+                         menuToggle.querySelector('svg').outerHTML = '<svg data-lucide="menu" width="24" height="24"></svg>';
+                    }
+                    replaceLucideIcons();
+                });
+            }
+
+
+            replaceLucideIcons(); 
+            spawnLoop(); // Start the background animation
+        });
         
     </script>
 
+    <style>
+        /* Custom styles from the original file */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+        
+        :root {
+            /* These will be set by JS based on gender */
+            --primary-color: #4f46e5; 
+            --primary-light: #eef2ff; 
+            --contact-gradient: linear-gradient(to right, #4f46e5 0%, #3b82f6 100%);
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f0f4f8; 
+            overflow-x: hidden; 
+            min-height: 100vh;
+            position: relative; 
+        }
+        
+        /* --- Falling Item Styles --- */
+        .falling-item {
+            position: fixed;
+            z-index: 1; 
+            pointer-events: none; 
+            user-select: none;
+            opacity: 0.6; 
+            filter: blur(0.5px); 
+            transition: opacity 0.5s;
+        }
+
+        /* Main content must be above the falling items */
+        #main-content, header, footer {
+            position: relative;
+            z-index: 10;
+            background-color: inherit; 
+        }
+        /* --- End Falling Item Styles --- */
+
+        html[dir="rtl"] body {
+            font-family: 'Cairo', sans-serif;
+            text-align: right;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #474646;
+            font-weight: 500;
+            padding: 10px 15px; 
+            margin-right: 10px;
+            transition: color 0.2s, background-color 0.2s, transform 0.1s;
+            border-radius: 9999px; 
+            white-space: nowrap;
+        }
+        .nav-link:hover {
+            color: var(--primary-color); 
+            background-color: var(--primary-light); 
+            transform: translateY(-1px);
+        }
+        
+        html[dir="rtl"] header nav .nav-link {
+            margin-right: 0;
+            margin-left: 10px;
+        }
+
+        header {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); 
+            background-color: #ffffff;
+            transition: box-shadow 0.3s ease-in-out;
+        }
+        
+        #mobile-menu {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            background-color: #ffffff;
+            position: absolute;
+            top: 70px; 
+            right: 0;
+            left: 0;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100; 
+        }
+        #mobile-menu.active {
+            max-height: 500px;
+            opacity: 1;
+            padding: 10px 0;
+        }
+        #mobile-menu a {
+            display: block;
+            padding: 12px 20px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #333;
+            text-decoration: none;
+            text-align: left; 
+            transition: background-color 0.15s;
+        }
+        #mobile-menu a:hover {
+            background-color: var(--primary-light);
+        }
+        html[dir="rtl"] #mobile-menu a {
+            text-align: right; 
+        }
+
+        .icon-btn {
+            padding: 10px;
+            border-radius: 50%;
+            transition: background-color 0.2s, color 0.2s;
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+            color: #4b5563; 
+        }
+        .icon-btn:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+        
+        html[dir="rtl"] .rtl-ml-2 {
+            margin-right: 0;
+            margin-left: 0.5rem; 
+        }
+        
+        .contact-btn {
+            /* Now uses CSS variable for dynamic gradient */
+            background-image: var(--contact-gradient); 
+            transition: all 0.2s ease;
+        }
+        .contact-btn:hover {
+            /* Adjusted shadow to use a standard color for simplicity */
+            box-shadow: 0 8px 15px rgba(79, 70, 229, 0.4); 
+            transform: scale(1.02);
+            opacity: 0.95;
+        }
+        
+        .min-h-main {
+            min-height: calc(100vh - 140px);
+        }
+        @media (min-width: 768px) {
+            .min-h-main {
+                min-height: calc(100vh - 120px); 
+            }
+        }
+        
+        /* Custom styles for the profile section */
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border: 4px solid #fff;
+            box-shadow: 0 0 0 1px #eee;
+            background-color: #ccc;
+        }
+        .input-group label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.25rem;
+            color: #374151; /* gray-700 */
+        }
+        /* Disable styling for read-only fields */
+        .input-group input:disabled:not([type="file"]), 
+        .input-group select:disabled {
+            background-color: #f9fafb; /* gray-50 */
+            color: #6b7280; /* gray-500 */
+            cursor: default;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 0.65rem 1rem;
+            border: 1px solid #d1d5db; /* gray-300 */
+            border-radius: 0.5rem;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .input-group input:focus:enabled, .input-group select:focus:enabled {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--primary-light);
+            outline: none;
+        }
+        .form-row {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        @media (max-width: 640px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+        
+    </style>
+</head>
+<body class="flex flex-col">
+    <header class="sticky top-0 z-50 w-full flex items-center justify-between px-4 md:px-8 lg:px-16 py-3 bg-white border-b border-gray-100">
+        
+        <div class="flex items-center">
+            <h1 id="malfit-logo" class="text-3xl font-extrabold text-indigo-600 tracking-wide" data-translate-key="logo">MALFIT</h1>
+        </div>
+
+        <nav class="hidden md:flex flex-grow justify-center mx-10">
+            <a href="calories.html" class="nav-link" data-translate-key="nav_calories">Calories</a>
+            <a href="period.html" id="period-link" class="nav-link hidden" data-translate-key="nav_period">Period Tracking</a> 
+            <a href="eathealthy.html" class="nav-link" data-translate-key="nav_eat_healthy">Eat Healthy</a>
+            <a href="plane.html" class="nav-link" data-translate-key="nav_plans">Plans</a>
+            <a href="club.html" class="nav-link" data-translate-key="nav_clubs">Clubs</a>
+            <a href="survey.html" class="nav-link active-plan" data-translate-key="nav_survey">Survey</a>
+            <a href="contact us.html" class="nav-link" data-translate-key="nav_contact_us">Contact Us</a>
+        </nav>
+
+        <div class="icons-container flex items-center gap-2 md:gap-4">
+            
+            <button id="lang-toggle" class="icon-btn w-10 h-10 border-2 border-gray-300 hover:border-indigo-600">
+                <span id="current-lang" class="text-sm font-bold">AR</span> 
+            </button>
+
+            <a href="afterthelogpage.html" class="icon-btn hover:bg-indigo-50">
+                <svg data-lucide="home" width="24" height="24"></svg>
+            </a>
+
+            <a href="accountData.html" class="icon-btn hover:bg-indigo-50">
+                <svg data-lucide="user" width="24" height="24"></svg>
+            </a>
+
+            <button id="menu-toggle" class="md:hidden icon-btn">
+                <svg data-lucide="menu" width="24" height="24"></svg>
+            </button>
+        </div>
+    </header>
+
+    <div id="mobile-menu" class="md:hidden">
+        <a href="calories.html" data-translate-key="nav_calories">Calories</a>
+        <a href="period.html" id="period-link-mobile" class="nav-link hidden" data-translate-key="nav_period">Period Tracking</a>
+        <a href="eathealthy.html" data-translate-key="nav_eat_healthy">Eat Healthy</a>
+        <a href="plane.html" data-translate-key="nav_plans">Plans</a>
+        <a href="club.html" data-translate-key="nav_clubs">Clubs</a>
+        <a href="survey.html" class="nav-link active-plan" data-translate-key="nav_survey">Survey</a>
+        <a href="contact us.html" data-translate-key="nav_contact_us">Contact Us</a>
+    </div>
+
+
+    <main class="flex-grow p-4 md:p-8 min-h-main flex justify-center items-start">
+        <div id="loading-container" class="mt-20 flex flex-col items-center">
+             <svg class="animate-spin w-10 h-10 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+             <p class="mt-4 text-gray-600 font-medium">Loading Profile Data...</p>
+        </div>
+
+        <div id="main-content" class="hidden w-full max-w-6xl mx-auto shadow-xl rounded-xl bg-white grid grid-cols-1 lg:grid-cols-4 overflow-hidden">
+            
+            <aside class="lg:col-span-1 bg-gray-50 p-6 border-r border-gray-200">
+                <h3 class="text-lg font-bold mb-4 text-gray-700">Account Settings</h3>
+                <nav class="flex flex-col space-y-2">
+                    <a href="#" class="flex items-center p-3 rounded-lg text-indigo-700 bg-indigo-100 font-semibold transition hover:bg-indigo-200">
+                        <svg data-lucide="user-circle" class="w-5 h-5 mr-2 rtl-ml-2"></svg>
+                        My Profile
+                    </a>
+                    <a href="notification.html" class="flex items-center p-3 rounded-lg text-gray-600 hover:text-indigo-700 hover:bg-indigo-100 transition">
+                        <svg data-lucide="bell" class="w-5 h-5 mr-2 rtl-ml-2"></svg>
+                        Notifications
+                    </a>
+                    <a href="#" class="flex items-center p-3 rounded-lg text-gray-600 hover:text-indigo-700 hover:bg-indigo-100 transition">
+                        <svg data-lucide="lock" class="w-5 h-5 mr-2 rtl-ml-2"></svg>
+                        Change Password
+                    </a>
+                    <a href="#" id="logout-link" class="flex items-center p-3 rounded-lg text-red-600 hover:bg-red-50 transition mt-4 border-t pt-4">
+                        <svg data-lucide="log-out" class="w-5 h-5 mr-2 rtl-ml-2"></svg>
+                        Log Out
+                    </a>
+                    <a href="#" class="flex items-center p-3 rounded-lg text-red-600 hover:bg-red-50 transition">
+                        <svg data-lucide="trash-2" class="w-5 h-5 mr-2 rtl-ml-2"></svg>
+                        Delete Account
+                    </a>
+                </nav>
+            </aside>
+
+            <div class="lg:col-span-3 p-6 md:p-10">
+                <h2 class="text-2xl font-bold mb-6 pb-3 border-b text-gray-800">My Profile</h2>
+                
+                <section class="p-6 bg-white border border-gray-200 rounded-lg shadow-md mb-8">
+                    <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+                        
+                        <div class="relative">
+                            <img id="profile-img-preview" 
+                                src="https://placehold.co/120x120/bdbdbd/ffffff?text=MALFIT" 
+                                alt="Profile Picture" 
+                                class="profile-img rounded-full">
+                            <span class="absolute bottom-0 right-0 p-2 bg-green-500 rounded-full border-2 border-white" title="Online"></span>
+                        </div>
+                        
+                        <div class="text-center sm:text-left">
+                            <p id="user-full-name" class="text-3xl font-extrabold text-gray-900">Mada Saleh</p> 
+                            <p class="text-md text-indigo-600 mt-1">MALFIT Member</p>
+                            <p id="user-join-date" class="text-sm text-gray-500 mt-1">Joined: 2024-01-01</p>
+                            <p id="user-id-display" class="text-xs text-gray-400 mt-2 font-mono break-all"></p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="personal-info-section">
+                    <h3 class="text-xl font-semibold mb-5 pb-2 border-b">Personal Information</h3>
+                    
+                    <form id="profile-form" class="space-y-6">
+                        <p id="status-message" class="hidden text-sm"></p>
+                        
+                        <div class="input-group hidden">
+                            <label for="profile_image">Change Profile Picture</label>
+                            <input type="file" name="profile_image" id="profile_image" accept="image/*" class="w-full text-sm text-gray-500
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded-full file:border-0
+                                file:text-sm file:font-semibold
+                                file:bg-indigo-50 file:text-indigo-700
+                                hover:file:bg-indigo-100 cursor-pointer
+                            ">
+                            <p class="text-xs text-gray-500 mt-1">Accepts JPG, PNG. Max 1MB (Data saved in Base64).</p>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="input-group flex-1">
+                                <label for="firstName">First Name</label>
+                                <input type="text" id="firstName" name="firstName" required disabled>
+                            </div>
+                            <div class="input-group flex-1">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" id="lastName" name="lastName" required disabled>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="input-group flex-1">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" value="N/A" disabled class="bg-gray-100 cursor-not-allowed">
+                                <p class="text-xs text-gray-500 mt-1">Email can only be changed via Firebase Authentication methods.</p>
+                            </div>
+                            <div class="input-group flex-1">
+                                <label for="dateOfBirth">Date of Birth</label>
+                                <input type="date" id="dateOfBirth" name="dateOfBirth" disabled>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                             <div class="input-group w-full max-w-sm">
+                                <label for="gender">Gender</label>
+                                <select id="gender" name="gender" disabled>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other/Prefer not to say</option>
+                                </select>
+                             </div>
+                        </div>
+
+                        <div id="edit-button-container" class="flex justify-end pt-6 border-t border-gray-100">
+                             <button type="button" id="edit-profile-btn" class="flex items-center px-4 py-2 rounded-lg font-medium transition disabled:opacity-50 disabled:cursor-not-allowed contact-btn text-white shadow-lg" title="Edit Profile">
+                                <svg data-lucide="pencil" class="w-5 h-5 mr-2 rtl-ml-2"></svg>
+                                Edit Profile
+                            </button>
+                        </div>
+
+                        <div id="save-cancel-container" class="hidden flex justify-end pt-6 border-t border-gray-100 space-x-4">
+                            <button type="button" id="cancel-btn" class="flex items-center px-6 py-3 rounded-full text-gray-600 bg-gray-100 hover:bg-gray-200 font-semibold transition duration-200">
+                                <svg data-lucide="x-circle" class="w-5 h-5 mr-2 rtl-ml-2"></svg>
+                                Cancel
+                            </button>
+                            <button type="submit" id="save-btn" class="flex items-center px-6 py-3 rounded-full text-white font-semibold shadow-md contact-btn hover:shadow-lg transition duration-200">
+                                <svg data-lucide="save" class="w-5 h-5 mr-2 rtl-ml-2"></svg>
+                                Save Changes
+                            </button>
+                        </div>
+
+                    </form>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer class="w-full bg-white border-t border-gray-100 py-4 text-center text-sm text-gray-500">
+        &copy; 2024 MALFIT. All rights reserved.
+    </footer>
 </body>
 </html>
