@@ -108,7 +108,7 @@
 <body class="flex items-center justify-center min-h-screen p-4 overflow-hidden">
     <div id="intro-video-container">
         <video id="intro-video" autoplay muted playsinline>
-            <source src="video/MAL.mp4" type="video/mp4">
+            <source src="C:\Users\mada saleh\Desktop\Fitness Website\work\MAL.mp4" type="video/mp4">
         </video>
     </div>
 
@@ -266,10 +266,10 @@
                 msgGuestSignIn: "Signing in as Guest...",
                 msgGuestWelcome: "Welcome Guest! You are now signed in.",
                 msgProcessing: "Processing...",
-                // Password requirement message changed
+                // UPDATED: Password requirement message changed
                 msgPassRequirements: "Password must be at least 6 characters.",
                 msgPasswordMismatch: "Error: Passwords do not match.",
-                // strings for sign-up (Labels)
+                // New strings for sign-up (Labels)
                 firstNameLabel: "First Name",
                 lastNameLabel: "Last Name",
                 dobLabel: "Date of Birth",
@@ -277,7 +277,7 @@
                 femaleLabel: "Female",
                 maleLabel: "Male",
                 confirmPasswordLabel: "Confirm Password",
-                // strings for sign-up (Placeholders)
+                // New strings for sign-up (Placeholders)
                 firstNamePlaceholder: "John",
                 lastNamePlaceholder: "Doe",
                 confirmPasswordPlaceholder: "Confirm Password",
@@ -304,10 +304,10 @@
                 msgGuestSignIn: "جاري تسجيل الدخول كضيف...",
                 msgGuestWelcome: "مرحباً أيها الضيف! لقد سجلت الدخول الآن.",
                 msgProcessing: "جاري المعالجة...",
-                // Password requirement message changed
+                // UPDATED: Password requirement message changed
                 msgPassRequirements: "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل.",
                 msgPasswordMismatch: "خطأ: كلمات المرور غير متطابقة.",
-                // strings for sign-up (Labels)
+                // New strings for sign-up (Labels)
                 firstNameLabel: "الاسم الأول",
                 lastNameLabel: "اسم العائلة",
                 dobLabel: "تاريخ الميلاد",
@@ -315,7 +315,7 @@
                 femaleLabel: "أنثى",
                 maleLabel: "ذكر",
                 confirmPasswordLabel: "تأكيد كلمة المرور",
-                // strings for sign-up (Placeholders)
+                // New strings for sign-up (Placeholders)
                 firstNamePlaceholder: "أحمد",
                 lastNamePlaceholder: "علي",
                 confirmPasswordPlaceholder: "تأكيد كلمة المرور",
@@ -434,7 +434,7 @@
         }
 
         // ---------------------------------------------
-        // FIREBASE: Create Account Function 
+        // 🚀 FIREBASE: Create Account Function 
         // ---------------------------------------------
         /**
          * Creates a new user account in Firebase Auth and stores additional data in Firestore.
@@ -447,6 +447,7 @@
                 showMessage(langData.msgPasswordMismatch, 'text-red-600');
                 return;
             }
+            // MODIFIED: Now checks for minimum 6 characters (Firebase requirement)
             if (!isPasswordStrong(password)) {
                 showMessage(langData.msgPassRequirements, 'text-red-600');
                 return;
@@ -494,7 +495,7 @@
 
 
         // ---------------------------------------------
-        //  FIREBASE: Toggle Mode Function 
+        // FIREBASE: Toggle Mode Function 
         // ---------------------------------------------
         function toggleFormMode() {
             isLoginMode = !isLoginMode;
@@ -531,7 +532,7 @@
         }
         
         // ---------------------------------------------
-        //  FIREBASE: Guest Sign In Function 
+        // FIREBASE: Guest Sign In Function 
         // ---------------------------------------------
         /**
          * Handles Guest Sign In (uses Firebase Anonymous Authentication)
@@ -545,7 +546,7 @@
                     showMessage(langData.msgGuestWelcome, 'text-blue-600');
                     // REAL REDIRECT: Redirect the user after successful anonymous login
                     setTimeout(() => {
-                        window.location.href = 'Home/home.html'; 
+                        window.location.href = 'afterthelogpage.html'; 
                     }, 1500); 
                 })
                 .catch((error) => {
