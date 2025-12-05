@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-translate-key="page_title">MALFIT | Recipes</title>
-    <!-- Placeholder favicon links as local paths are not functional in this environment -->
-    <link rel="icon" type="image/png" href="/favicon.ico" sizes="96x96" />
+    <link rel="icon" type="image/png" href="favicon.ico" sizes="96x96" />
     <link rel="manifest" href="/site.webmanifest" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script> 
@@ -47,6 +46,7 @@
         /* Define a container that strictly holds the main content and prevents items from falling into the footer */
         #page-content-wrapper {
             position: relative;
+            /* Adjust height calculation if footer height changes */
             min-height: calc(100vh - 80px); 
             overflow: hidden; 
         }
@@ -127,7 +127,7 @@
             transition: transform 0.2s, box-shadow 0.2s;
             cursor: pointer;
             border: 1px solid #e5e7eb;
-            /* Using a fallback color here, but JS will set the border based on the theme */
+            /* The dynamic border is handled by Tailwind classes assigned via JS */
         }
         .recipe-card:hover {
             transform: translateY(-5px);
@@ -159,6 +159,7 @@
         }
         
         /* General color classes for dynamic assignment */
+        /* These are used for text and background colors */
         .theme-red-text { color: #dc2626; } /* Red-600 */
         .theme-red-bg { background-color: #fee2e2; } /* Red-100 */
 
@@ -184,17 +185,18 @@
     <header class="sticky top-0 z-50 w-full flex items-center justify-between px-4 md:px-8 lg:px-16 py-3 bg-white border-b border-gray-100">
         
         <div class="flex items-center">
-            <!-- Header remains indigo-600 as the primary site color -->
             <h1 class="text-3xl font-extrabold text-indigo-600 tracking-wide" data-translate-key="logo">MALFIT</h1>
         </div>
 
         <nav class="hidden md:flex flex-grow justify-center mx-10">
-            <a href="Calories/Calories.html" class="nav-link" data-translate-key="nav_calories">Calories</a>
-            <a href="Eat Healrhy/Eat Healrhy.html" class="nav-link" data-translate-key="nav_eat_healthy">Eat Healthy</a>
-            <a href="Plans/Plans.html" class="nav-link" data-translate-key="nav_plans">Plans</a>
-            <a href="Clubs/Clubs.html" class="nav-link" data-translate-key="nav_clubs">Clubs</a>
-            <a href="Survey/survey.html" class="nav-link" data-translate-key="nav_survey">Survey</a>
-            <a href="Contact Us/Contact Us.html" class="nav-link" data-translate-key="nav_contact_us">Contact Us</a>
+            <ul class="flex space-x-4">
+                <li><a href="Calories/Calories.html" class="nav-link" data-translate-key="nav_calories">Calories</a></li>
+                <li><a href="Eat Healrhy/Eat Healrhy.html" class="nav-link" data-translate-key="nav_eat_healthy">Eat Healthy</a></li>
+                <li><a href="Plans/Plans.html" class="nav-link" data-translate-key="nav_plans">Plans</a></li>
+                <li><a href="Clubs/Clubs.html" class="nav-link" data-translate-key="nav_clubs">Clubs</a></li>
+                <li><a href="Survey/survey.html" class="nav-link" data-translate-key="nav_survey">Survey</a></li>
+                <li><a href="Contact Us/Contact Us.html" class="nav-link" data-translate-key="nav_contact_us">Contact Us</a></li>
+            </ul>
         </nav>
 
         <div class="icons-container flex items-center gap-2 md:gap-4">
@@ -227,7 +229,7 @@
     </div>
 
     <div id="page-content-wrapper" class="p-4 md:p-8 lg:p-12">
-    
+        
         <main class="w-full max-w-6xl mx-auto py-6"> 
             
             <div class="text-center mb-12">
@@ -240,8 +242,7 @@
             </div>
 
             <div id="recipes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Recipe Cards will be injected here by JavaScript -->
-            </div>
+                </div>
 
         </main>
     </div> 
@@ -252,13 +253,14 @@
 
     <script>
         // Define color themes that correspond to the CSS classes
+        // IMPROVEMENT: Added Tailwind border classes for dynamic border styling
         const colorThemes = [
-            { text: 'theme-green-text', bg: 'theme-green-bg' },  // Salad/Vegetables
-            { text: 'theme-red-text', bg: 'theme-red-bg' },      // Salmon/Protein
-            { text: 'theme-blue-text', bg: 'theme-blue-bg' },    // Chicken/Poultry
-            { text: 'theme-yellow-text', bg: 'theme-yellow-bg' },// Beans/Legumes
-            { text: 'theme-purple-text', bg: 'theme-purple-bg' },// Fruits/Oats
-            { text: 'theme-cyan-text', bg: 'theme-cyan-bg' }     // Mediterranean/Fresh
+            { text: 'theme-green-text', bg: 'theme-green-bg', border: 'border-green-400' }, 
+            { text: 'theme-red-text', bg: 'theme-red-bg', border: 'border-red-400' },
+            { text: 'theme-blue-text', bg: 'theme-blue-bg', border: 'border-blue-400' },
+            { text: 'theme-yellow-text', bg: 'theme-yellow-bg', border: 'border-amber-400' }, 
+            { text: 'theme-purple-text', bg: 'theme-purple-bg', border: 'border-violet-400' },
+            { text: 'theme-cyan-text', bg: 'theme-cyan-bg', border: 'border-cyan-400' }
         ];
 
         // --- Recipe Data Structure (Detailed) ---
@@ -433,10 +435,11 @@
                 const theme = colorThemes[recipe.themeIndex];
                 const textClass = theme.text;
                 const bgClass = theme.bg;
+                const borderClass = theme.border; // IMPROVEMENT: Get the dedicated Tailwind border class
                 
                 const card = document.createElement('div');
-                // The card itself gets a slight border color matching the theme
-                card.className = `recipe-card p-6 border-2 border-transparent hover:border-opacity-100 ${textClass.replace('-text', '-border')}`;
+                // IMPROVEMENT: Applied the correct Tailwind border class for hover
+                card.className = `recipe-card p-6 border-2 border-gray-200 hover:border-opacity-100 hover:${borderClass}`;
                 card.setAttribute('onclick', 'toggleRecipeDetails(event)');
                 card.setAttribute('data-recipe-id', recipe.id);
                 
@@ -445,7 +448,6 @@
                     const text = ing[lang];
                     return `
                         <li class="flex items-start">
-                            <!-- Icon color uses the dynamic text class -->
                             <svg data-lucide="chevrons-right" class="w-5 h-5 ${textClass} flex-shrink-0 mt-0.5" transform="${lang === 'ar' ? 'rotate(180)' : 'none'}"></svg>
                             <span class="${lang === 'ar' ? 'mr-2' : 'ml-2'}">${text}</span>
                         </li>
@@ -453,14 +455,11 @@
                 }).join('');
 
                 card.innerHTML = `
-                    <!-- Header -->
                     <div class="flex items-center justify-between">
                         <h3 class="text-xl font-bold text-gray-800 ${lang === 'ar' ? 'text-right' : 'text-left'}">${recipe.name[lang]}</h3>
-                        <!-- Arrow color uses the dynamic text class -->
                         <svg data-lucide="chevron-right" class="w-6 h-6 ${textClass} transition-transform duration-300 toggle-arrow"></svg>
                     </div>
 
-                    <!-- Description and Prep Time -->
                     <div class="mt-2 text-sm text-gray-600 ${lang === 'ar' ? 'text-right' : 'text-left'}">
                         <p>${recipe.description[lang]}</p>
                         <div class="flex items-center ${lang === 'ar' ? 'justify-end' : 'justify-start'} mt-2">
@@ -469,18 +468,15 @@
                         </div>
                     </div>
 
-                    <!-- Details Section (Initially hidden) -->
                     <div class="recipe-details mt-4 border-t border-gray-100">
                         
                         <div class="mt-4">
-                            <!-- Heading color uses the dynamic text class -->
                             <h4 class="text-lg font-semibold ${textClass} mb-2 ${lang === 'ar' ? 'text-right' : 'text-left'}">${langData.recipe_ingredients}:</h4>
                             <ul class="space-y-1 text-gray-700 ${lang === 'ar' ? 'text-right' : 'text-left'}">
                                 ${ingredientsList}
                             </ul>
                         </div>
 
-                        <!-- Calorie box uses the dynamic background and text classes -->
                         <div class="mt-4 p-3 ${bgClass} rounded-lg flex items-center ${lang === 'ar' ? 'justify-end' : 'justify-start'}">
                             <svg data-lucide="zap" class="w-5 h-5 ${textClass} ${lang === 'ar' ? 'ml-2' : 'mr-2'}"></svg>
                             <span class="${textClass} font-bold">${langData.recipe_cal} ${recipe.calories} kcal</span>
