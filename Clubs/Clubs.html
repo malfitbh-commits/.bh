@@ -12,7 +12,7 @@
 
     <style>
         /* Custom styles */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');        
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');        
         :root {
             --primary-color: #4f46e5; /* indigo-600 */
             --primary-light: #eef2ff; /* indigo-50 */
@@ -180,12 +180,12 @@
         </div>
 
         <nav class="hidden md:flex flex-grow justify-center mx-10">
-            <a href="Calories/Calories.html" class="nav-link" id="nav-calories">Calories</a>
+            <a href="#Calories/Calories.html" class="nav-link" id="nav-calories">Calories</a>
             <a href="Eat Healthy/Eat Healthy.html" class="nav-link" id="nav-eat-healthy">Eat Healthy</a>
             <a href="Plans/Plans.html" class="nav-link" id="nav-plans">Plans</a>
-            <a href="Clubs/Clubs.html" class="nav-link" id="nav-clubs">Clubs</a> 
+            <a href="#Clubs/Clubs.html" class="nav-link" id="nav-clubs">Clubs</a> 
             <a href="Survey/Survey.html" class="nav-link" id="nav-survey">Survey</a>
-            <a href="Countact Us/Countact Us.html" class="nav-link" id="nav-contact-us">Contact Us</a>
+            <a href="Contact Us/Contact Us.html" class="nav-link" id="nav-contact-us">Contact Us</a>
         </nav>
 
         <div class="icons-container flex items-center gap-2 md:gap-4">
@@ -194,11 +194,11 @@
                 <span id="current-lang" class="text-sm">ع</span> 
             </button>
             
-            <a href="Shopping/Shopping.html" class="icon-btn w-10 h-10 hover:bg-indigo-50" title="Shopping Cart">
+            <a href="shopping.html" class="icon-btn w-10 h-10 hover:bg-indigo-50" title="Shopping Cart">
                 <svg data-lucide="shopping-cart" width="24" height="24"></svg>
             </a>
 
-            <a href="Home/Home.html" class="icon-btn w-10 h-10 hover:bg-indigo-50" title="Home">
+            <a href="index.html" class="icon-btn w-10 h-10 hover:bg-indigo-50" title="Home">
                 <svg data-lucide="home" width="24" height="24"></svg>
             </a>
 
@@ -213,12 +213,12 @@
     </header>
 
     <div id="mobile-nav" class="hidden md:hidden absolute w-full bg-white border-b border-gray-200 shadow-lg top-[68px] z-40">
-        <a href="Calories/Calories.html" class="nav-link" id="nav-calories">Calories</a>
+        <a href="#Calories/Calories.html" class="nav-link" id="nav-calories">Calories</a>
         <a href="Eat Healthy/Eat Healthy.html" class="nav-link" id="nav-eat-healthy">Eat Healthy</a>
         <a href="Plans/Plans.html" class="nav-link" id="nav-plans">Plans</a>
-        <a href="Clubs/Clubs.html" class="nav-link" id="nav-clubs">Clubs</a> 
+        <a href="#Clubs/Clubs.html" class="nav-link" id="nav-clubs">Clubs</a> 
         <a href="Survey/Survey.html" class="nav-link" id="nav-survey">Survey</a>
-        <a href="Countact Us/Countact Us.html" class="nav-link" id="nav-contact-us">Contact Us</a>
+        <a href="Contact Us/Contact Us.html" class="nav-link" id="nav-contact-us">Contact Us</a>
     </div>
 
 
@@ -480,8 +480,17 @@
 
                 button.className = `${buttonClass} w-full flex flex-col ${directionClass} items-center p-6 text-white rounded-3xl`;
                 
-                // --- ADD TO CART HANDLER ---
-                button.onclick = () => addToCart(club);
+                // 🛑 MODIFIED HANDLER HERE 🛑
+                if (club.name === 'Personal Training') {
+                    // Navigate to PT.html instead of adding to cart
+                    button.onclick = () => {
+                        window.location.href = 'PT.html'; 
+                    };
+                } else {
+                    // For all other clubs, add to cart
+                    button.onclick = () => addToCart(club);
+                }
+
 
                 const iconContainer = document.createElement('div');
                 iconContainer.className = `flex-shrink-0 mb-3 sm:mb-0 ${marginClass} text-white`;
