@@ -1,1 +1,433 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-translate-key="page_title">MALFIT | Survey</title>
 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script> 
+
+    <style>
+        /* Custom styles integrated from plans page */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');         
+        :root {
+            --primary-color: #4f46e5; /* indigo-600 */
+            --primary-light: #eef2ff; /* indigo-50 */
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f0f4f8; 
+            overflow-x: hidden; 
+            min-height: 100vh;
+            position: relative; 
+        }
+
+        html[dir="rtl"] body {
+            font-family: 'Cairo', sans-serif;
+            text-align: right;
+        }
+
+        /* --- Falling Item Styles (Background Layer) --- */
+        .falling-item {
+            position: absolute;
+            user-select: none;
+            pointer-events: none; 
+            opacity: 0.5; /* More subtle opacity */
+            transition: opacity 2s ease-out;
+            z-index: 0; 
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
+        }
+        
+        /* Ensure all structural elements are above the falling background */
+        header, main, footer, .calendar-container {
+            position: relative; 
+            z-index: 10; 
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #474646;
+            font-weight: 500;
+            padding: 10px 15px; 
+            margin-right: 10px;
+            transition: color 0.2s, background-color 0.2s, transform 0.1s;
+            border-radius: 9999px; 
+            white-space: nowrap;
+        }
+        .nav-link:hover {
+            color: var(--primary-color); 
+            background-color: var(--primary-light); 
+            transform: translateY(-1px);
+        }
+        
+        html[dir="rtl"] header nav .nav-link {
+            margin-right: 0;
+            margin-left: 10px;
+        }
+        
+        /* Highlight the active link for this page */
+        .nav-link.active-plan {
+            color: var(--primary-color); 
+            background-color: var(--primary-light); 
+            font-weight: 700;
+        }
+
+        .icon-btn {
+            padding: 10px;
+            border-radius: 50%;
+            transition: background-color 0.2s, color 0.2s;
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+            color: #4b5563; 
+        }
+        .icon-btn:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+        
+        .contact-btn {
+            background-image: linear-gradient(to right, #4f46e5 0%, #3b82f6 100%); 
+            transition: all 0.2s ease;
+        }
+        .contact-btn:hover {
+            box-shadow: 0 8px 15px rgba(63, 131, 248, 0.4);
+            transform: scale(1.02);
+            opacity: 0.95;
+        }
+
+        header {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            background-color: #ffffff;
+        }
+        
+        #mobile-menu {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            background-color: #ffffff;
+            position: absolute;
+            top: 70px; 
+            right: 0;
+            left: 0;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100; 
+        }
+        #mobile-menu.active {
+            max-height: 500px;
+            opacity: 1;
+            padding: 10px 0;
+        }
+        #mobile-menu a {
+            display: block;
+            padding: 12px 20px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #333;
+            text-decoration: none;
+            text-align: left; 
+            transition: background-color 0.15s;
+        }
+        #mobile-menu a:hover {
+            background-color: var(--primary-light);
+        }
+        html[dir="rtl"] #mobile-menu a {
+            text-align: right; 
+        }
+        
+        /* --- Calendar Specific Styles (Kept for completeness, though unused here) --- */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+        .calendar-day {
+            padding: 4px;
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border-radius: 4px;
+            line-height: 1.25;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .calendar-header-day {
+            font-weight: 700;
+            color: #4f46e5;
+        }
+        .calendar-day-current-month {
+            background-color: #f7f7f7;
+            color: #333;
+        }
+        .calendar-day-other-month {
+            color: #ccc;
+        }
+        .calendar-start-date {
+            background-color: #4f46e5 !important;
+            color: white !important;
+            font-weight: 700;
+            box-shadow: 0 2px 4px rgba(79, 70, 229, 0.5);
+            transform: scale(1.05);
+            border: 2px solid white;
+        }
+        .calendar-end-date {
+            background-color: #10b981 !important; /* Emerald Green */
+            color: white !important;
+            font-weight: 700;
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.5);
+            transform: scale(1.05);
+            border: 2px solid white;
+        }
+
+    </style>
+</head>
+<body>
+    <header class="sticky top-0 z-50 w-full flex items-center justify-between px-4 md:px-8 lg:px-16 py-3 bg-white border-b border-gray-100">
+        
+        <div class="flex items-center">
+            <h1 class="text-3xl font-extrabold text-indigo-600 tracking-wide" data-translate-key="logo">MALFIT</h1>
+        </div>
+
+        <nav class="hidden md:flex flex-grow justify-center mx-10">
+            <a href="calories.html" class="nav-link" data-translate-key="nav_calories">Calories</a>
+            <a href="eathealrhy.html" class="nav-link" data-translate-key="nav_eat_healthy">Eat Healthy</a>
+            <a href="plane.html" class="nav-link" data-translate-key="nav_plans">Plans</a>
+            <a href="club.html" class="nav-link" data-translate-key="nav_clubs">Clubs</a>
+            <a href="survey.html" class="nav-link active-plan" data-translate-key="nav_survey">Survey</a>
+            <a href="contact us.html" class="nav-link" data-translate-key="nav_contact_us">Contact Us</a>
+        </nav>
+
+        <div class="icons-container flex items-center gap-2 md:gap-4">
+            
+            <button id="lang-toggle" class="icon-btn w-10 h-10 border-2 border-gray-300 hover:border-indigo-600">
+                <span id="current-lang" class="text-sm font-bold">EN</span> 
+            </button>
+
+            <a href="afterthelogpage.html.html" class="icon-btn hover:bg-indigo-50">
+                <svg data-lucide="home" width="24" height="24"></svg>
+            </a>
+
+            <a href="accountData.html" class="icon-btn hover:bg-indigo-50">
+                <svg data-lucide="user" width="24" height="24"></svg>
+            </a>
+
+            <button id="menu-toggle" class="md:hidden icon-btn">
+                <svg data-lucide="menu" width="24" height="24"></svg>
+            </button>
+        </div>
+    </header>
+
+    <div id="mobile-menu" class="md:hidden">
+        <a href="calories.html" data-translate-key="nav_calories">Calories</a>
+        <a href="eathealrhy.html" data-translate-key="nav_eat_healthy">Eat Healthy</a>
+        <a href="plane.html" data-translate-key="nav_plans">Plans</a>
+        <a href="club.html" data-translate-key="nav_clubs">Clubs</a>
+        <a href="survey.html" class="nav-link active-plan" data-translate-key="nav_survey">Survey</a>
+        <a href="contact us.html" data-translate-key="nav_contact_us">Contact Us</a>
+    </div>
+
+    <main class="p-4 flex flex-col items-center justify-start min-h-[calc(100vh-140px)]"> 
+        <div class="w-full max-w-xl bg-white shadow-2xl rounded-3xl p-6 sm:p-8 border border-blue-50/50 mt-8">
+            <div class="text-center">
+                <div class="mx-auto w-16 h-16 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-full flex items-center justify-center shadow-lg mb-4">
+                    <svg data-lucide="clipboard-check" width="28" height="28" stroke="white" stroke-width="2.5"></svg>
+                </div>
+                <h1 class="text-3xl font-extrabold text-gray-900" data-translate-key="survey_page_title">Health & Fitness Survey</h1>
+                <p class="mt-2 text-md text-gray-500" data-translate-key="survey_subtitle">Please answer a few questions to help us personalize your recommendations.</p>
+            </div>
+
+            <div id="survey-form-area" class="mt-8 space-y-6">
+                <div class="p-6 bg-gray-50 rounded-lg border border-gray-200">
+                    <p class="text-lg font-semibold text-gray-700" data-translate-key="survey_instructions">Survey form construction area.</p>
+                    <p class="text-sm text-gray-500 mt-2">You can build your input fields (text, radio, checkbox) here to gather user information.</p>
+                    
+                    <a href="https://forms.office.com/r/rBekVZz0HY?origin=lprLink" target="_blank" class="block w-full mt-4">
+                        <button class="w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition" data-translate-key="survey_btn_submit">
+                            Submit Survey
+                        </button>
+                    </a>
+                    </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="p-6 bg-white border-t border-gray-100 shadow-inner">
+        <p class="text-gray-600 text-center text-sm" data-translate-key="footer_text">&copy; 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi</p>
+    </footer>
+
+
+    <script>
+        // --- TRANSLATIONS (Updated with Survey Keys) ---
+        const translations = {
+            'en': {
+                'page_title': 'MALFIT | Survey',
+                'logo': 'MALFIT',
+                'nav_calories': 'Calories',
+                'nav_eat_healthy': 'Eat Healthy',
+                'nav_plans': 'Plans',
+                'nav_clubs': 'Clubs',
+                'nav_survey': 'Survey',
+                'nav_contact_us': 'Contact Us',
+                'footer_text': '© 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi',
+                'lang_code': 'AR',
+                
+                // Survey Page Specific
+                'survey_page_title': 'Health & Fitness Survey',
+                'survey_subtitle': 'Please answer a few questions to help us personalize your recommendations.',
+                'survey_instructions': 'Survey form construction area.',
+                'survey_btn_submit': 'Submit Survey',
+            },
+            'ar': {
+                'page_title': 'ملفت | استبيان',
+                'logo': 'ملفت',
+                'nav_calories': 'السعرات الحرارية',
+                'nav_eat_healthy': 'تناول طعام صحي',
+                'nav_plans': 'الخطط',
+                'nav_clubs': 'الأندية',
+                'nav_survey': 'الاستبيان',
+                'nav_contact_us': 'اتصل بنا',
+                'footer_text': '© 2025، مشروع تخرج، مدى صالح، أحمد خليفة، لورا عادل، المشرف الدكتور عبد الله محمد خالد القادومي',
+                'lang_code': 'EN', 
+
+                // Survey Page Specific
+                'survey_page_title': 'استبيان الصحة واللياقة البدنية',
+                'survey_subtitle': 'يرجى الإجابة على بعض الأسئلة لمساعدتنا في تخصيص توصياتك.',
+                'survey_instructions': 'منطقة بناء نموذج الاستبيان.',
+                'survey_btn_submit': 'إرسال الاستبيان',
+            }
+        };
+
+        let currentLang = localStorage.getItem('malfitMainLang') || 'en';
+
+        // Utility function to convert Lucide icons
+        function replaceLucideIcons() {
+            lucide.createIcons();
+        }
+
+        // --- LANGUAGE SWITCHING LOGIC ---
+        function updateContent(lang) {
+            currentLang = lang;
+            const dir = (lang === 'ar') ? 'rtl' : 'ltr';
+            const langData = translations[lang];
+            const html = document.documentElement;
+
+            html.setAttribute('lang', lang);
+            html.setAttribute('dir', dir);
+            
+            document.querySelectorAll('[data-translate-key]').forEach(element => {
+                const key = element.getAttribute('data-translate-key');
+                if (langData[key]) {
+                    if (element.id === 'current-lang') {
+                        element.textContent = langData.lang_code;
+                    } else if (element.tagName === 'TITLE') {
+                        document.title = langData[key];
+                    } else {
+                        element.textContent = langData[key];
+                    }
+                }
+            });
+
+            localStorage.setItem('malfitMainLang', lang);
+        }
+
+        // --- CORE EVENT HANDLERS & INITIALIZATION ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Menu Toggle ---
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const langToggle = document.getElementById('lang-toggle'); 
+
+            menuToggle.addEventListener('click', () => {
+                mobileMenu.classList.toggle('active');
+            });
+
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('active');
+                });
+            });
+
+            // --- Language Toggle ---
+            langToggle.addEventListener('click', () => {
+                const newLang = (currentLang === 'en') ? 'ar' : 'en';
+                updateContent(newLang);
+            });
+            
+            // --- Falling Food Background Animation Script ---
+            const produceEmojis = ['🍎', '🍊', '🍋', '🍇', '🍓', '🍍', '🥦', '🥕', '🥬', '🌶️', '🌽', '🥝'];
+            const body = document.body;
+            const maxItems = 40; 
+            let itemsOnScreen = 0;
+
+            function createFallingItem() {
+                if (itemsOnScreen >= maxItems) return;
+
+                const emoji = produceEmojis[Math.floor(Math.random() * produceEmojis.length)];
+                // Smaller size range for subtlety
+                const size = Math.floor(Math.random() * 15) + 12; 
+                const initialX = Math.random() * window.innerWidth;
+                // Faster duration for slightly more noticeable movement
+                const duration = Math.random() * 8 + 4; 
+                const rotation = Math.random() * 360; 
+                
+                const item = document.createElement('div');
+                item.className = 'falling-item';
+                item.innerHTML = emoji;
+                item.style.fontSize = `${size}px`;
+                item.style.left = `${initialX}px`;
+                item.style.top = `-50px`; 
+                item.style.transform = `rotate(${rotation}deg)`;
+                
+                body.appendChild(item);
+                itemsOnScreen++;
+
+                let currentY = -50;
+                const speed = (window.innerHeight + 100) / (duration * 60); 
+                const driftX = (Math.random() - 0.5) * 0.5; 
+
+                function animateFall() {
+                    if (currentY > window.innerHeight) {
+                        if (body.contains(item)) {
+                            body.removeChild(item);
+                        }
+                        itemsOnScreen--;
+                        return;
+                    }
+
+                    currentY += speed;
+                    let currentX = parseFloat(item.style.left) || initialX;
+                    currentX += driftX;
+
+                    item.style.top = `${currentY}px`;
+                    item.style.left = `${currentX}px`;
+                    
+                    requestAnimationFrame(animateFall);
+                }
+
+                requestAnimationFrame(animateFall);
+            }
+
+            function spawnLoop() {
+                createFallingItem();
+                // Spawn a new item every 100ms to 500ms
+                const delay = Math.random() * 400 + 100;
+                setTimeout(spawnLoop, delay);
+            }
+
+            spawnLoop();
+            
+            // --- Final Initialization Calls ---
+            updateContent(currentLang);
+            replaceLucideIcons();
+        });
+    </script>
+</body>
+</html>
