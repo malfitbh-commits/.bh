@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -46,10 +46,6 @@
             transition: background-color 0.2s, transform 0.1s;
             z-index: 10001; /* Ensure it's above the card and video */
         }
-        #lang-toggle-btn.rtl-fix {
-             right: auto;
-             left: 20px;
-        }
         #lang-toggle-btn:hover {
             background-color: #9333ea;
         }
@@ -63,8 +59,9 @@
             width: 100%;
             height: 100%;
             z-index: 10000; /* High z-index to cover the whole page */
-            background-color: black; /* Fills in edges if video doesn't perfectly match aspect ratio */
-            opacity: 1; /* Start visible */
+            background-color: black;
+            opacity: 1; /* Initial opacity for fade-out */
+            transition: opacity 1s ease-out; /* Add transition for smooth fade */
         }
 
         #intro-video {
@@ -80,7 +77,7 @@
             object-fit: cover; 
         }
 
-        /* Utility class to truly hide the content (Keep custom class for video fade-out) */
+        /* Utility class to truly hide the content */
         .hidden-full {
             display: none !important;
         }
@@ -92,7 +89,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     
     <script>
-        // 🚨 IMPORTANT: REPLACE WITH YOUR ACTUAL FIREBASE CONFIG 
+        // 🚨 IMPORTANT: REPLACE WITH YOUR ACTUAL FIREBASE CONFIG  
         const firebaseConfig = {
             apiKey: "AIzaSyAJrDZrl1jeKFeEsDTM_lUTxxwW7lib5U0",
             authDomain: "malfit-app.firebaseapp.com",
@@ -108,17 +105,16 @@
         const db = app.firestore(); // For saving extra user data
     </script>
 </head>
-<body class="flex items-center justify-center min-h-screen p-4">
-
+<body class="flex items-center justify-center min-h-screen p-4 overflow-hidden">
     <div id="intro-video-container">
         <video id="intro-video" autoplay muted playsinline>
-            <source src="video/MAL.mp4" type="video/mp4">
+            <source src="C:\Users\mada saleh\Desktop\Fitness Website\work\MAL.mp4" type="video/mp4">
         </video>
     </div>
 
     <button id="lang-toggle-btn" aria-label="Toggle language">ع</button>
 
-    <div id="auth-content-container" class="hidden flex items-center justify-center min-h-screen w-full">
+    <div id="auth-content-container" class="hidden-full flex items-center justify-center min-h-screen w-full">
         <div class="w-full max-w-md bg-white rounded-xl shadow-2xl p-8 space-y-6 relative">
 
             <h1 id="form-title" data-i18n-key="formTitleLogin" class="text-3xl font-bold text-center text-gray-800">Log In</h1>
@@ -210,8 +206,8 @@
                         class="w-full bg-gray-100 text-gray-800 font-semibold py-2.5 rounded-lg border border-gray-300 hover:bg-gray-200 transition duration-150 focus:outline-none focus:ring-2 focus:ring-gray-400">
                     Create Account
                 </button>
-                
-                <button data-i18n-key="guestSignIn" id="guest-sign-in-btn"
+
+                <button data-i18n-key="guestSignIn" id="go-home-btn"
                         class="w-full bg-white text-purple-600 font-semibold py-2.5 rounded-lg border-2 border-purple-600 hover:bg-purple-50 transition duration-150 focus:outline-none focus:ring-2 focus:ring-purple-600/50">
                     Sign In as Guest
                 </button>
@@ -245,12 +241,8 @@
         const signupFields = document.getElementById('signup-fields');
         const confirmPasswordGroup = document.getElementById('confirm-password-group');
         const forgotPasswordGroup = document.getElementById('forgot-password-group');
-        const genderRadios = document.querySelectorAll('input[name="gender"]');
-        
-        // ⭐️ FIXED: The button element for the guest sign-in
-        const guestSignInBtn = document.getElementById('guest-sign-in-btn'); 
 
-        // --- Localization Data (Unchanged) ---
+        // --- Localization Data ---
         const translations = {
             'en': {
                 langName: "E",
@@ -270,11 +262,14 @@
                 msgLoginSuccess: "Login successful! Redirecting...",
                 msgPassError: "Error: Password must be at least 6 characters.",
                 msgLoginError: "Error: Invalid email or password.",
-                msgSignupSuccess: "Account created successfully! Switching to login...",
+                msgSignupSuccess: "Account created successfully! You can now log in.",
                 msgGuestSignIn: "Signing in as Guest...",
-                msgGuestWelcome: "Welcome Guest! Redirecting...",
+                msgGuestWelcome: "Welcome Guest! You are now signed in.",
                 msgProcessing: "Processing...",
-                // New strings for sign-up (Labels)
+                // Password requirement message changed
+                msgPassRequirements: "Password must be at least 6 characters.",
+                msgPasswordMismatch: "Error: Passwords do not match.",
+                // strings for sign-up (Labels)
                 firstNameLabel: "First Name",
                 lastNameLabel: "Last Name",
                 dobLabel: "Date of Birth",
@@ -282,10 +277,7 @@
                 femaleLabel: "Female",
                 maleLabel: "Male",
                 confirmPasswordLabel: "Confirm Password",
-                msgPassRequirements: "Password must be 8+ chars, with 1 capital, 1 small, 1 number, and 1 special char.",
-                msgPasswordMismatch: "Error: Passwords do not match.",
-                msgIncompleteSignup: "Please fill in all required fields (First Name, Last Name, DOB, Gender).",
-                // New strings for sign-up (Placeholders)
+                // strings for sign-up (Placeholders)
                 firstNamePlaceholder: "John",
                 lastNamePlaceholder: "Doe",
                 confirmPasswordPlaceholder: "Confirm Password",
@@ -308,11 +300,14 @@
                 msgLoginSuccess: "تم تسجيل الدخول بنجاح! جارى التحويل...",
                 msgPassError: "خطأ: يجب أن تتكون كلمة المرور من 6 أحرف على الأقل.",
                 msgLoginError: "خطأ: بريد إلكتروني أو كلمة مرور غير صالحة.",
-                msgSignupSuccess: "تم إنشاء الحساب بنجاح! جارى التحويل لتسجيل الدخول...",
+                msgSignupSuccess: "تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول.",
                 msgGuestSignIn: "جاري تسجيل الدخول كضيف...",
-                msgGuestWelcome: "مرحباً أيها الضيف! جارى التحويل...",
+                msgGuestWelcome: "مرحباً أيها الضيف! لقد سجلت الدخول الآن.",
                 msgProcessing: "جاري المعالجة...",
-                // New strings for sign-up (Labels)
+                // Password requirement message changed
+                msgPassRequirements: "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل.",
+                msgPasswordMismatch: "خطأ: كلمات المرور غير متطابقة.",
+                // strings for sign-up (Labels)
                 firstNameLabel: "الاسم الأول",
                 lastNameLabel: "اسم العائلة",
                 dobLabel: "تاريخ الميلاد",
@@ -320,10 +315,7 @@
                 femaleLabel: "أنثى",
                 maleLabel: "ذكر",
                 confirmPasswordLabel: "تأكيد كلمة المرور",
-                msgPassRequirements: "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل، وتحتوي على حرف كبير واحد، وحرف صغير واحد، ورقم واحد، وحرف خاص واحد.",
-                msgPasswordMismatch: "خطأ: كلمات المرور غير متطابقة.",
-                msgIncompleteSignup: "الرجاء ملء جميع الحقول المطلوبة (الاسم الأول، اسم العائلة، تاريخ الميلاد، الجنس).",
-                // New strings for sign-up (Placeholders)
+                // strings for sign-up (Placeholders)
                 firstNamePlaceholder: "أحمد",
                 lastNamePlaceholder: "علي",
                 confirmPasswordPlaceholder: "تأكيد كلمة المرور",
@@ -333,7 +325,7 @@
         let currentLang = 'en'; 
         let isLoginMode = true; 
         
-        // --- Core Translation Function (Enhanced) ---
+        // --- Core Translation Function (Unchanged) ---
         function applyTranslations() {
             const langData = translations[currentLang];
             
@@ -341,10 +333,6 @@
             rootHtml.setAttribute('lang', currentLang);
 
             langToggleBtn.textContent = (currentLang === 'en' ? 'ع' : 'E');
-            
-            // 🛠️ ENHANCEMENT: Toggle RTL class for language button position
-            langToggleBtn.classList.toggle('rtl-fix', currentLang === 'ar');
-
 
             document.querySelectorAll('[data-i18n-key]').forEach(el => {
                 const key = el.getAttribute('data-i18n-key');
@@ -370,23 +358,20 @@
          * or when an error occurs.
          */
         function handleVideoEnd() {
-            // Check if the auth content is already visible to prevent re-running
-            if (authContentContainer.classList.contains('hidden')) {
-                
-                // Set video container for opacity transition
-                videoContainer.style.transition = 'opacity 1s ease-out';
-                videoContainer.style.opacity = '0';
+            // Start the opacity fade on the video container
+            videoContainer.style.opacity = '0';
 
-                // Wait for the transition to finish before hiding the container fully
-                setTimeout(() => {
-                    videoContainer.classList.add('hidden-full');
-                    // Show the main content container
-                    authContentContainer.classList.remove('hidden');
-                    document.body.classList.remove('overflow-hidden');
-                }, 1000); 
-                
+            // Show the main content container
+            authContentContainer.classList.remove('hidden-full');
+            
+            // Wait for the transition to finish (1s defined in CSS) before cleaning up
+            setTimeout(() => {
+                videoContainer.classList.add('hidden-full');
+                // Remove the overflow-hidden class to re-enable scrolling on the body
                 document.body.classList.remove('overflow-hidden');
-            }
+            }, 1000); 
+            
+            console.log('Video finished and form is now visible.');
         }
 
         function updateFormTexts() {
@@ -403,16 +388,10 @@
             }
         }
 
+        //  MODIFIED: Password strength requirement reduced to minimum Firebase length (6 characters)
         function isPasswordStrong(password) {
-            // Requires 8+ chars, 1 capital, 1 small, 1 number, 1 special char
-            const requirements = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-            return requirements.test(password);
-        }
-
-        function isSignupDataComplete() {
-            // 🛠️ ENHANCEMENT: Check that all sign-up fields are filled
-            const isGenderSelected = document.querySelector('input[name="gender"]:checked');
-            return firstNameInput.value.trim() && lastNameInput.value.trim() && dobInput.value && isGenderSelected;
+            // Firebase requires a minimum of 6 characters for a password
+            return password.length >= 6;
         }
 
         function showMessage(message, colorClass) {
@@ -421,26 +400,31 @@
         }
         
         // ---------------------------------------------
-        // 🚀 FIREBASE: Log In Function 
+        //  FIREBASE: Log In Function 
         // ---------------------------------------------
+        /**
+         * Attempts to log in the user using Firebase Authentication.
+         */
         function handleLogin(email, password) {
             const langData = translations[currentLang];
             
             auth.signInWithEmailAndPassword(email, password)
                 .then((userCredential) => {
+                    // Login successful
                     const user = userCredential.user;
                     showMessage(langData.msgLoginSuccess + ` (${user.email})`, 'text-green-600');
                     
-                    // ⭐️ REAL REDIRECT: Redirect the user after successful login
+                    //  REAL REDIRECT: Redirect the user after successful login
                     setTimeout(() => {
-                        window.location.href = '../home/home.html'; 
+                        window.location.href = 'afterthelogpage.html'; 
                     }, 1500); 
                 })
                 .catch((error) => {
+                    // Handle login errors
                     let errorMessage = langData.msgLoginError;
                     
                     if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                        errorMessage = langData.msgLoginError; 
+                        errorMessage = langData.msgLoginError; // Generic fail message
                     } else if (error.code === 'auth/invalid-email') {
                          errorMessage = "Error: Invalid email format.";
                     }
@@ -450,16 +434,15 @@
         }
 
         // ---------------------------------------------
-        // 🚀 FIREBASE: Create Account Function 
+        // FIREBASE: Create Account Function 
         // ---------------------------------------------
+        /**
+         * Creates a new user account in Firebase Auth and stores additional data in Firestore.
+         */
         function handleCreateAccount(email, password, confirmPassword) {
             const langData = translations[currentLang];
 
-            // 1. Client-Side Validation (Complete Data, Password Match & Strength)
-            if (!isSignupDataComplete()) {
-                showMessage(langData.msgIncompleteSignup, 'text-red-600');
-                return;
-            }
+            // 1. Client-Side Validation (Password Match & Strength)
             if (password !== confirmPassword) {
                 showMessage(langData.msgPasswordMismatch, 'text-red-600');
                 return;
@@ -474,7 +457,7 @@
                 firstName: firstNameInput.value.trim(),
                 lastName: lastNameInput.value.trim(),
                 dob: dobInput.value,
-                gender: document.querySelector('input[name="gender"]:checked').value,
+                gender: document.querySelector('input[name="gender"]:checked') ? document.querySelector('input[name="gender"]:checked').value : null,
                 email: email,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp() // Firestore timestamp
             };
@@ -492,7 +475,7 @@
                     showMessage(langData.msgSignupSuccess, 'text-green-600');
                     // Switch back to login form
                     setTimeout(() => {
-                        toggleFormMode();
+                         toggleFormMode();
                     }, 1000);
                 })
                 .catch((error) => {
@@ -501,10 +484,8 @@
                     if (error.code === 'auth/email-already-in-use') {
                         errorMessage = "Error: This email is already registered.";
                     } else if (error.code === 'auth/weak-password') {
+                         // This error still occurs if the password is less than 6 chars
                          errorMessage = langData.msgPassRequirements;
-                    } else {
-                         // Fallback for other errors like 'auth/invalid-email'
-                         errorMessage = `Error: ${error.message.split('(auth/')[0].trim() || 'Please check your input.'}`;
                     }
                     showMessage(errorMessage, 'text-red-600');
                     console.error("Signup Error:", error.message);
@@ -513,7 +494,7 @@
 
 
         // ---------------------------------------------
-        // 🚀 FIREBASE: Toggle Mode Function 
+        //  FIREBASE: Toggle Mode Function 
         // ---------------------------------------------
         function toggleFormMode() {
             isLoginMode = !isLoginMode;
@@ -524,16 +505,19 @@
             forgotPasswordGroup.classList.toggle('hidden', !isLoginMode);
             
             // --- REQUIRED ATTRIBUTES & CLEARING FIELDS ---
+            // Set 'required' attribute for sign-up fields
             [firstNameInput, lastNameInput, dobInput, confirmPasswordInput].forEach(input => {
                 input.required = !isLoginMode;
                 input.value = ''; // Clear input fields
             });
 
             // Handle 'required' for the gender radios
-            genderRadios.forEach(radio => {
-                radio.required = !isLoginMode;
-                radio.checked = false; // Clear radio selection
-            });
+            document.getElementById('gender-female').required = !isLoginMode;
+            document.getElementById('gender-male').required = !isLoginMode;
+            
+            // Clear radio selection when switching back to Login mode
+            document.getElementById('gender-female').checked = false;
+            document.getElementById('gender-male').checked = false;
             
             // Clear general login fields
             emailInput.value = '';
@@ -547,26 +531,26 @@
         }
         
         // ---------------------------------------------
-        // 🚀 FIREBASE: Guest Sign In Function 
+        //  FIREBASE: Guest Sign In Function 
         // ---------------------------------------------
-        function signInAsGuest() {
+        /**
+         * Handles Guest Sign In (uses Firebase Anonymous Authentication)
+         */
+         function signInAsGuest() {
             const langData = translations[currentLang];
             showMessage(langData.msgGuestSignIn, 'text-gray-500');
             
             auth.signInAnonymously()
                 .then(() => {
                     showMessage(langData.msgGuestWelcome, 'text-blue-600');
-                    // ⭐️ REAL REDIRECT: Redirect the user after successful anonymous login
+                    // REAL REDIRECT: Redirect the user after successful anonymous login
                     setTimeout(() => {
-                        // Check your path here. If this file is inside 'Account', 
-                        // '../home/home.html' means moving up one level, then into 'home'.
                         window.location.href = 'Home/home.html'; 
                     }, 1500); 
                 })
                 .catch((error) => {
                     let errorMessage = "Error signing in as guest.";
                     if (error.code === 'auth/operation-not-allowed') {
-                        // This is the most likely error if the button doesn't work!
                         errorMessage = "Guest sign-in is disabled in Firebase settings.";
                     }
                     showMessage(errorMessage, 'text-red-600');
@@ -582,26 +566,15 @@
 
         // --- Initialization ---
 
-        // 🛠️ FIX: Video logic initialization
-        if (videoElement) {
-            videoElement.addEventListener('ended', handleVideoEnd);
-            videoElement.addEventListener('error', handleVideoEnd);
-            // Also call handleVideoEnd immediately if the video can't start (e.g., if there's no source)
-            videoElement.addEventListener('stalled', handleVideoEnd); 
-
-            // Prevent scrolling while video is playing
-            document.body.classList.add('overflow-hidden');
-            
-        } else {
-            // Fallback if video element doesn't exist
-            authContentContainer.classList.remove('hidden');
-            videoContainer.classList.add('hidden-full');
-            document.body.classList.remove('overflow-hidden');
-        }
+        // Hide main content until video is done
+        authContentContainer.classList.add('hidden-full');
         
-        // ⭐️ FIXED: The event listener is now linked to the correct button ID
-        guestSignInBtn.addEventListener('click', function(e) {
-            e.preventDefault(); 
+        // Event listeners for video end/error
+        videoElement.addEventListener('ended', handleVideoEnd);
+        videoElement.addEventListener('error', handleVideoEnd);
+        
+        // Event listeners for form actions
+        document.getElementById('go-home-btn').addEventListener('click', function() {
             signInAsGuest();
         });
 
@@ -624,7 +597,7 @@
             }
         });
 
-        // Initialize translation on load
+        // Initial setup
         applyTranslations();
         
     </script>
