@@ -12,7 +12,7 @@
 
     <style>
         /* Custom styles from the original file for consistency */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        /* REDUNDANT @import REMOVED HERE */
         
         :root {
             --primary-color: #4f46e5; /* indigo-600 */
@@ -120,12 +120,12 @@
         </div>
 
         <nav class="hidden md:flex flex-grow justify-center mx-10">
-            <a href="calories.html" class="nav-link" data-translate-key="calories" id="nav-calories">Calories</a>
-            <a href="eathealrhy.html" class="nav-link" data-translate-key="eat-healthy" id="nav-eat-healthy">Eat Healthy</a>
-            <a href="plane.html" class="nav-link" data-translate-key="plans" id="nav-plans">Plans</a>
-            <a href="club.html" class="nav-link" data-translate-key="clubs" id="nav-clubs">Clubs</a> 
-            <a href="survey.html" class="nav-link" data-translate-key="survey" id="nav-survey">Survey</a>
-            <a href="contact us.html" class="nav-link" data-translate-key="contact-us" id="nav-contact-us">Contact Us</a>
+            <a href="Calories/Calories.html" class="nav-link" data-translate-key="calories" id="nav-calories">Calories</a>
+            <a href="Eat Healthy/Eat Healthy.html" class="nav-link" data-translate-key="eat-healthy" id="nav-eat-healthy">Eat Healthy</a>
+            <a href="Plans/Plans.html" class="nav-link" data-translate-key="plans" id="nav-plans">Plans</a>
+            <a href="Clubs/Clubs.html" class="nav-link" data-translate-key="clubs" id="nav-clubs">Clubs</a> 
+            <a href="Survey/Survey.html" class="nav-link" data-translate-key="survey" id="nav-survey">Survey</a>
+            <a href="Contact Us/Contact Us.html" class="nav-link" data-translate-key="contact-us" id="nav-contact-us">Contact Us</a>
         </nav>
 
         <div class="icons-container flex items-center gap-2 md:gap-4">
@@ -214,7 +214,7 @@
         // Key for localStorage (must match the key in your clubs page)
         const CART_STORAGE_KEY = 'malfitShoppingCart';
         
-        // --- 1. GLOBAL AND TRANSLATION LOGIC (Copied from clubs page for consistency) ---
+        // --- 1. GLOBAL AND TRANSLATION LOGIC ---
         
         let currentLang = localStorage.getItem('currentLang') || 'en'; 
 
@@ -281,6 +281,7 @@
 
         // Function to update static page elements (headers, footer, and navigation links)
         function updateStaticText() {
+            document.title = currentLang === 'ar' ? 'ملفت | سلة التسوق' : 'MALFIT | Shopping Cart';
             checkoutTitle.textContent = staticTranslations['checkout-title'][currentLang];
             checkoutSubtitle.textContent = staticTranslations['checkout-subtitle'][currentLang];
             footerText.textContent = staticTranslations['footer-text'][currentLang];
@@ -302,7 +303,7 @@
                 if (desktopEl) {
                     desktopEl.textContent = staticTranslations[key][currentLang];
                 }
-                document.querySelectorAll(`[data-translate-key="${key}"]`).forEach(mobileEl => {
+                document.querySelectorAll(`#mobile-nav a[data-translate-key="${key}"]`).forEach(mobileEl => {
                     mobileEl.textContent = staticTranslations[key][currentLang];
                 });
             });
@@ -334,6 +335,7 @@
         function toggleMobileMenu() {
             mobileNav.classList.toggle('hidden'); 
             const menuIconSvg = menuToggleBtn.querySelector('svg');
+            // Toggle the icon from 'menu' to 'x'
             if (mobileNav.classList.contains('hidden')) {
                  menuIconSvg.outerHTML = '<svg data-lucide="menu" width="24" height="24"></svg>';
             } else {
@@ -345,7 +347,7 @@
         // --- 2. CART RENDERING AND LOGIC ---
 
         /**
-         * Removes an item from the cart by its name and updates storage/UI.
+         * Removes an item from the cart by its name (English key) and updates storage/UI.
          * @param {string} itemName - The name of the item to remove (English key).
          */
         function removeItemFromCart(itemName) {
@@ -400,7 +402,7 @@
                 // Item Type (Hidden on small screens)
                 const typeCell = document.createElement('td');
                 typeCell.className = 'hidden sm:table-cell text-sm';
-                typeCell.textContent = item.type; // Type is currently the same in both languages
+                typeCell.textContent = item.type; // Type is consistently in English (e.g., 'Lifetime', 'Monthly')
 
                 // Price (Always Free in this phase)
                 const priceCell = document.createElement('td');
@@ -449,7 +451,7 @@
                 if (payButton.disabled) return;
                 alertMessage(currentLang === 'ar' ? 'تمت معالجة الطلب بنجاح. سيتم توجيهك إلى صفحة التأكيد.' : 'Order processed successfully. Redirecting to confirmation page.');
                 
-                // In a real application, you would clear the cart here:
+                // In a real application, you would clear the cart and redirect:
                 // localStorage.removeItem(CART_STORAGE_KEY);
                 // window.location.href = 'confirmation.html';
             };
