@@ -210,8 +210,8 @@
                         class="w-full bg-gray-100 text-gray-800 font-semibold py-2.5 rounded-lg border border-gray-300 hover:bg-gray-200 transition duration-150 focus:outline-none focus:ring-2 focus:ring-gray-400">
                     Create Account
                 </button>
-
-                <button data-i18n-key="guestSignIn" id="go-home-btn"
+                
+                <button data-i18n-key="guestSignIn" id="guest-sign-in-btn"
                         class="w-full bg-white text-purple-600 font-semibold py-2.5 rounded-lg border-2 border-purple-600 hover:bg-purple-50 transition duration-150 focus:outline-none focus:ring-2 focus:ring-purple-600/50">
                     Sign In as Guest
                 </button>
@@ -246,6 +246,9 @@
         const confirmPasswordGroup = document.getElementById('confirm-password-group');
         const forgotPasswordGroup = document.getElementById('forgot-password-group');
         const genderRadios = document.querySelectorAll('input[name="gender"]');
+        
+        // ⭐️ FIXED: The button element for the guest sign-in
+        const guestSignInBtn = document.getElementById('guest-sign-in-btn'); 
 
         // --- Localization Data (Unchanged) ---
         const translations = {
@@ -501,7 +504,7 @@
                          errorMessage = langData.msgPassRequirements;
                     } else {
                          // Fallback for other errors like 'auth/invalid-email'
-                        errorMessage = `Error: ${error.message.split('(auth/')[0].trim() || 'Please check your input.'}`;
+                         errorMessage = `Error: ${error.message.split('(auth/')[0].trim() || 'Please check your input.'}`;
                     }
                     showMessage(errorMessage, 'text-red-600');
                     console.error("Signup Error:", error.message);
@@ -555,12 +558,15 @@
                     showMessage(langData.msgGuestWelcome, 'text-blue-600');
                     // ⭐️ REAL REDIRECT: Redirect the user after successful anonymous login
                     setTimeout(() => {
+                        // Check your path here. If this file is inside 'Account', 
+                        // '../home/home.html' means moving up one level, then into 'home'.
                         window.location.href = '../home/home.html'; 
                     }, 1500); 
                 })
                 .catch((error) => {
                     let errorMessage = "Error signing in as guest.";
                     if (error.code === 'auth/operation-not-allowed') {
+                        // This is the most likely error if the button doesn't work!
                         errorMessage = "Guest sign-in is disabled in Firebase settings.";
                     }
                     showMessage(errorMessage, 'text-red-600');
@@ -593,7 +599,8 @@
             document.body.classList.remove('overflow-hidden');
         }
         
-        document.getElementById('go-home-btn').addEventListener('click', function(e) {
+        // ⭐️ FIXED: The event listener is now linked to the correct button ID
+        guestSignInBtn.addEventListener('click', function(e) {
             e.preventDefault(); 
             signInAsGuest();
         });
