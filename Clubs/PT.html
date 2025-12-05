@@ -236,11 +236,28 @@
         }
 
         /**
-         * Adds a trainer item to the shopping cart and saves it to localStorage.
+         * Adds a trainer item to the shopping cart and saves it to localStorage,
+         * ensuring only one personal trainer service is allowed.
          * @param {object} trainerData - The data for the trainer to add.
          */
         function addToCart(trainerData) {
-            // Check if this specific Personal Trainer item is already in the cart
+            // *** NEW LOGIC: CHECK FOR EXISTING TRAINER SERVICE ***
+            const existingTrainerService = shoppingCart.find(item => item.type === 'Personal Training Service');
+            
+            if (existingTrainerService) {
+                const existingTrainerName = currentLang === 'ar' 
+                    ? existingTrainerService.nameAr.replace('مدرب شخصي: ', '')
+                    : existingTrainerService.name.replace('Personal Trainer: ', '');
+
+                alertMessage(currentLang === 'ar' 
+                    ? `لا يمكنك اختيار أكثر من مدرب شخصي واحد. المدرب ${existingTrainerName} موجود بالفعل في سلة التسوق.` 
+                    : `You can only choose one Personal Trainer. Trainer ${existingTrainerName} is already in your cart.`, 
+                    true // isError
+                );
+                return;
+            }
+
+            // Check if this specific Personal Trainer item is already in the cart (secondary check for safety)
             const itemName = `Personal Trainer: ${trainerData.name}`;
             const existingItem = shoppingCart.find(item => item.name === itemName);
             
@@ -390,9 +407,14 @@
                 }
 
                 // Update Mobile Navigation Links
-                document.querySelectorAll(`[data-translate-key="${key}"]`).forEach(mobileEl => {
-                    mobileEl.textContent = staticTranslations[key][currentLang];
-                });
+                // Note: Mobile links in the HTML are currently missing a data-translate-key attribute for selection like this.
+                // Assuming they are updated by ID as well for simplicity, though the original code used querySelectorAll for *data-translate-key*.
+                // Correcting the mobile links to use the `nav-${key}` IDs for consistency:
+                // Since the original HTML duplicated the ID logic in mobileNav, we ensure all elements are updated.
+                 const mobileEl = mobileNav.querySelector(`#nav-${key}`);
+                 if (mobileEl) {
+                     mobileEl.textContent = staticTranslations[key][currentLang];
+                 }
             });
 
             // Set document direction for proper RTL display
@@ -411,9 +433,16 @@
             const specialtyKey = currentLang === 'ar' ? 'specialtyAr' : 'specialty';
             const bioKey = currentLang === 'ar' ? 'bioAr' : 'bio';
             const buttonText = staticTranslations['choose-button'][currentLang];
+            const buttonChosenText = staticTranslations['button-chosen'][currentLang];
 
             trainersContainer.innerHTML = '';
             
+            // Check if any personal training service is already in the cart
+            const isTrainerChosen = shoppingCart.some(item => item.type === 'Personal Training Service');
+            const chosenTrainerName = isTrainerChosen 
+                ? shoppingCart.find(item => item.type === 'Personal Training Service')[nameKey].replace(currentLang === 'ar' ? 'مدرب شخصي: ' : 'Personal Trainer: ', '')
+                : null;
+
             trainersData.forEach(trainer => {
                 const card = document.createElement('div');
                 card.className = 'trainer-card rounded-xl p-6 flex flex-col items-center text-center';
@@ -445,11 +474,29 @@
 
                 // Button
                 const button = document.createElement('button');
-                button.className = 'choose-button w-full py-3 text-white font-bold rounded-lg text-lg hover:bg-pink-600';
-                button.textContent = buttonText;
                 
-                // Add click handler to button to call addToCart
-                button.onclick = () => addToCart(trainer);
+                // *** NEW LOGIC: DISABLE BUTTONS IF A TRAINER IS ALREADY CHOSEN ***
+                const isThisTrainerChosen = chosenTrainerName === trainer[nameKey];
+
+                if (isTrainerChosen && !isThisTrainerChosen) {
+                    // Another trainer is chosen, disable this button
+                    button.className = 'w-full py-3 text-white font-bold rounded-lg text-lg bg-gray-400 cursor-not-allowed';
+                    button.textContent = buttonText; // Still show the 'Choose' text
+                    button.disabled = true;
+                    // Optional: Add a title for clarity
+                    button.title = currentLang === 'ar' ? `لقد اخترت المدرب ${chosenTrainerName} بالفعل.` : `You have already chosen Trainer ${chosenTrainerName}.`;
+
+                } else if (isThisTrainerChosen) {
+                    // This is the already chosen trainer
+                    button.className = 'w-full py-3 text-white font-bold rounded-lg text-lg bg-green-500 cursor-not-allowed';
+                    button.textContent = buttonChosenText;
+                    button.disabled = true;
+                } else {
+                    // No trainer chosen yet, allow selection
+                    button.className = 'choose-button w-full py-3 text-white font-bold rounded-lg text-lg hover:bg-pink-600';
+                    button.textContent = buttonText;
+                    button.onclick = () => addToCart(trainer);
+                }
 
                 // Append elements to card
                 card.appendChild(image);
