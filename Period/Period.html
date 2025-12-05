@@ -1,1 +1,783 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-translate-key="page_title">MALFIT | Period Tracker</title>
 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Define the default (pink) theme for this page */
+        :root, 
+        .female-theme {
+            --primary-color: #ec4899; /* pink-600 */
+            --primary-light: #fdf2f8; /* pink-50 */
+        }
+        
+        /* Reset elements that use the primary color back to pink */
+        .text-indigo-600 {
+            color: var(--primary-color) !important;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f0f4f8; 
+            overflow-x: hidden; 
+            min-height: 100vh;
+            position: relative; 
+        }
+
+        /* Apply Arabic font when direction is RTL */
+        html[dir="rtl"] body {
+            font-family: 'Cairo', sans-serif;
+            text-align: right;
+        }
+
+        /* --- Custom Nav Link Styles (Pill-shaped) --- */
+        .nav-link {
+            text-decoration: none;
+            color: #474646;
+            font-weight: 500;
+            padding: 10px 15px; 
+            margin-right: 10px;
+            transition: color 0.2s, background-color 0.2s, transform 0.1s;
+            border-radius: 9999px; /* Pill shape */
+            white-space: nowrap;
+        }
+        /* Highlight the active link for this page */
+        .nav-link.active-period {
+            color: var(--primary-color); 
+            background-color: var(--primary-light); 
+            font-weight: 700;
+        }
+        .nav-link:hover {
+            color: var(--primary-color); 
+            background-color: var(--primary-light); 
+            transform: translateY(-1px);
+        }
+        
+        /* Adjustments for RTL layout for links */
+        html[dir="rtl"] header nav .nav-link {
+            margin-right: 0;
+            margin-left: 10px;
+        }
+
+        /* --- Header Specific Styles --- */
+        header {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); 
+            background-color: #ffffff;
+            transition: box-shadow 0.3s ease-in-out;
+        }
+        
+        /* --- Mobile Menu Styles --- */
+        #mobile-menu {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            background-color: #ffffff;
+            position: absolute;
+            top: 70px; 
+            right: 0;
+            left: 0;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100; 
+        }
+        #mobile-menu.active {
+            max-height: 500px;
+            opacity: 1;
+            padding: 10px 0;
+        }
+        #mobile-menu a {
+            display: block;
+            padding: 12px 20px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #333;
+            text-decoration: none;
+            text-align: left; 
+            transition: background-color 0.15s;
+        }
+        #mobile-menu a:hover {
+            background-color: var(--primary-light);
+        }
+        html[dir="rtl"] #mobile-menu a {
+            text-align: right; 
+        }
+
+        /* Icon Button Styling */
+        .icon-btn {
+            padding: 10px;
+            border-radius: 50%;
+            transition: background-color 0.2s, color 0.2s;
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+            color: #4b5563; 
+        }
+        .icon-btn:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+        
+        /* Enhanced Action Button Gradient */
+        .action-btn {
+            background-image: linear-gradient(to right, var(--primary-color) 0%, var(--primary-color) 100%); 
+            transition: all 0.2s ease;
+        }
+        .action-btn:hover {
+            box-shadow: 0 8px 15px rgba(236, 72, 153, 0.4); /* Pink Shadow */
+            transform: scale(1.02);
+            opacity: 0.95;
+        }
+        
+        /* Centering for the main card container */
+        .min-h-main {
+            min-height: calc(100vh - 140px);
+        }
+        @media (min-width: 768px) {
+            .min-h-main {
+                min-height: calc(100vh - 120px); 
+            }
+        }
+        
+        /* Period Tracker Specific Styles */
+        .tracker-input {
+            padding: 10px;
+            border: 2px solid #fbcfe8; /* pink-200 */
+            border-radius: 0.5rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+            background-color: #ffffff;
+            color: #1f2937;
+        }
+        .tracker-input:focus {
+            outline: none;
+            border-color: var(--primary-color); /* Uses dynamic primary color */
+            box-shadow: 0 0 0 3px var(--primary-light); /* Uses dynamic primary light color */
+        }
+        .cycle-info-box {
+            background-color: var(--primary-light); /* pink-50 */
+            border-left: 4px solid var(--primary-color); /* pink-600 */
+            padding-bottom: 0.5rem; /* Adjust padding for new button */
+        }
+        html[dir="rtl"] .cycle-info-box {
+            border-left: none;
+            border-right: 4px solid var(--primary-color); 
+        }
+        
+        /* Calendar/Date Picker styling (basic) */
+        .date-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            text-align: center;
+        }
+        .day-label {
+            font-weight: 600;
+            color: #6b7280;
+            padding: 5px 0;
+            font-size: 0.8rem;
+        }
+        .day-cell {
+            padding: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.15s, transform 0.1s;
+            font-size: 0.9rem;
+        }
+        .day-cell:hover:not(.current-day):not(.cycle-day) {
+            background-color: #fce7f3; /* pink-100 */
+        }
+        .current-day {
+            background-color: #f43f5e; /* rose-500 */
+            color: white;
+            font-weight: bold;
+        }
+        .cycle-day {
+            background-color: var(--primary-color); 
+            color: white;
+            font-weight: bold;
+            border: 2px solid #f472b6; /* pink-400 */
+        }
+        .cycle-prediction {
+            background-color: #f9a8d4; /* pink-300 */
+            color: white;
+        }
+
+        /* UPDATED: Amenorrhea Warning Style */
+        .warning-box-style {
+            background-color: #fef2f2; /* red-50 */
+            border: 2px solid #f87171; /* red-400 */
+            border-left: 6px solid #ef4444; /* red-500 for left border */
+        }
+        html[dir="rtl"] .warning-box-style {
+            border-left: none;
+            border-right: 6px solid #ef4444;
+        }
+        .warning-text {
+            color: #991b1b; /* red-800 */
+        }
+        .warning-btn {
+            background-color: #fca5a5; /* red-300 */
+            color: #991b1b;
+            padding: 8px 16px;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .warning-btn:hover {
+            background-color: #fecaca; /* red-200 */
+        }
+
+        /* --- FALLING ITEM STYLES (NEW) --- */
+        .falling-item {
+            position: fixed;
+            z-index: 0; /* Ensure it stays behind main content */
+            pointer-events: none; /* Allows clicks on elements beneath it */
+            white-space: nowrap;
+            opacity: 0.6; /* Slight transparency */
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body class="female-theme">
+    
+    <header class="sticky top-0 z-50 w-full flex items-center justify-between px-4 md:px-8 lg:px-16 py-3 bg-white border-b border-gray-100">
+        
+        <div class="flex items-center">
+            <h1 class="text-3xl font-extrabold text-indigo-600 tracking-wide" data-translate-key="logo">MALFIT</h1>
+        </div>
+
+        <nav class="hidden md:flex flex-grow justify-center mx-10">
+            <a href="calories.html" class="nav-link" data-translate-key="nav_calories">Calories</a>
+            <a href="period.html" class="nav-link active-period" data-translate-key="nav_period">Period</a> 
+            <a href="eathealrhy.html" class="nav-link" data-translate-key="nav_eat_healthy">Eat Healthy</a>
+            <a href="plane.html" class="nav-link" data-translate-key="nav_plans">Plans</a>
+            <a href="club.html" class="nav-link" data-translate-key="nav_clubs">Clubs</a>
+            <a href="survey.html" class="nav-link" data-translate-key="nav_survey">Survey</a>
+            <a href="contact us.html" class="nav-link" data-translate-key="nav_contact_us">Contact Us</a>
+        </nav>
+
+        <div class="icons-container flex items-center gap-2 md:gap-4">
+            
+            <button id="lang-toggle" class="icon-btn w-10 h-10 border-2 border-gray-300 hover:border-pink-600">
+                <span id="current-lang" class="text-sm font-bold">EN</span> 
+            </button>
+
+            <a href="afterthelogpage.html" class="icon-btn hover:bg-pink-50">
+                <svg data-lucide="home" width="24" height="24"></svg>
+            </a>
+
+            <a href="accountData.html" class="icon-btn hover:bg-pink-50">
+                <svg data-lucide="user" width="24" height="24"></svg>
+            </a>
+
+            <button id="menu-toggle" class="md:hidden icon-btn">
+                <svg data-lucide="menu" width="24" height="24"></svg>
+            </button>
+        </div>
+    </header>
+
+    <div id="mobile-menu" class="md:hidden">
+        <a href="calories.html" data-translate-key="nav_calories">Calories</a>
+        <a href="period.html" class="active-period" data-translate-key="nav_period">Period</a> 
+        <a href="eathealrhy.html" data-translate-key="nav_eat_healthy">Eat Healthy</a>
+        <a href="plane.html" data-translate-key="nav_plans">Plans</a>
+        <a href="club.html" data-translate-key="nav_clubs">Clubs</a>
+        <a href="survey.html" data-translate-key="nav_survey">Survey</a>
+        <a href="contact us.html" data-translate-key="nav_contact_us">Contact Us</a>
+    </div>
+
+    <main class="flex flex-col items-center justify-start p-4 min-h-main"> 
+        
+        <div id="amenorrhea-warning" class="warning-box-style rounded-xl p-6 shadow-xl w-full max-w-4xl mb-6 hidden">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between">
+                <div class="flex items-start mb-3 sm:mb-0">
+                    <svg data-lucide="alert-triangle" width="24" height="24" class="rtl:ml-3 rtl:mr-0 ltr:mr-3 ltr:ml-0 warning-text flex-shrink-0"></svg>
+                    <div>
+                        <p class="font-bold text-lg warning-text" data-translate-key="warning_title">🚨 Medical Attention Recommended</p>
+                        <p id="warning-message" class="text-sm warning-text mt-1" data-translate-key="warning_message">If your period has not started for 3 months or more, please consult a doctor for a professional health check-up.</p>
+                    </div>
+                </div>
+                <button onclick="removeWarning()" class="warning-btn w-full sm:w-auto mt-2 sm:mt-0 flex-shrink-0" data-translate-key="btn_ok">OK, I Understand</button>
+            </div>
+        </div>
+
+        <div class="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <div class="lg:col-span-1 bg-white shadow-xl rounded-3xl p-6 border border-pink-50/50">
+                <div class="text-center">
+                    <div class="mx-auto w-16 h-16 bg-gradient-to-br from-pink-500 to-rose-500 rounded-full flex items-center justify-center shadow-lg">
+                        <svg data-lucide="droplet" width="28" height="28" stroke="white" stroke-width="2.5"></svg>
+                    </div>
+                    <h1 class="mt-4 text-2xl font-extrabold text-gray-900 leading-tight" data-translate-key="tracker_title">My Cycle Log</h1>
+                    <p class="mt-1 text-sm text-gray-500" data-translate-key="tracker_subtitle">Log your last period to track your cycle.</p>
+                </div>
+
+                <div class="space-y-6 mt-6">
+                    <div>
+                        <label for="last-period-date" class="block text-sm font-medium text-gray-700 mb-1" data-translate-key="label_last_period">Date of Last Period Start</label>
+                        <input type="date" id="last-period-date" class="tracker-input">
+                    </div>
+
+                    <div>
+                        <label for="cycle-length" class="block text-sm font-medium text-gray-700 mb-1" data-translate-key="label_cycle_length">Average Cycle Length (Days)</label>
+                        <input type="number" id="cycle-length" min="21" max="35" class="tracker-input" placeholder="e.g., 28" value="28">
+                        <p class="text-xs text-gray-400 mt-1" data-translate-key="hint_cycle_length">Usually between 21 and 35 days.</p>
+                    </div>
+
+                    <div>
+                        <label for="period-length" class="block text-sm font-medium text-gray-700 mb-1" data-translate-key="label_period_length">Period Duration (Days)</label>
+                        <input type="number" id="period-length" min="3" max="7" class="tracker-input" placeholder="e.g., 5" value="5">
+                        <p class="text-xs text-gray-400 mt-1" data-translate-key="hint_period_length">How long your period lasts.</p>
+                    </div>
+                    
+                    <button onclick="calculateCycle()" 
+                        class="action-btn w-full flex items-center justify-center px-8 py-3 text-lg font-semibold rounded-xl shadow-lg text-white">
+                        <svg data-lucide="heart-pulse" width="20" height="20" class="mr-2"></svg>
+                        <span data-translate-key="btn_calculate_cycle">Calculate My Cycle</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2 space-y-6">
+                
+                <div id="cycle-info" class="cycle-info-box rounded-xl p-6 shadow-md hidden">
+                    <h2 class="text-xl font-bold text-pink-800 mb-3" data-translate-key="info_title">My Next Cycle Predictions</h2>
+                    
+                    <div class="grid grid-cols-2 gap-4 text-sm mb-4">
+                        <div>
+                            <p class="text-gray-700 font-medium" data-translate-key="info_next_period">Next Period Start:</p>
+                            <p id="next-period-output" class="text-lg font-bold text-pink-600"></p>
+                        </div>
+                        <div>
+                            <p class="text-gray-700 font-medium" data-translate-key="info_ovulation">Ovulation Date:</p>
+                            <p id="ovulation-output" class="text-lg font-bold text-pink-600"></p>
+                        </div>
+                        <div class="col-span-2">
+                            <p class="text-gray-700 font-medium" data-translate-key="info_fertile_window">Peak Fertile Window:</p>
+                            <p id="fertile-window-output" class="text-lg font-bold text-pink-600"></p>
+                        </div>
+                    </div>
+                    
+                    <button onclick="saveCyclePlan()" 
+                        class="action-btn w-full flex items-center justify-center px-4 py-3 text-base font-semibold rounded-xl shadow-lg text-white mt-4 transition-all duration-200">
+                        <svg data-lucide="calendar-check" width="20" height="20" class="rtl:ml-2 rtl:mr-0 ltr:mr-2 ltr:ml-0"></svg>
+                        <span data-translate-key="btn_add_cycle_to_plan">Add Cycle to Plan</span>
+                    </button>
+                </div>
+
+                <div class="bg-white shadow-xl rounded-3xl p-6 border border-pink-50/50">
+                    <div class="flex justify-between items-center mb-4">
+                        <button onclick="changeMonth(-1)" class="icon-btn">
+                            <svg data-lucide="chevron-left" width="20" height="20"></svg>
+                        </button>
+                        <h3 id="current-month-year" class="text-xl font-semibold text-gray-800" data-translate-key="calendar_display"></h3>
+                        <button onclick="changeMonth(1)" class="icon-btn">
+                            <svg data-lucide="chevron-right" width="20" height="20"></svg>
+                        </button>
+                    </div>
+
+                    <div id="calendar-week-days" class="date-grid">
+                        </div>
+
+                    <div id="calendar-dates" class="date-grid mt-2">
+                        </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="p-6 bg-white border-t border-gray-100 shadow-inner">
+        <p class="text-gray-600 text-center text-sm" data-translate-key="footer_text">&copy; 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi</p>
+    </footer>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script> 
+
+    <script>
+        // --- GLOBAL STATE ---
+        let currentLang = localStorage.getItem('malfitMainLang') || 'en';
+        
+        let lastPeriodStart = null; // Last logged date (Date object)
+        let nextPeriodDate = null; // Next calculated date (Date object) - New for planning
+        let cycleLength = 28;      // Average cycle length (Days)
+        let periodDuration = 5;    // Period length (Days)
+        let currentCalendarDate = new Date(); // Date object to track the month being displayed
+        
+        const AMENORRHEA_DAYS = 90; // 3 months for warning
+
+        // --- TRANSLATIONS (Updated) ---
+        const translations = {
+            'en': {
+                'page_title': 'MALFIT | Period Tracker',
+                'logo': 'MALFIT',
+                'nav_calories': 'Calories',
+                'nav_period': 'Period',
+                'nav_eat_healthy': 'Eat Healthy',
+                'nav_plans': 'Plans',
+                'nav_clubs': 'Clubs',
+                'nav_survey': 'Survey',
+                'nav_contact_us': 'Contact Us',
+                'footer_text': '© 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi',
+                'lang_code': 'AR', 
+                
+                // Tracker Specific
+                'tracker_title': 'My Cycle Log',
+                'tracker_subtitle': 'Log your last period to track your cycle.',
+                'label_last_period': 'Date of Last Period Start',
+                'label_cycle_length': 'Average Cycle Length (Days)',
+                'hint_cycle_length': 'Usually between 21 and 35 days.',
+                'label_period_length': 'Period Duration (Days)',
+                'hint_period_length': 'How long your period lasts.',
+                'btn_calculate_cycle': 'Calculate My Cycle',
+                'btn_add_cycle_to_plan': 'Add Cycle to Plan', // NEW
+
+                // Cycle Info
+                'info_title': 'My Next Cycle Predictions',
+                'info_next_period': 'Next Period Start:',
+                'info_ovulation': 'Ovulation Date:',
+                'info_fertile_window': 'Peak Fertile Window:',
+                'calendar_display': 'Calendar',
+                'day_names': ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                'month_names': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                'alert_input_missing': 'Please enter a valid last period start date and check the length inputs.',
+                'alert_no_cycle_to_save': 'Please calculate your next cycle dates before saving the plan.',
+                'alert_cycle_plan_saved': 'Cycle plan saved! Redirecting to the Plans page.',
+
+                // UPDATED: Amenorrhea Warning
+                'warning_title': '🚨 Medical Attention Recommended',
+                'warning_message': 'If your period has not started for 3 months or more, please consult a doctor for a professional health check-up.',
+                'btn_ok': 'OK, I Understand',
+            },
+            'ar': {
+                'page_title': 'ملفت | متتبع الدورة الشهرية',
+                'logo': 'ملفت',
+                'nav_calories': 'السعرات الحرارية',
+                'nav_period': 'الدورة الشهرية',
+                'nav_eat_healthy': 'تناول طعام صحي',
+                'nav_plans': 'الخطط',
+                'nav_clubs': 'الأندية',
+                'nav_survey': 'الاستبيان',
+                'nav_contact_us': 'اتصل بنا',
+                'footer_text': '© 2025، مشروع تخرج، مدى صالح، أحمد خليفة، لورا عادل، المشرف الدكتور عبد الله محمد خالد القادومي',
+                'lang_code': 'EN', 
+                
+                // Tracker Specific
+                'tracker_title': 'سجل دورتي',
+                'tracker_subtitle': 'سجلي آخر فترة لبدء تتبع دورتك.',
+                'label_last_period': 'تاريخ بدء آخر دورة شهرية',
+                'label_cycle_length': 'متوسط طول الدورة (بالأيام)',
+                'hint_cycle_length': 'عادة ما بين 21 و 35 يوماً.',
+                'label_period_length': 'مدة الدورة (بالأيام)',
+                'hint_period_length': 'كم يوماً تستمر دورتك.',
+                'btn_calculate_cycle': 'احسب دورتي',
+                'btn_add_cycle_to_plan': 'أضف الدورة إلى الخطة', // NEW
+
+                // Cycle Info
+                'info_title': 'توقعات دورتي القادمة',
+                'info_next_period': 'تاريخ بدء الدورة القادمة:',
+                'info_ovulation': 'تاريخ التبويض:',
+                'info_fertile_window': 'فترة الخصوبة القصوى:',
+                'calendar_display': 'التقويم',
+                'day_names': ['أحد', 'اثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت'],
+                'month_names': ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'],
+                'alert_input_missing': 'الرجاء إدخال تاريخ بدء آخر دورة شهرية صالح والتحقق من أطوال الدورة.',
+                'alert_no_cycle_to_save': 'الرجاء حساب تواريخ الدورة القادمة قبل حفظ الخطة.',
+                'alert_cycle_plan_saved': 'تم حفظ خطة الدورة! يتم التوجيه إلى صفحة الخطط.',
+
+                // UPDATED: Amenorrhea Warning
+                'warning_title': '🚨 يُنصح بالاهتمام الطبي',
+                'warning_message': 'إذا لم تبدأ دورتك الشهرية لمدة 3 أشهر أو أكثر، يرجى استشارة الطبيب لإجراء فحص صحي متخصص.',
+                'btn_ok': 'حسناً، أتفهم',
+            }
+        };
+
+        // --- AMENORRHEA WARNING LOGIC (Unchanged) ---
+        function checkAmenorrheaWarning() {
+            const warningBox = document.getElementById('amenorrhea-warning');
+            
+            // Check localStorage to see if the user has already dismissed the warning recently
+            const dismissed = localStorage.getItem('amenorrheaWarningDismissed');
+            if (dismissed === 'true') {
+                 warningBox.classList.add('hidden');
+                 return;
+            }
+
+            if (lastPeriodStart) {
+                const today = new Date();
+                const timeDiff = today.getTime() - lastPeriodStart.getTime();
+                const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+                if (daysDiff >= AMENORRHEA_DAYS) {
+                    warningBox.classList.remove('hidden');
+                } else {
+                    warningBox.classList.add('hidden');
+                }
+            } else {
+                warningBox.classList.add('hidden');
+            }
+        }
+
+        function removeWarning() {
+            document.getElementById('amenorrhea-warning').classList.add('hidden');
+            // Store dismissal state
+            localStorage.setItem('amenorrheaWarningDismissed', 'true');
+        }
+
+
+        // --- CYCLE CALCULATION LOGIC (Updated to store nextPeriodDate) ---
+
+        function calculateCycle() {
+            const lastPeriodDateInput = document.getElementById('last-period-date').value;
+            const cycleLengthInput = parseInt(document.getElementById('cycle-length').value);
+            const periodLengthInput = parseInt(document.getElementById('period-length').value);
+
+            if (!lastPeriodDateInput || isNaN(cycleLengthInput) || isNaN(periodLengthInput) || cycleLengthInput < 21 || periodLengthInput < 3) {
+                alert(translations[currentLang].alert_input_missing);
+                return;
+            }
+
+            // Store the data in the global state
+            lastPeriodStart = new Date(lastPeriodDateInput.replace(/-/g, '/')); 
+            cycleLength = cycleLengthInput;
+            periodDuration = periodLengthInput;
+            
+            // Clear dismissal flag if a new cycle is logged (new period means no amenorrhea)
+            localStorage.removeItem('amenorrheaWarningDismissed');
+
+            // Check for the health warning after logging the new date
+            checkAmenorrheaWarning();
+
+            // --- 1. Calculate Next Period Start ---
+            let calculatedNextPeriod = new Date(lastPeriodStart);
+            calculatedNextPeriod.setDate(calculatedNextPeriod.getDate() + cycleLength);
+            
+            // Store globally for planning function
+            nextPeriodDate = calculatedNextPeriod; 
+
+            // --- 2. Calculate Ovulation Date (approximate: 14 days before next period) ---
+            let ovulationDate = new Date(nextPeriodDate);
+            ovulationDate.setDate(ovulationDate.getDate() - 14);
+
+            // --- 3. Calculate Fertile Window (approximate: 6 days leading up to and including ovulation) ---
+            let fertileStart = new Date(ovulationDate);
+            fertileStart.setDate(fertileStart.getDate() - 5);
+            let fertileEnd = new Date(ovulationDate);
+            fertileEnd.setDate(fertileEnd.getDate() + 1); 
+
+            // --- 4. Display Results ---
+            document.getElementById('next-period-output').textContent = formatDate(nextPeriodDate);
+            document.getElementById('ovulation-output').textContent = formatDate(ovulationDate);
+            document.getElementById('fertile-window-output').textContent = `${formatDate(fertileStart)} - ${formatDate(fertileEnd)}`;
+            document.getElementById('cycle-info').classList.remove('hidden');
+            
+            // --- 5. Update Calendar ---
+            currentCalendarDate = new Date(); // Reset calendar to current month/year after calculation
+            renderCalendar();
+        }
+        
+        // --- SAVE CYCLE PLAN LOGIC (NEW) ---
+
+        function saveCyclePlan() {
+            if (!nextPeriodDate) {
+                alert(translations[currentLang].alert_no_cycle_to_save);
+                return;
+            }
+
+            const planData = {
+                type: 'period',
+                nextPeriodStart: nextPeriodDate.toISOString().split('T')[0],
+                cycleLength: cycleLength,
+                periodDuration: periodDuration,
+                dateSaved: new Date().toISOString()
+            };
+
+            // Save the structured data to localStorage
+            localStorage.setItem('savedCyclePlan', JSON.stringify(planData));
+            
+            alert(translations[currentLang].alert_cycle_plan_saved);
+            window.location.href = 'plane.html';
+        }
+
+        // --- CALENDAR LOGIC (Unchanged) ---
+
+        function changeMonth(delta) {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + delta);
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const month = currentCalendarDate.getMonth();
+            const year = currentCalendarDate.getFullYear();
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // Display Month and Year
+            document.getElementById('current-month-year').textContent = `${translations[currentLang].month_names[month]} ${year}`;
+            
+            // Render Weekday Labels (only once or when language changes)
+            const weekDaysContainer = document.getElementById('calendar-week-days');
+            weekDaysContainer.innerHTML = translations[currentLang].day_names.map(day => 
+                `<div class="day-label">${day}</div>`
+            ).join('');
+            
+            
+            const datesContainer = document.getElementById('calendar-dates');
+            datesContainer.innerHTML = '';
+            
+            const firstDayOfMonth = new Date(year, month, 1);
+            const startingDay = firstDayOfMonth.getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // --- Add blank placeholders for the start of the month ---
+            for (let i = 0; i < startingDay; i++) {
+                datesContainer.innerHTML += '<div></div>';
+            }
+
+            // --- Draw the actual dates ---
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                date.setHours(0, 0, 0, 0); // Normalize date for comparison
+                const dateString = date.toISOString().split('T')[0];
+                let classes = 'day-cell';
+                
+                // Check if it's today
+                if (date.getTime() === today.getTime()) {
+                    classes += ' current-day';
+                }
+                
+                // Check if cycle is logged and mark period/fertile days
+                if (lastPeriodStart) {
+                    const cycleDayStatus = getCycleDayStatus(date);
+                    if (cycleDayStatus === 'period') {
+                        // Override current-day styling if it's also a period day
+                        classes = classes.replace(' current-day', '') + ' cycle-day';
+                    } else if (cycleDayStatus === 'fertile') {
+                         classes = classes.replace(' current-day', '') + ' cycle-prediction';
+                    }
+                }
+
+                datesContainer.innerHTML += `<div class="${classes}" data-date="${dateString}">${day}</div>`;
+            }
+        }
+
+        function getCycleDayStatus(dateToCheck) {
+            const dayMillis = 24 * 60 * 60 * 1000;
+            
+            if (!lastPeriodStart || cycleLength === 0) return null;
+
+            // Normalize lastPeriodStart for comparison
+            const lastPeriodNormalized = new Date(lastPeriodStart);
+            lastPeriodNormalized.setHours(0, 0, 0, 0);
+            
+            // Ensure dateToCheck is also normalized
+            dateToCheck.setHours(0, 0, 0, 0);
+
+            const daysDifference = (date1, date2) => Math.round((date1.getTime() - date2.getTime()) / dayMillis);
+            
+            let daysSinceLastPeriod = daysDifference(dateToCheck, lastPeriodNormalized);
+            
+            if (daysSinceLastPeriod < 0) {
+                 // Check if the date is in the immediate current cycle (up to periodDuration days BEFORE the last recorded date)
+                 if (daysSinceLastPeriod >= -periodDuration) {
+                     return 'period';
+                 }
+                 return null;
+            }
+            
+            let cycleDay = daysSinceLastPeriod % cycleLength; 
+
+            // 1. Check for Period Days (Days 0 to PeriodDuration - 1 in a zero-indexed cycle day counter)
+            if (cycleDay < periodDuration) {
+                return 'period';
+            }
+            
+            // 2. Check for Predicted Fertile Window 
+            // Ovulation is 14 days BEFORE next period, which is (cycleLength - 14) days AFTER last period start.
+            const ovulationDay = cycleLength - 14; 
+            const fertileStartDay = ovulationDay - 5; 
+            const fertileEndDay = ovulationDay + 1; 
+
+            if (cycleDay >= fertileStartDay && cycleDay <= fertileEndDay) {
+                return 'fertile';
+            }
+
+            return null;
+        }
+
+        // --- UTILITIES & INITIALIZATION (Completed) ---
+
+        function formatDate(date) {
+            return `${date.getDate()} ${translations[currentLang].month_names[date.getMonth()]}, ${date.getFullYear()}`;
+        }
+        
+        // ** MISSING FUNCTION START **
+        function setLanguage(newLang) {
+            currentLang = newLang;
+            localStorage.setItem('malfitMainLang', newLang);
+            const t = translations[currentLang];
+
+            // Set global HTML attributes
+            document.documentElement.setAttribute('lang', currentLang);
+            document.documentElement.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+
+            // Update language code display
+            document.getElementById('current-lang').textContent = t.lang_code;
+
+            // Update all translated elements
+            document.querySelectorAll('[data-translate-key]').forEach(element => {
+                const key = element.getAttribute('data-translate-key');
+                if (t[key]) {
+                    element.textContent = t[key];
+                }
+            });
+            
+            // Re-render the calendar to update day names and month name
+            renderCalendar();
+
+            // Re-run cycle calculation/display if data exists to update date formats
+            if (lastPeriodStart) {
+                calculateCycle(); 
+            }
+            checkAmenorrheaWarning();
+        }
+
+
+        // Language Toggle Event Listener (Completed)
+        document.getElementById('lang-toggle').addEventListener('click', () => {
+             const newLang = (currentLang === 'en') ? 'ar' : 'en';
+             setLanguage(newLang);
+        });
+
+        // Mobile Menu Toggle
+        document.getElementById('menu-toggle').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('active');
+        });
+
+        // Final Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize all Lucide icons
+            lucide.createIcons();
+            
+            // Apply initial language settings and render initial calendar
+            setLanguage(currentLang); 
+            
+            // Attempt to load and display saved data on load
+            const savedLastPeriod = localStorage.getItem('lastPeriodDateInput');
+            if (savedLastPeriod) {
+                 document.getElementById('last-period-date').value = savedLastPeriod;
+                 // It's often better to save all three values (date, cycle length, period duration)
+                 // For now, let's just use the date and assume default lengths, or manually set them.
+            }
+            
+            // We only call renderCalendar() inside setLanguage(), so we don't need a separate call here.
+
+            // Re-check warning based on stored state
+            checkAmenorrheaWarning();
+        });
+        
+    </script>
+</html>
