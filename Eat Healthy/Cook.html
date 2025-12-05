@@ -1,1 +1,625 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-translate-key="page_title">MALFIT | Recipes</title>
+    <!-- Placeholder favicon links as local paths are not functional in this environment -->
+    <link rel="icon" type="image/png" href="/favicon.ico" sizes="96x96" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script> 
 
+    <style>
+        /* Custom styles for the overall structure */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        :root {
+            /* Fallback Primary Color (Used for header links/buttons only) */
+            --primary-color: #4f46e5; /* indigo-600 */
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f0f4f8; /* Softer background */
+            overflow-x: hidden; 
+            min-height: 100vh;
+            position: relative; 
+        }
+
+        /* --- Falling Item Styles (Moving Background) --- */
+        .falling-item {
+            position: absolute;
+            user-select: none;
+            pointer-events: none; 
+            opacity: 0.3; 
+            transition: opacity 2s ease-out;
+            z-index: 0; 
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
+        }
+        
+        /* Ensure all structural elements are above the moving background */
+        header, main, footer {
+            position: relative;
+            z-index: 10; 
+        }
+        
+        /* Define a container that strictly holds the main content and prevents items from falling into the footer */
+        #page-content-wrapper {
+            position: relative;
+            min-height: calc(100vh - 80px); 
+            overflow: hidden; 
+        }
+        
+        /* --- Header Specific Styles --- */
+        header {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            background-color: #ffffff;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+
+        /* Navigation Links Style */
+        .nav-link {
+            padding: 0.5rem 0.75rem;
+            color: #4b5563; 
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-link:hover {
+            color: var(--primary-color); 
+        }
+        
+        /* General styling for header icons/buttons */
+        .icon-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem; 
+            transition: background-color 0.2s, border-color 0.2s;
+            color: #4b5563; 
+            cursor: pointer;
+        }
+        
+        /* --- Language Icon Specific Style (Circular) --- */
+        .lang-circle-btn {
+            border: 2px solid #d1d5db; /* Gray-300 border */
+            border-radius: 9999px; /* Fully circular */
+            width: 40px; 
+            height: 40px; 
+            font-weight: 600;
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.2s;
+        }
+        .lang-circle-btn:hover {
+            border-color: var(--primary-color); /* Highlight border on hover */
+        }
+
+        /* Mobile Menu styles */
+        #mobile-menu {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        #mobile-menu.active {
+            max-height: 500px; 
+            opacity: 1;
+        }
+        #mobile-menu a {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: #4b5563;
+            border-top: 1px solid #f3f4f6;
+        }
+
+        /* Recipe Card Styling - Colors are now injected via JS classes */
+        .recipe-card {
+            background-color: #ffffff;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            border: 1px solid #e5e7eb;
+            /* Using a fallback color here, but JS will set the border based on the theme */
+        }
+        .recipe-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Ingredient Details Toggle Style */
+        .recipe-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+        }
+        .recipe-details.active {
+            max-height: 500px; /* Sufficient height to show content */
+            padding-top: 1rem;
+        }
+        .recipe-details ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .recipe-details li {
+            padding: 0.25rem 0;
+            display: flex;
+            align-items: center;
+        }
+        .recipe-details li svg {
+            margin-right: 0.5rem;
+            min-width: 20px;
+        }
+        
+        /* General color classes for dynamic assignment */
+        .theme-red-text { color: #dc2626; } /* Red-600 */
+        .theme-red-bg { background-color: #fee2e2; } /* Red-100 */
+
+        .theme-green-text { color: #16a34a; } /* Green-600 */
+        .theme-green-bg { background-color: #dcfce7; } /* Green-100 */
+
+        .theme-blue-text { color: #2563eb; } /* Blue-600 */
+        .theme-blue-bg { background-color: #eff6ff; } /* Blue-100 */
+
+        .theme-yellow-text { color: #d97706; } /* Amber-600 */
+        .theme-yellow-bg { background-color: #fef3c7; } /* Amber-100 */
+
+        .theme-purple-text { color: #9333ea; } /* Violet-600 */
+        .theme-purple-bg { background-color: #f3e8ff; } /* Violet-100 */
+
+        .theme-cyan-text { color: #0891b2; } /* Cyan-600 */
+        .theme-cyan-bg { background-color: #ecfeff; } /* Cyan-100 */
+
+    </style>
+</head>
+<body>
+    
+    <header class="sticky top-0 z-50 w-full flex items-center justify-between px-4 md:px-8 lg:px-16 py-3 bg-white border-b border-gray-100">
+        
+        <div class="flex items-center">
+            <!-- Header remains indigo-600 as the primary site color -->
+            <h1 class="text-3xl font-extrabold text-indigo-600 tracking-wide" data-translate-key="logo">MALFIT</h1>
+        </div>
+
+        <nav class="hidden md:flex flex-grow justify-center mx-10">
+            <a href="Calories/Calories.html" class="nav-link" data-translate-key="nav_calories">Calories</a>
+            <a href="Eat Healrhy/Eat Healrhy.html" class="nav-link" data-translate-key="nav_eat_healthy">Eat Healthy</a>
+            <a href="Plans/Plans.html" class="nav-link" data-translate-key="nav_plans">Plans</a>
+            <a href="Clubs/Clubs.html" class="nav-link" data-translate-key="nav_clubs">Clubs</a>
+            <a href="Survey/survey.html" class="nav-link" data-translate-key="nav_survey">Survey</a>
+            <a href="Contact Us/Contact Us.html" class="nav-link" data-translate-key="nav_contact_us">Contact Us</a>
+        </nav>
+
+        <div class="icons-container flex items-center gap-2 md:gap-4">
+            
+            <button id="lang-toggle" class="lang-circle-btn">
+                <span id="current-lang" class="text-sm">EN</span> 
+            </button>
+
+            <a href="Home/Home.html" class="icon-btn w-10 h-10 hover:bg-indigo-50">
+                <svg data-lucide="home" width="24" height="24"></svg>
+            </a>
+
+            <a href="Account/Account.html" class="icon-btn w-10 h-10 hover:bg-indigo-50">
+                <svg data-lucide="user" width="24" height="24"></svg>
+            </a>
+
+            <button id="menu-toggle" class="md:hidden icon-btn w-10 h-10">
+                <svg data-lucide="menu" width="24" height="24"></svg>
+            </button>
+        </div>
+    </header>
+
+    <div id="mobile-menu" class="md:hidden">
+        <a href="Calories/Calories.html" class="nav-link" data-translate-key="nav_calories">Calories</a>
+        <a href="Eat Healrhy/Eat Healrhy.html" class="nav-link" data-translate-key="nav_eat_healthy">Eat Healthy</a>
+        <a href="Plans/Plans.html" class="nav-link" data-translate-key="nav_plans">Plans</a>
+        <a href="Clubs/Clubs.html" class="nav-link" data-translate-key="nav_clubs">Clubs</a>
+        <a href="Survey/survey.html" class="nav-link" data-translate-key="nav_survey">Survey</a>
+        <a href="Contact Us/Contact Us.html" class="nav-link" data-translate-key="nav_contact_us">Contact Us</a>
+    </div>
+
+    <div id="page-content-wrapper" class="p-4 md:p-8 lg:p-12">
+    
+        <main class="w-full max-w-6xl mx-auto py-6"> 
+            
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-extrabold text-gray-800 mb-4" data-translate-key="h1_recipes">
+                    Healthy & Delicious Recipes
+                </h2>
+                <p class="text-gray-600 text-lg max-w-3xl mx-auto" data-translate-key="subtitle_recipes">
+                    Browse our collection of nutritious meals. Click on any recipe to see the ingredients and total calories.
+                </p>
+            </div>
+
+            <div id="recipes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Recipe Cards will be injected here by JavaScript -->
+            </div>
+
+        </main>
+    </div> 
+    
+    <footer class="p-6 bg-white border-t border-gray-100 shadow-inner">
+        <p class="text-gray-600 text-center text-sm" data-translate-key="footer_text">&copy; 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi</p>
+    </footer>
+
+    <script>
+        // Define color themes that correspond to the CSS classes
+        const colorThemes = [
+            { text: 'theme-green-text', bg: 'theme-green-bg' },  // Salad/Vegetables
+            { text: 'theme-red-text', bg: 'theme-red-bg' },      // Salmon/Protein
+            { text: 'theme-blue-text', bg: 'theme-blue-bg' },    // Chicken/Poultry
+            { text: 'theme-yellow-text', bg: 'theme-yellow-bg' },// Beans/Legumes
+            { text: 'theme-purple-text', bg: 'theme-purple-bg' },// Fruits/Oats
+            { text: 'theme-cyan-text', bg: 'theme-cyan-bg' }     // Mediterranean/Fresh
+        ];
+
+        // --- Recipe Data Structure (Detailed) ---
+        const recipes = [
+            {
+                id: 1,
+                name: { en: 'Quinoa Salad with Roasted Vegetables', ar: 'سلطة الكينوا بالخضروات المشوية' },
+                calories: 380,
+                prepTime: { en: '30 min', ar: '30 دقيقة' },
+                description: { en: 'A light, high-protein, and fiber-rich meal perfect for lunch.', ar: 'وجبة خفيفة وغنية بالبروتين والألياف ومثالية لوجبة الغداء.' },
+                themeIndex: 0, // Green Theme
+                ingredients: [
+                    { en: '1 cup cooked Quinoa', ar: 'كوب كينوا مطبوخ' },
+                    { en: '1/2 cup Roasted Bell Peppers', ar: 'نصف كوب فلفل رومي مشوي' },
+                    { en: '1/4 cup Feta Cheese', ar: 'ربع كوب جبنة فيتا' },
+                    { en: '2 tbsp Olive Oil', ar: '2 ملعقة كبيرة زيت زيتون' },
+                ]
+            },
+            {
+                id: 2,
+                name: { en: 'Lemon Herb Salmon', ar: 'سمك السلمون بالأعشاب والليمون' },
+                calories: 450,
+                prepTime: { en: '25 min', ar: '25 دقيقة' },
+                description: { en: 'Omega-3 rich salmon baked with fresh lemon and dill.', ar: 'سلمون غني بأوميغا 3 مخبوز بالليمون والشبت الطازج.' },
+                themeIndex: 1, // Red Theme
+                ingredients: [
+                    { en: '1 Salmon Fillet (150g)', ar: 'فيليه سلمون (150 جرام)' },
+                    { en: '1/2 Lemon, sliced', ar: 'نصف ليمونة مقطعة شرائح' },
+                    { en: '1 tbsp Fresh Dill', ar: '1 ملعقة كبيرة شبت طازج' },
+                    { en: '1/4 cup Asparagus', ar: 'ربع كوب هليون' },
+                ]
+            },
+            {
+                id: 3,
+                name: { en: 'Low-Carb Chicken Lettuce Wraps', ar: 'لفائف الدجاج بالخس قليلة الكربوهيدرات' },
+                calories: 290,
+                prepTime: { en: '20 min', ar: '20 دقيقة' },
+                description: { en: 'A quick, flavorful, and low-calorie dinner alternative.', ar: 'بديل عشاء سريع ولذيذ وقليل السعرات الحرارية.' },
+                themeIndex: 2, // Blue Theme
+                ingredients: [
+                    { en: '100g Ground Chicken', ar: '100 جرام لحم دجاج مفروم' },
+                    { en: '4 Large Lettuce Leaves', ar: '4 أوراق خس كبيرة' },
+                    { en: '1 tsp Soy Sauce (low sodium)', ar: 'ملعقة صغيرة صلصة صويا (قليلة الصوديوم)' },
+                    { en: '1/4 cup Shredded Carrots', ar: 'ربع كوب جزر مبشور' },
+                ]
+            },
+            {
+                id: 4,
+                name: { en: 'Black Bean Burgers', ar: 'برجر الفاصوليا السوداء' },
+                calories: 350,
+                prepTime: { en: '40 min', ar: '40 دقيقة' },
+                description: { en: 'Homemade vegetarian burger patties packed with fiber and flavor.', ar: 'أقراص برجر نباتية منزلية الصنع مليئة بالألياف والنكهة.' },
+                themeIndex: 3, // Yellow Theme
+                ingredients: [
+                    { en: '1 cup Black Beans, mashed', ar: 'كوب فاصوليا سوداء مهروسة' },
+                    { en: '1/4 cup breadcrumbs', ar: 'ربع كوب بقسماط' },
+                    { en: '1/4 onion, chopped', ar: 'ربع بصلة مفرومة' },
+                    { en: 'Whole wheat bun', ar: 'خبز كيزر من القمح الكامل' },
+                ]
+            },
+            {
+                id: 5,
+                name: { en: 'Strawberry Overnight Oats', ar: 'شوفان الليلي بالفراولة' },
+                calories: 280,
+                prepTime: { en: '5 min + chill', ar: '5 دقائق + تبريد' },
+                description: { en: 'A quick, make-ahead breakfast loaded with fruit and healthy grains.', ar: 'فطور سريع التحضير ومغذٍ ومليء بالحبوب والفواكه.' },
+                themeIndex: 4, // Purple Theme
+                ingredients: [
+                    { en: '1/2 cup Rolled Oats', ar: 'نصف كوب شوفان ملفوف' },
+                    { en: '1/2 cup Milk (dairy or non-dairy)', ar: 'نصف كوب حليب (ألبان أو غير ألبان)' },
+                    { en: '1 tsp Chia Seeds', ar: 'ملعقة صغيرة بذور الشيا' },
+                    { en: '1/4 cup Strawberries, sliced', ar: 'ربع كوب فراولة مقطعة' },
+                ]
+            },
+            {
+                id: 6,
+                name: { en: 'Mediterranean Chickpea Wrap', ar: 'لفائف الحمص على الطريقة المتوسطية' },
+                calories: 320,
+                prepTime: { en: '15 min', ar: '15 دقيقة' },
+                description: { en: 'A fresh, vibrant, and protein-rich vegetarian wrap.', ar: 'لفافة نباتية طازجة وحيوية وغنية بالبروتين.' },
+                themeIndex: 5, // Cyan Theme
+                ingredients: [
+                    { en: '1 Whole Wheat Tortilla', ar: 'قطعة تورتيلا من القمح الكامل' },
+                    { en: '1/2 cup mashed Chickpeas', ar: 'نصف كوب حمص مهروس' },
+                    { en: '2 tbsp Hummus', ar: '2 ملعقة كبيرة حمص' },
+                    { en: 'Mixed greens and tomatoes', ar: 'خضروات مشكلة وطماطم' },
+                ]
+            }
+        ];
+
+        // --- Translation Data (Extended) ---
+        const translations = {
+            'en': {
+                'page_title': 'MALFIT | Recipes',
+                'logo': 'MALFIT',
+                'nav_calories': 'Calories',
+                'nav_eat_healthy': 'Eat Healthy',
+                'nav_plans': 'Plans',
+                'nav_clubs': 'Clubs',
+                'nav_survey': 'Survey',
+                'nav_contact_us': 'Contact Us',
+                'h1_recipes': 'Healthy & Delicious Recipes',
+                'subtitle_recipes': 'Browse our collection of nutritious meals. Click on any recipe to see the ingredients and total calories.',
+                'recipe_ingredients': 'Ingredients',
+                'recipe_cal': 'Approx. Calories:',
+                'recipe_time': 'Prep Time:',
+                'footer_text': '© 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi',
+                'lang_code': 'AR',
+            },
+            'ar': {
+                'page_title': 'ملفت | وصفات الطعام',
+                'logo': 'ملفت',
+                'nav_calories': 'السعرات الحرارية',
+                'nav_eat_healthy': 'تناول طعام صحي',
+                'nav_plans': 'الخطط',
+                'nav_clubs': 'الأندية',
+                'nav_survey': 'الاستبيان',
+                'nav_contact_us': 'اتصل بنا',
+                'h1_recipes': 'وصفات صحية ولذيذة',
+                'subtitle_recipes': 'تصفح مجموعتنا من الوجبات المغذية. انقر على أي وصفة لرؤية المكونات والسعرات الحرارية الإجمالية.',
+                'recipe_ingredients': 'المكونات',
+                'recipe_cal': 'السعرات الحرارية التقريبية:',
+                'recipe_time': 'وقت التحضير:',
+                'footer_text': '© 2025، مشروع تخرج، مدى صالح، أحمد خليفة، لورا عادل، المشرف الدكتور عبد الله محمد خالد القادومي',
+                'lang_code': 'EN',
+            }
+        };
+
+        let currentLang = localStorage.getItem('malfitMainLang') || 'en';
+        
+        // Utility function to convert Lucide icons
+        function replaceLucideIcons() {
+            lucide.createIcons();
+        }
+
+        /**
+         * Toggles the visibility of the recipe details section when a card is clicked.
+         * @param {Event} event - The click event.
+         */
+        function toggleRecipeDetails(event) {
+            let card = event.currentTarget;
+            const details = card.querySelector('.recipe-details');
+            const arrow = card.querySelector('.toggle-arrow');
+
+            if (details.classList.contains('active')) {
+                details.classList.remove('active');
+                arrow.classList.remove('rotate-90');
+            } else {
+                // Close any other open details before opening this one
+                document.querySelectorAll('.recipe-details.active').forEach(openDetails => {
+                    openDetails.classList.remove('active');
+                    openDetails.closest('.recipe-card').querySelector('.toggle-arrow').classList.remove('rotate-90');
+                });
+                
+                details.classList.add('active');
+                arrow.classList.add('rotate-90');
+            }
+        }
+
+        /**
+         * Generates the HTML for all recipe cards.
+         * @param {string} lang - The target language code ('en' or 'ar').
+         */
+        function generateRecipeCards(lang) {
+            const grid = document.getElementById('recipes-grid');
+            grid.innerHTML = ''; // Clear existing cards
+            const langData = translations[lang];
+            const dir = (lang === 'ar') ? 'rtl' : 'ltr';
+
+            recipes.forEach(recipe => {
+                // Get the theme classes based on the themeIndex
+                const theme = colorThemes[recipe.themeIndex];
+                const textClass = theme.text;
+                const bgClass = theme.bg;
+                
+                const card = document.createElement('div');
+                // The card itself gets a slight border color matching the theme
+                card.className = `recipe-card p-6 border-2 border-transparent hover:border-opacity-100 ${textClass.replace('-text', '-border')}`;
+                card.setAttribute('onclick', 'toggleRecipeDetails(event)');
+                card.setAttribute('data-recipe-id', recipe.id);
+                
+                // Ingredients list generation
+                const ingredientsList = recipe.ingredients.map(ing => {
+                    const text = ing[lang];
+                    return `
+                        <li class="flex items-start">
+                            <!-- Icon color uses the dynamic text class -->
+                            <svg data-lucide="chevrons-right" class="w-5 h-5 ${textClass} flex-shrink-0 mt-0.5" transform="${lang === 'ar' ? 'rotate(180)' : 'none'}"></svg>
+                            <span class="${lang === 'ar' ? 'mr-2' : 'ml-2'}">${text}</span>
+                        </li>
+                    `;
+                }).join('');
+
+                card.innerHTML = `
+                    <!-- Header -->
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xl font-bold text-gray-800 ${lang === 'ar' ? 'text-right' : 'text-left'}">${recipe.name[lang]}</h3>
+                        <!-- Arrow color uses the dynamic text class -->
+                        <svg data-lucide="chevron-right" class="w-6 h-6 ${textClass} transition-transform duration-300 toggle-arrow"></svg>
+                    </div>
+
+                    <!-- Description and Prep Time -->
+                    <div class="mt-2 text-sm text-gray-600 ${lang === 'ar' ? 'text-right' : 'text-left'}">
+                        <p>${recipe.description[lang]}</p>
+                        <div class="flex items-center ${lang === 'ar' ? 'justify-end' : 'justify-start'} mt-2">
+                             <svg data-lucide="clock" class="w-4 h-4 text-gray-400 ${lang === 'ar' ? 'ml-1' : 'mr-1'}"></svg>
+                            <span>${langData.recipe_time} ${recipe.prepTime[lang]}</span>
+                        </div>
+                    </div>
+
+                    <!-- Details Section (Initially hidden) -->
+                    <div class="recipe-details mt-4 border-t border-gray-100">
+                        
+                        <div class="mt-4">
+                            <!-- Heading color uses the dynamic text class -->
+                            <h4 class="text-lg font-semibold ${textClass} mb-2 ${lang === 'ar' ? 'text-right' : 'text-left'}">${langData.recipe_ingredients}:</h4>
+                            <ul class="space-y-1 text-gray-700 ${lang === 'ar' ? 'text-right' : 'text-left'}">
+                                ${ingredientsList}
+                            </ul>
+                        </div>
+
+                        <!-- Calorie box uses the dynamic background and text classes -->
+                        <div class="mt-4 p-3 ${bgClass} rounded-lg flex items-center ${lang === 'ar' ? 'justify-end' : 'justify-start'}">
+                            <svg data-lucide="zap" class="w-5 h-5 ${textClass} ${lang === 'ar' ? 'ml-2' : 'mr-2'}"></svg>
+                            <span class="${textClass} font-bold">${langData.recipe_cal} ${recipe.calories} kcal</span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            replaceLucideIcons(); // Re-render icons after adding cards
+        }
+
+
+        /**
+         * Updates the content of the page based on the selected language and handles RTL layout.
+         * @param {string} lang - The target language code ('en' or 'ar').
+         */
+        function updateContent(lang) {
+            currentLang = lang;
+            const dir = (lang === 'ar') ? 'rtl' : 'ltr';
+            const langData = translations[lang];
+            const html = document.documentElement;
+
+            // 1. Update HTML language and direction attributes
+            html.setAttribute('lang', lang);
+            html.setAttribute('dir', dir);
+            
+            // 2. Update all translated elements
+            document.querySelectorAll('[data-translate-key]').forEach(element => {
+                const key = element.getAttribute('data-translate-key');
+                if (langData[key] !== undefined) {
+                    if (element.id === 'current-lang') {
+                        element.textContent = langData.lang_code;
+                    } else if (element.tagName === 'TITLE') {
+                        document.title = langData[key];
+                    } else {
+                        element.textContent = langData[key];
+                    }
+                }
+            });
+
+            // 3. Re-generate the recipe cards with the new language
+            generateRecipeCards(lang);
+
+            // 4. Persist the selection
+            localStorage.setItem('malfitMainLang', lang);
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- 1. MALFIT Mobile Menu Toggle Handler ---
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const langToggle = document.getElementById('lang-toggle'); 
+
+            menuToggle.addEventListener('click', () => {
+                mobileMenu.classList.toggle('active');
+            });
+            
+            // Close menu when a link is clicked
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('active');
+                });
+            });
+            
+            // --- 2. Language Toggle Handler ---
+            langToggle.addEventListener('click', () => {
+                const newLang = (currentLang === 'en') ? 'ar' : 'en';
+                updateContent(newLang);
+            });
+            
+            // --- 3. Initial Language Load & Icon Replacement ---
+            // Load saved language or default to English
+            updateContent(currentLang);
+            // Replace placeholder SVGs with Lucide Icons (only needed once DOM is ready)
+            replaceLucideIcons();
+
+            // --- 4. Falling Food Background Animation Script ---
+            const produceEmojis = ['🍳', '🌶️', '🥕', '🥗', '🍲', '🍜', '🍚', '🍎', '🍇', '🍋', '🥑', '🥦'];
+            const body = document.body;
+            const maxItems = 40; 
+            let itemsOnScreen = 0;
+
+            function createFallingItem() {
+                if (itemsOnScreen >= maxItems) return;
+
+                const emoji = produceEmojis[Math.floor(Math.random() * produceEmojis.length)];
+                // Smaller size range for subtlety
+                const size = Math.floor(Math.random() * 15) + 12; 
+                const initialX = Math.random() * window.innerWidth;
+                // Faster duration for slightly more noticeable movement
+                const duration = Math.random() * 8 + 4; 
+                const rotation = Math.random() * 360; 
+                
+                const item = document.createElement('div');
+                item.className = 'falling-item';
+                item.innerHTML = emoji;
+                item.style.fontSize = `${size}px`;
+                item.style.left = `${initialX}px`;
+                item.style.top = `-50px`; 
+                item.style.transform = `rotate(${rotation}deg)`;
+                
+                body.appendChild(item);
+                itemsOnScreen++;
+
+                let currentY = -50;
+                const speed = (window.innerHeight + 100) / (duration * 60); 
+                const driftX = (Math.random() - 0.5) * 0.5; 
+
+                function animateFall() {
+                    if (currentY > window.innerHeight) {
+                        if (body.contains(item)) {
+                            body.removeChild(item);
+                        }
+                        itemsOnScreen--;
+                        return;
+                    }
+
+                    currentY += speed;
+                    let currentX = parseFloat(item.style.left) || initialX;
+                    currentX += driftX;
+
+                    item.style.top = `${currentY}px`;
+                    item.style.left = `${currentX}px`;
+                    
+                    requestAnimationFrame(animateFall);
+                }
+
+                requestAnimationFrame(animateFall);
+            }
+
+            function spawnLoop() {
+                createFallingItem();
+                // Spawn a new item every 100ms to 500ms
+                const delay = Math.random() * 400 + 100;
+                setTimeout(spawnLoop, delay);
+            }
+
+            spawnLoop();
+        });
+    </script>
+</body>
+</html>
