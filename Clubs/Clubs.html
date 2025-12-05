@@ -1,1 +1,620 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MALFIT | Clubs</title>
 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com" defer></script>
+    <script src="https://unpkg.com/lucide@latest" defer></script> 
+
+    <style>
+        /* Custom styles */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');        
+        :root {
+            --primary-color: #4f46e5; /* indigo-600 */
+            --primary-light: #eef2ff; /* indigo-50 */
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f0f4f8; /* Softer background */
+            overflow-x: hidden; 
+            min-height: 100vh;
+            position: relative; 
+        }
+
+        /* --- Falling Item Styles (Moving Background) --- */
+        .falling-item {
+            position: absolute;
+            user-select: none;
+            pointer-events: none; 
+            opacity: 0.3; 
+            transition: opacity 2s ease-out;
+            z-index: 0; 
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
+        }
+        
+        /* Ensure all structural elements are above the moving background */
+        header, main, footer {
+            position: relative;
+            z-index: 10; 
+        }
+        
+        /* Define a container that strictly holds the main content and prevents items from falling into the footer */
+        #page-content-wrapper {
+            position: relative;
+            min-height: calc(100vh - 120px); 
+            overflow: hidden; 
+        }
+        
+        /* --- Header Specific Styles --- */
+        header {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            background-color: #ffffff;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+
+        /* Navigation Links Style */
+        .nav-link {
+            padding: 0.5rem 0.75rem;
+            color: #4b5563; 
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-link:hover {
+            color: #4f46e5; 
+        }
+        
+        /* General styling for header icons/buttons */
+        .icon-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s, border-color 0.2s;
+            color: #4b5563;
+            cursor: pointer;
+        }
+        
+        /* --- Language Icon Specific Style (Circular) --- */
+        .lang-circle-btn {
+            border: 2px solid #d1d5db;
+            border-radius: 9999px;
+            width: 40px; 
+            height: 40px; 
+            font-weight: 600;
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.2s;
+            /* Use a flexible font stack for Arabic characters */
+            font-family: 'Inter', Tahoma, Arial, sans-serif;
+        }
+        .lang-circle-btn:hover {
+            border-color: #4f46e5;
+        }
+
+        /* --- Club Button Styling (Standard Sports) --- */
+        .club-button {
+            /* Apply indigo/blue gradient and shadow effects */
+            background-image: linear-gradient(to right, #4f46e5 0%, #3b82f6 100%); 
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+            border-radius: 1.5rem; 
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .club-button:hover {
+            box-shadow: 0 8px 18px rgba(63, 131, 248, 0.5); 
+            transform: translateY(-2px); 
+            opacity: 0.95;
+        }
+        
+        /* --- Personal Training Button Styling (Unique Hot Pink Color) --- */
+        .personal-training-button {
+            /* Hot pink gradient to stand out */
+            background-image: linear-gradient(to right, #ec4899 0%, #f472b6 100%); /* Pink-500 to Pink-400 */
+            box-shadow: 0 4px 10px rgba(236, 72, 153, 0.4); /* Pink shadow */
+            border-radius: 1.5rem; 
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .personal-training-button:hover {
+            box-shadow: 0 8px 18px rgba(244, 114, 182, 0.6); /* Deeper pink shadow on hover */
+            transform: translateY(-2px); 
+            opacity: 0.95;
+        }
+
+        .club-icon {
+            /* Light color for icons inside the gradient button */
+            color: #ffffff;
+        }
+        
+        /* Tailwind classes for the badge */
+        .cart-badge {
+            font-family: 'Inter', sans-serif; 
+        }
+
+        /* Responsive Grid for Clubs (3 columns on large screens) */
+        @media (min-width: 1024px) {
+            #clubs-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        /* Custom Mobile Menu Styling */
+        #mobile-nav a {
+            display: block;
+            padding: 12px 24px;
+            color: #4b5563;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        #mobile-nav a:hover {
+            background-color: #eef2ff; /* indigo-50 */
+            color: #4f46e5;
+        }
+        /* Highlight the current page */
+        #mobile-nav a[data-translate-key="clubs"] {
+            background-color: #f3f4f6;
+            color: #4f46e5;
+            font-weight: 700;
+        }
+
+    </style>
+</head>
+<body>
+    
+    <header class="sticky top-0 z-50 w-full flex items-center justify-between px-4 md:px-8 lg:px-16 py-3 bg-white border-b border-gray-100">
+        
+        <div class="flex items-center">
+            <h1 class="text-3xl font-extrabold text-indigo-600 tracking-wide">MALFIT</h1>
+        </div>
+
+        <nav class="hidden md:flex flex-grow justify-center mx-10">
+            <a href="#" class="nav-link" id="nav-calories">Calories</a>
+            <a href="#" class="nav-link" id="nav-eat-healthy">Eat Healthy</a>
+            <a href="#" class="nav-link" id="nav-plans">Plans</a>
+            <a href="#" class="nav-link text-indigo-600 font-bold border-b-2 border-indigo-600" id="nav-clubs">Clubs</a> 
+            <a href="#" class="nav-link" id="nav-survey">Survey</a>
+            <a href="#" class="nav-link" id="nav-contact-us">Contact Us</a>
+        </nav>
+
+        <div class="icons-container flex items-center gap-2 md:gap-4">
+            
+            <button id="lang-toggle" class="lang-circle-btn" title="Toggle Language">
+                <span id="current-lang" class="text-sm">ع</span> 
+            </button>
+            
+            <a href="shopping.html" class="icon-btn w-10 h-10 hover:bg-indigo-50" title="Shopping Cart">
+                <svg data-lucide="shopping-cart" width="24" height="24"></svg>
+            </a>
+
+            <a href="index.html" class="icon-btn w-10 h-10 hover:bg-indigo-50" title="Home">
+                <svg data-lucide="home" width="24" height="24"></svg>
+            </a>
+
+            <a href="account.html" class="icon-btn w-10 h-10 hover:bg-indigo-50" title="Account">
+                <svg data-lucide="user" width="24" height="24"></svg>
+            </a>
+
+            <button id="menu-toggle" class="md:hidden icon-btn w-10 h-10" title="Menu">
+                <svg data-lucide="menu" width="24" height="24"></svg>
+            </button>
+        </div>
+    </header>
+
+    <div id="mobile-nav" class="hidden md:hidden absolute w-full bg-white border-b border-gray-200 shadow-lg top-[68px] z-40">
+        <a href="calories.html" data-translate-key="calories">Calories</a>
+        <a href="eathealrhy.html" data-translate-key="eat-healthy">Eat Healthy</a>
+        <a href="plane.html" data-translate-key="plans">Plans</a>
+        <a href="club.html" data-translate-key="clubs">Clubs</a>
+        <a href="survey.html" data-translate-key="survey">Survey</a>
+        <a href="contact us.html" data-translate-key="contact-us">Contact Us</a>
+    </div>
+
+
+    <div id="page-content-wrapper">
+    
+        <main class="flex items-center justify-center p-4 sm:p-10 min-h-main"> 
+            
+            <div class="w-full max-w-5xl bg-white shadow-2xl rounded-3xl p-8 sm:p-12 border border-blue-50/50 relative z-10">
+
+                <div class="text-center mb-10">
+                    <h2 id="main-title" class="text-4xl sm:text-5xl font-extrabold text-gray-800">
+                        Join a Club!
+                    </h2>
+                    <p id="main-subtitle" class="text-lg text-gray-500 mt-2">
+                        Find your passion and connect with others.
+                    </p>
+                </div>
+
+                <div id="clubs-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                </div>
+
+            </div>
+        </main>
+    </div> 
+    
+    <footer class="p-6 bg-white border-t border-gray-100 shadow-inner relative z-10">
+        <p id="footer-text" class="text-gray-600 text-center text-sm">&copy; 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi.</p>
+    </footer>
+
+    <script>
+        // --- 1. SHOPPING CART MANAGEMENT ---
+        
+        // Key for localStorage
+        const CART_STORAGE_KEY = 'malfitShoppingCart';
+        
+        // Initialize cart state from localStorage or use an empty array
+        let shoppingCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
+        
+        const cartCountLink = document.querySelector('a[title="Shopping Cart"]');
+        
+        /**
+         * Updates the visual count next to the shopping cart icon.
+         */
+        function updateCartCountUI() {
+            const count = shoppingCart.length;
+            
+            // Remove existing badge if present
+            let badge = cartCountLink.querySelector('.cart-badge');
+            if (badge) {
+                badge.remove();
+            }
+
+            if (count > 0) {
+                // Create a new badge element
+                badge = document.createElement('span');
+                // Tailwind classes for a small red notification badge
+                badge.className = 'cart-badge absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full';
+                badge.textContent = count;
+                
+                // Set the cart link to relative position for the absolute badge
+                cartCountLink.style.position = 'relative';
+                cartCountLink.appendChild(badge);
+            }
+        }
+
+        /**
+         * Adds a club item to the shopping cart and saves it to localStorage.
+         * @param {object} clubData - The data for the club to add.
+         */
+        function addToCart(clubData) {
+            // Prevent adding the same club multiple times (optional, but good practice)
+            const existingItem = shoppingCart.find(item => item.name === clubData.name);
+            if (existingItem) {
+                alertMessage(currentLang === 'ar' ? `النادي مُضاف بالفعل إلى سلة التسوق: ${clubData.nameAr}` : `Club already in cart: ${clubData.name}`);
+                return;
+            }
+
+            // Add the club to the cart array
+            shoppingCart.push({
+                name: clubData.name,
+                nameAr: clubData.nameAr,
+                price: 'Free', // Placeholder
+                type: 'Club Membership'
+            });
+
+            // Save the updated cart to localStorage
+            localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(shoppingCart));
+
+            // Update the UI
+            updateCartCountUI();
+            
+            // Show success message
+            alertMessage(currentLang === 'ar' ? `تمت إضافة: ${clubData.nameAr} إلى سلة التسوق!` : `Added: ${clubData.name} to the shopping cart!`);
+        }
+
+        // --- 2. GLOBAL AND TRANSLATION LOGIC ---
+        
+        // Global variables for language state and elements
+        let currentLang = localStorage.getItem('currentLang') || 'en'; 
+
+        const langToggleBtn = document.getElementById('lang-toggle');
+        const menuToggleBtn = document.getElementById('menu-toggle');
+        const mobileNav = document.getElementById('mobile-nav');
+        const currentLangSpan = document.getElementById('current-lang');
+        const mainTitle = document.getElementById('main-title');
+        const mainSubtitle = document.getElementById('main-subtitle');
+        const footerText = document.getElementById('footer-text'); 
+        const htmlElement = document.documentElement;
+
+        // Static translations for the main headers and navigation links
+        const staticTranslations = {
+            'main-title': {
+                'en': 'Join a Club!',
+                'ar': 'انضم إلى نادٍ!'
+            },
+            'main-subtitle': {
+                'en': 'Find your passion and connect with others.',
+                'ar': 'اكتشف شغفك وتواصل مع الآخرين.'
+            },
+            'footer-text': {
+                'en': '&copy; 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi.',
+                'ar': '© 2025، مشروع تخرج، مدى صالح، أحمد خليفة، لورا عادل، المشرف الدكتور عبد الله محمد خالد القادومي.'
+            },
+            // Navigation link translations (Keys match data-translate-key)
+            'calories': { 'en': 'Calories', 'ar': 'السعرات الحرارية' },
+            'eat-healthy': { 'en': 'Eat Healthy', 'ar': 'تناول طعامًا صحيًا' },
+            'plans': { 'en': 'Plans', 'ar': 'الخطط' },
+            'clubs': { 'en': 'Clubs', 'ar': 'الأندية' },
+            'survey': { 'en': 'Survey', 'ar': 'الاستبيان' },
+            'contact-us': { 'en': 'Contact Us', 'ar': 'اتصل بنا' }
+        };
+
+        // List of clubs with their data, including Arabic translations
+        const clubsData = [
+            {
+                name: "Personal Training", nameAr: "تدريب شخصي",
+                icon: `<svg data-lucide="monitor-dot" width="30" height="30" class="club-icon"></svg>`,
+                description: "One-on-one coaching and customized plans.",
+                descriptionAr: "تدريب فردي وخطط مخصصة.",
+                specialStyle: true 
+            },
+            {
+                name: "Football Club", nameAr: "نادي كرة القدم",
+                icon: `<svg data-lucide="football" width="30" height="30" class="club-icon"></svg>`,
+                description: "Practice drills and compete in league matches.",
+                descriptionAr: "تدرب على التمارين وتنافس في مباريات الدوري."
+            },
+            {
+                name: "Basketball Club", nameAr: "نادي كرة السلة",
+                icon: `<svg data-lucide="basketball" width="30" height="30" class="club-icon"></svg>`,
+                description: "Three-on-three and full-court games weekly.",
+                descriptionAr: "مباريات ثلاثة ضد ثلاثة ومباريات ملعب كامل أسبوعياً."
+            },
+            {
+                name: "Volleyball Club", nameAr: "نادي الكرة الطائرة",
+                icon: `<svg data-lucide="volleyball" width="30" height="30" class="club-icon"></svg>`,
+                description: "Serving aces and powerful spikes.",
+                descriptionAr: "إرسال الإرسالات القوية والضربات الساحقة."
+            },
+            {
+                name: "Handball Club", nameAr: "نادي كرة اليد",
+                icon: `<svg data-lucide="hand" width="30" height="30" class="club-icon"></svg>`,
+                description: "Fast-paced team play and skill development.",
+                descriptionAr: "لعب جماعي سريع وتطوير للمهارات."
+            },
+            {
+                name: "Swimming Club", nameAr: "نادي السباحة",
+                icon: `<svg data-lucide="swimming" width="30" height="30" class="club-icon"></svg>`,
+                description: "Competitive training and recreational lap swimming.",
+                descriptionAr: "تدريب تنافسي وسباحة ترفيهية."
+            },
+            {
+                name: "Tennis Club", nameAr: "نادي التنس",
+                icon: `<svg data-lucide="tennis-racket" width="30" height="30" class="club-icon"></svg>`,
+                description: "Singles and doubles matches for all skill levels.",
+                descriptionAr: "مباريات فردي وزوجي لجميع مستويات المهارة."
+            },
+            {
+                name: "Gymnastics Club", nameAr: "نادي الجمباز",
+                icon: `<svg data-lucide="dumbbell" width="30" height="30" class="club-icon"></svg>`,
+                description: "Flexibility, strength, and acrobatic training.",
+                descriptionAr: "تدريب المرونة والقوة والبهلوانية."
+            },
+            {
+                name: "Golf Club", nameAr: "نادي الغولف",
+                icon: `<svg data-lucide="flag" width="30" height="30" class="club-icon"></svg>`,
+                description: "Improve your swing and visit local courses.",
+                descriptionAr: "حسّن ضربتك وقم بزيارة الملاعب المحلية."
+            },
+        ];
+
+        const container = document.getElementById('clubs-container');
+
+        // Custom alert function (simulates a toast notification)
+        function alertMessage(message) {
+            console.log("App Message: " + message);
+            const isRTL = htmlElement.getAttribute('dir') === 'rtl';
+            const statusMessage = document.createElement('div');
+            
+            const placementClass = isRTL ? 'bottom-4 left-4' : 'bottom-4 right-4';
+
+            statusMessage.className = `fixed ${placementClass} bg-indigo-600 text-white p-4 rounded-lg shadow-2xl transition-opacity duration-300 z-50`;
+            statusMessage.textContent = message;
+            document.body.appendChild(statusMessage);
+
+            setTimeout(() => {
+                statusMessage.style.opacity = '0';
+                statusMessage.addEventListener('transitionend', () => statusMessage.remove());
+            }, 3000);
+        }
+
+        // Function to update static page elements (headers, footer, and navigation links)
+        function updateStaticText() {
+            mainTitle.textContent = staticTranslations['main-title'][currentLang];
+            mainSubtitle.textContent = staticTranslations['main-subtitle'][currentLang];
+            footerText.textContent = staticTranslations['footer-text'][currentLang];
+            
+            const navKeys = ['calories', 'eat-healthy', 'plans', 'clubs', 'survey', 'contact-us'];
+
+            navKeys.forEach(key => {
+                // Update Desktop Navigation Links
+                const desktopId = `nav-${key}`;
+                const desktopEl = document.getElementById(desktopId);
+                if (desktopEl) {
+                    desktopEl.textContent = staticTranslations[key][currentLang];
+                }
+
+                // Update Mobile Navigation Links
+                document.querySelectorAll(`[data-translate-key="${key}"]`).forEach(mobileEl => {
+                    mobileEl.textContent = staticTranslations[key][currentLang];
+                });
+            });
+
+
+            // Set document direction for proper RTL display
+            if (currentLang === 'ar') {
+                htmlElement.setAttribute('dir', 'rtl');
+                currentLangSpan.textContent = 'EN';
+            } else {
+                htmlElement.setAttribute('dir', 'ltr');
+                currentLangSpan.textContent = 'ع';
+            }
+        }
+
+        // Function to render the club buttons
+        function renderClubs() {
+            const nameKey = currentLang === 'ar' ? 'nameAr' : 'name';
+            const descKey = currentLang === 'ar' ? 'descriptionAr' : 'description';
+
+            container.innerHTML = '';
+            
+            clubsData.forEach(club => {
+                const button = document.createElement('button');
+                
+                const buttonClass = club.specialStyle ? 'personal-training-button' : 'club-button';
+                const directionClass = currentLang === 'ar' ? 'sm:flex-row-reverse' : 'sm:flex-row';
+                const textAlignment = currentLang === 'ar' ? 'sm:text-right' : 'sm:text-left';
+                const marginClass = currentLang === 'ar' ? 'sm:ml-6' : 'sm:mr-6'; 
+
+                button.className = `${buttonClass} w-full flex flex-col ${directionClass} items-center p-6 text-white rounded-3xl`;
+                
+                // --- ADD TO CART HANDLER ---
+                button.onclick = () => addToCart(club);
+
+                const iconContainer = document.createElement('div');
+                iconContainer.className = `flex-shrink-0 mb-3 sm:mb-0 ${marginClass} text-white`;
+                iconContainer.innerHTML = club.icon;
+
+                const textContainer = document.createElement('div');
+                textContainer.className = `flex-grow text-center ${textAlignment}`;
+
+                const nameElement = document.createElement('h2');
+                nameElement.className = 'text-xl sm:text-2xl font-extrabold';
+                nameElement.textContent = club[nameKey];
+
+                const descriptionElement = document.createElement('p');
+                descriptionElement.className = 'text-sm opacity-80 mt-1';
+                descriptionElement.textContent = club[descKey];
+
+                textContainer.appendChild(nameElement);
+                textContainer.appendChild(descriptionElement);
+                button.appendChild(iconContainer);
+                button.appendChild(textContainer);
+
+                container.appendChild(button);
+            });
+            lucide.createIcons();
+        }
+
+        // Function to toggle the language state
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'ar' : 'en';
+            
+            // Save the new language choice to localStorage
+            localStorage.setItem('currentLang', currentLang);
+            
+            updateStaticText();
+            renderClubs();
+            
+            // Close mobile menu when language is toggled, if open
+            if (!mobileNav.classList.contains('hidden')) {
+                toggleMobileMenu();
+            }
+        }
+        
+        // Function to toggle the mobile menu visibility
+        function toggleMobileMenu() {
+            mobileNav.classList.toggle('hidden'); 
+            
+            // Change the menu icon
+            const menuIconSvg = menuToggleBtn.querySelector('svg');
+            if (mobileNav.classList.contains('hidden')) {
+                 menuIconSvg.outerHTML = '<svg data-lucide="menu" width="24" height="24"></svg>';
+            } else {
+                 menuIconSvg.outerHTML = '<svg data-lucide="x" width="24" height="24"></svg>';
+            }
+            lucide.createIcons();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. Initial Setup and Content Load ---
+            lucide.createIcons();
+            
+            // Set initial event listeners
+            langToggleBtn.onclick = toggleLanguage;
+            menuToggleBtn.onclick = toggleMobileMenu;
+
+            // Load content based on the saved 'currentLang' value
+            updateStaticText();
+            renderClubs();
+            
+            // LOAD INITIAL CART COUNT ON PAGE LOAD
+            updateCartCountUI(); 
+
+            // --- 2. Falling Item Background Animation Script ---
+            const produceEmojis = ['⚽', '🏀', '⛳', '🏊', '🏐', '🏃', '🎾', '🤸', '🏆', '💪'];
+            const body = document.body;
+            const maxItems = 40; 
+            let itemsOnScreen = 0;
+
+            function createFallingItem() {
+                if (itemsOnScreen >= maxItems) return;
+
+                const emoji = produceEmojis[Math.floor(Math.random() * produceEmojis.length)];
+                const size = Math.floor(Math.random() * 15) + 12; 
+                const initialX = Math.random() * window.innerWidth;
+                const duration = Math.random() * 8 + 4; 
+                const rotation = Math.random() * 360; 
+                
+                const item = document.createElement('div');
+                item.className = 'falling-item';
+                item.innerHTML = emoji;
+                item.style.fontSize = `${size}px`;
+                item.style.left = `${initialX}px`;
+                item.style.top = `-50px`; 
+                item.style.transform = `rotate(${rotation}deg)`;
+                
+                body.appendChild(item);
+                itemsOnScreen++;
+
+                let currentY = -50;
+                const speed = (window.innerHeight + 100) / (duration * 60); 
+                const driftX = (Math.random() - 0.5) * 0.5; 
+                const footerHeight = document.querySelector('footer').offsetHeight + 20;
+
+                function animateFall() {
+                    if (currentY > window.innerHeight - footerHeight) {
+                        if (body.contains(item)) {
+                            body.removeChild(item);
+                        }
+                        itemsOnScreen--;
+                        return;
+                    }
+
+                    currentY += speed;
+                    let currentX = parseFloat(item.style.left) || initialX;
+                    currentX += driftX;
+
+                    item.style.top = `${currentY}px`;
+                    item.style.left = `${currentX}px`;
+                    
+                    requestAnimationFrame(animateFall);
+                }
+
+                requestAnimationFrame(animateFall);
+            }
+
+            function spawnLoop() {
+                createFallingItem();
+                const delay = Math.random() * 400 + 100;
+                setTimeout(spawnLoop, delay);
+            }
+
+            spawnLoop();
+        });
+    </script>
+</body>
+</html>
