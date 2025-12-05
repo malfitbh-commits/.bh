@@ -187,7 +187,7 @@
 
     <!-- 1. Background Video -->
     <video autoplay muted loop playsinline id="background-video" poster="https://placehold.co/1920x1080/4f46e5/ffffff?text=Loading+Video">
-        <source src="video/THE HEALTH & WELLNESS COLLECTION.mp4" type="video/mp4" onerror="this.onerror=null; this.parentNode.parentNode.style.background='linear-gradient(135deg, #4f46e5, #986cff)'; this.parentNode.parentNode.classList.remove('video-container');">
+        <source src="../THE HEALTH & WELLNESS COLLECTION.mp4" type="video/mp4" onerror="this.onerror=null; this.parentNode.parentNode.style.background='linear-gradient(135deg, #4f46e5, #986cff)'; this.parentNode.parentNode.classList.remove('video-container');">
     </video>
 
     <!-- 2. Main Content Container (Relative to contain children, z-index 20 to be on top) -->
@@ -201,8 +201,9 @@
                     <h1 class="text-2xl font-bold text-white tracking-widest" data-translate-key="logo">MALFIT</h1>
                 </div>
 
-                <!-- Desktop Navigation Links (Hidden on small screens) --><nav class="hidden md:flex space-x-4">
-                    <a href="notification.html" class="text-white hover:text-indigo-300 transition duration-300 font-medium" data-translate-key="nav_notification">Notification</a>
+                <!-- Desktop Navigation Links (Hidden on small screens) -->
+                <nav class="hidden md:flex space-x-4">
+                    <a href="Notification/Notification.html" class="text-white hover:text-indigo-300 transition duration-300 font-medium" data-translate-key="nav_notification">Notification</a>
                     <a href="Fitness Website.html" class="text-white hover:text-indigo-300 transition duration-300 font-medium" data-translate-key="nav_logout">Log Out</a>
                 </nav>
 
@@ -214,22 +215,26 @@
                         <span id="current-lang">EN</span>
                     </button>
                     
-                    <!-- Home Icon --><a href="afterthelogpage.html" class="text-white hover:text-indigo-300 transition duration-300">
+                    <!-- Home Icon -->
+                    <a href="Home/Home.html" class="text-white hover:text-indigo-300 transition duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                     </a>
 
-                    <!-- Account Icon --><a href="accountData.html" class="text-white hover:text-indigo-300 transition duration-300">
+                    <!-- Account Icon -->
+                    <a href="Account/Account.html" class="text-white hover:text-indigo-300 transition duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     </a>
 
-                    <!-- Mobile Menu Toggle (Hamburger Icon - Visible only on small screens) --><button id="menu-toggle" class="md:hidden text-white hover:text-indigo-300">
+                    <!-- Mobile Menu Toggle (Hamburger Icon - Visible only on small screens) -->
+                    <button id="menu-toggle" class="md:hidden text-white hover:text-indigo-300">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
                     </button>
                 </div>
             </div>
         </header>
         
-        <!-- Mobile Navigation Menu --><div id="mobile-menu">
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu">
             <a href="notification.html" data-translate-key="nav_notification">Notification</a>
             <a href="Fitness Website.html" data-translate-key="nav_logout">Log Out</a>
         </div>
@@ -245,19 +250,23 @@
                 
                 <!-- Main Link Buttons Grid -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
-                    <!-- Button 1: Calories --><a href="Calories/Calories.html" id="btn1" class="dashboard-card">
+                    <!-- Button 1: Calories -->
+                    <a href="Calories/Calories.html" id="btn1" class="dashboard-card">
                         <span class="card-text" data-translate-key="btn_calories">Calories</span>
                     </a>
                     
-                    <!-- Button 2: Eat Healthy --><a href="Eat Healthy/Eat Healthy.html" id="btn2" class="dashboard-card">
+                    <!-- Button 2: Eat Healthy -->
+                    <a href="Eat Healthy/Eat Healthy.html" id="btn2" class="dashboard-card">
                         <span class="card-text" data-translate-key="btn_eat_healthy">Eat Healthy</span>
                     </a>
                     
-                    <!-- Button 3: Plans --><a href="plane.html" id="btn3" class="dashboard-card">
+                    <!-- Button 3: Plans -->
+                    <a href="plane.html" id="btn3" class="dashboard-card">
                         <span class="card-text" data-translate-key="btn_plans">Plans</span>
                     </a>
                     
-                    <!-- Button 4: Clubs --><a href="club.html" id="btn4" class="dashboard-card">
+                    <!-- Button 4: Clubs -->
+                    <a href="club.html" id="btn4" class="dashboard-card">
                         <span class="card-text" data-translate-key="btn_clubs">Clubs</span>
                     </a>
                     
@@ -265,7 +274,8 @@
                         <span class="card-text" data-translate-key="btn_survey">Survey</span>
                     </a>
                     
-                    <!-- Button 6: Contact Us --><a href="Contact Us/Contact Us.html" id="btn6" class="dashboard-card">
+                    <!-- Button 6: Contact Us -->
+                    <a href="Contact Us/Contact Us.html" id="btn6" class="dashboard-card">
                         <span class="card-text" data-translate-key="btn_contact">Contact Us</span>
                     </a>
                 </div>
@@ -283,7 +293,7 @@
                     We're here to guide and support you on your journey to a stronger life.</p>
                 </div>
                 <div class="us">
-                    <img src="img/Team.png" 
+                    <img src="../Team.png" 
                          alt="image" 
                          class="rounded-lg shadow-xl w-full h-auto max-w-xs mx-auto">
                 </div>
