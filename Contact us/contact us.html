@@ -7,14 +7,11 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script> 
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* Move font imports to the top of the style block for better loading */
+        /* Custom styles for the falling items and overall look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         
-        /* --- Custom Variables and Base Styles --- */
         :root {
             --primary-color: #4f46e5; /* indigo-600 */
             --primary-light: #eef2ff; /* indigo-50 */
@@ -178,11 +175,11 @@
                 <span id="current-lang" class="text-sm font-bold">EN</span> 
             </button>
 
-            <a href="../Home/home.html" class="icon-btn hover:bg-indigo-50">
+            <a href="Home/Home.html" class="icon-btn hover:bg-indigo-50">
                 <svg data-lucide="home" width="24" height="24"></svg>
             </a>
 
-            <a href="../Account/account.html" class="icon-btn hover:bg-indigo-50">
+            <a href="Account/Account.html" class="icon-btn hover:bg-indigo-50">
                 <svg data-lucide="user" width="24" height="24"></svg>
             </a>
 
@@ -211,8 +208,8 @@
                 <a id="email-contact-link"
                     target="_blank"
                     class="contact-btn w-full flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-2xl shadow-xl text-white">
-                    <span class="rtl-ml-2 mr-2" data-translate-key="btn_send_email">Search Contact Info</span>
-                    <svg data-lucide="search" width="20" height="20" stroke="currentColor" stroke-width="2"></svg>
+                    <span class="rtl-ml-2 mr-2" data-translate-key="btn_send_email">Send Email</span>
+                    <svg data-lucide="send" width="20" height="20" stroke="currentColor" stroke-width="2"></svg>
                 </a>
             </div>
 
@@ -230,18 +227,18 @@
     <script>
         // --- Navigation Data (Define links once) ---
         const navData = [
-            { href: "../Calories/calories.html", key: "nav_calories" },
-            { href: "../Eat healthy/eat healthy.html", key: "nav_eat_healthy" },
-            { href: "../Plans/plans.html", key: "nav_plans" },
-            { href: "../Clubs/clubs.html", key: "nav_clubs" },
-            { href: "../Survey/survey.html", key: "nav_survey" },
-            { href: "Contact us/contact us.html", key: "nav_contact_us" }
+            { href: "Calories/Calories.html", key: "nav_calories" },
+            { href: "Eat Healthy/Eat Healthy.html", key: "nav_eat_healthy" },
+            { href: "Plans/Plans.html", key: "nav_plans" },
+            { href: "Clubs/Clubs.html", key: "nav_clubs" },
+            { href: "Survey/Survey.html", key: "nav_survey" },
+            { href: "Contact Us/Contact Us.html", key: "nav_contact_us" }
         ];
 
         // The constant email address
         const CONTACT_EMAIL = 'malfit.bh@gmail.com';
 
-        // --- Translation Data ---
+        // --- Translation Data (NEW) ---
         const translations = {
             'en': {
                 'page_title': 'MALFIT | Contact Us',
@@ -254,16 +251,13 @@
                 'nav_contact_us': 'Contact Us',
                 'card_title': 'Get in Touch',
                 'card_description': 'We are happy to answer any questions you may have regarding our plans, clubs, or calorie tracking features.',
-                // Updated button text to reflect the Google search action
-                'btn_send_email': 'Search Contact Info', 
+                'btn_send_email': 'Send Email',
                 'card_footer': 'For urgent matters, expect a reply within 24 hours. Our support team is available Sunday to Thursday.',
                 'footer_text': '© 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi',
                 'lang_code': 'AR', // Display 'AR' to switch to Arabic
                 // NEW EMAIL KEYS
                 'email_subject': 'Website Inquiry Regarding Support',
-                // ADDED CLOSING for translation consistency
-                'email_body_prefix': 'Hello Team,\n\nI am writing to you about...',
-                'email_body_suffix': '\n\nThank you.' 
+                'email_body_prefix': 'Hello Team,\n\nI am writing to you about...'
             },
             'ar': {
                 'page_title': 'ملفت | اتصل بنا',
@@ -276,16 +270,13 @@
                 'nav_contact_us': 'اتصل بنا',
                 'card_title': 'تواصل معنا',
                 'card_description': 'يسعدنا الإجابة على أي أسئلة قد تكون لديكم بخصوص خططنا أو الأندية أو ميزات تتبع السعرات الحرارية.',
-                // Updated button text to reflect the Google search action
-                'btn_send_email': 'البحث عن معلومات الاتصال',
+                'btn_send_email': 'إرسال بريد إلكتروني',
                 'card_footer': 'للمسائل العاجلة، توقعوا رداً خلال 24 ساعة. فريق الدعم متاح من الأحد إلى الخميس.',
                 'footer_text': '© 2025، مشروع تخرج، مدى صالح، أحمد خليفة، لورا عادل، المشرف الدكتور عبد الله محمد خالد القادومي',
                 'lang_code': 'EN',  // Display 'EN' to switch to English
                 // NEW EMAIL KEYS
                 'email_subject': 'استفسار من الموقع بخصوص الدعم',
-                // ADDED CLOSING for translation consistency
-                'email_body_prefix': 'أهلاً بالفريق،\n\nأكتب إليكم بخصوص...',
-                'email_body_suffix': '\n\nشكراً.' 
+                'email_body_prefix': 'أهلاً بالفريق،\n\nأكتب إليكم بخصوص...'
             }
         };
 
@@ -324,7 +315,7 @@
         }
 
         /**
-         * Dynamically updates the link's href attribute to perform a Google search.
+         * Dynamically updates the mailto link's href attribute based on the current language.
          * @param {string} lang - The target language code ('en' or 'ar').
          */
         function updateEmailLink(lang) {
@@ -332,21 +323,17 @@
             const emailLink = document.getElementById('email-contact-link');
 
             if (!emailLink) return;
-            
-            // Construct the search query to include the email and a relevant title
-            const searchQuery = `"${CONTACT_EMAIL}" ${langData.email_subject || 'MALFIT Contact'}`;
-            
-            // Encode the query for use in a URL
-            const encodedQuery = encodeURIComponent(searchQuery);
 
-            // Construct the Google search URL
-            const googleLink = `https://www.google.com/search?q=${encodedQuery}`;
+            // Construct the subject and body from translation keys
+            const subject = encodeURIComponent(langData.email_subject || 'Website Inquiry');
+            // Adding two newlines (%0A%0A) after the prefix for formatting
+            const body = encodeURIComponent(langData.email_body_prefix + '\n\nThank you.');
 
-            emailLink.href = googleLink;
-            
-            // Update the icon to reflect the action (changed to 'search' in the HTML as well)
-            emailLink.querySelector('svg[data-lucide]').setAttribute('data-lucide', 'search');
-            replaceLucideIcons(); // Re-run to update the icon
+            // Construct the final mailto href using the constant email
+            // Use mail.google.com/mail/u/0/?view=cm&fs=1 to open Gmail tab
+            const mailtoLink = `https://mail.google.com/mail/u/0/?view=cm&fs=1&to=${CONTACT_EMAIL}&su=${subject}&body=${body}`;
+
+            emailLink.href = mailtoLink;
         }
 
         /**
@@ -378,7 +365,7 @@
                 }
             });
 
-            // 3. Update the Email Link (now Google search link)
+            // 3. Update the Email Link
             updateEmailLink(lang);
 
             // 4. Persist the selection
