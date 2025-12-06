@@ -6,7 +6,7 @@
     <title data-translate-key="page_title">MALFIT | My Plans</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script> 
+    <script src="https://unpkg.com/lucide@latest" defer></script> 
 
     <style>
         /* Custom styles from the provided code */
@@ -349,8 +349,7 @@
             const ovulationDate = new Date(nextPeriodDate);
             // Ovulation is approximately 14 days before the next period
             ovulationDate.setDate(ovulationDate.getDate() - 14); 
-            // Return the formatted date string (first convert back to YYYY-MM-DD for formatting utility)
-            // Use .toISOString().split('T')[0] to get YYYY-MM-DD format
+            // Return the formatted date string
             return formatDateForDisplay(ovulationDate.toISOString().split('T')[0]);
         }
 
@@ -371,6 +370,9 @@
                 case 'gain': goalTypeKey = 'calorie_type_gain'; break;
                 default: goalTypeKey = 'calorie_type_maintain'; 
             }
+            
+            // Format the saved date (Note: The key from Calories.html is 'date', not 'dateSaved')
+            const dateToFormat = planData.date || new Date().toISOString(); 
 
             card.innerHTML = `
                 <div class="flex items-center justify-between mb-4 text-red-600">
@@ -385,14 +387,14 @@
                     </p>
                     <p class="text-base">
                         <span class="font-medium" data-translate-key="calorie_saved">${langData.calorie_saved}</span> 
-                        ${formatDateForDisplay(planData.dateSaved)}
+                        ${formatDateForDisplay(dateToFormat.split('T')[0])}
                     </p>
                     <p class="text-base font-bold text-gray-800">
                         Goal: <span class="text-red-600" data-translate-key="${goalTypeKey}">${langData[goalTypeKey]}</span>
                     </p>
                 </div>
 
-                <button onclick="removePlan('savedCalorieGoal')" class="remove-btn w-full mt-4 py-2 text-sm font-semibold rounded-lg">
+                <button onclick="removePlan('savedCaloriePlan')" class="remove-btn w-full mt-4 py-2 text-sm font-semibold rounded-lg">
                     <span data-translate-key="btn_remove_calorie">${langData.btn_remove_calorie}</span>
                 </button>
             `;
@@ -447,7 +449,8 @@
          * Main function to load and render all saved plans.
          */
         function loadPlans() {
-            const calorieDataRaw = localStorage.getItem('savedCalorieGoal');
+            // *** FIX APPLIED HERE: Using the correct key 'savedCaloriePlan' ***
+            const calorieDataRaw = localStorage.getItem('savedCaloriePlan'); 
             const cycleDataRaw = localStorage.getItem('savedCyclePlan');
             
             let plansFound = false;
@@ -471,7 +474,7 @@
                     plansFound = true;
                 } catch (e) {
                     console.error("Error parsing Calorie Plan from localStorage:", e);
-                    localStorage.removeItem('savedCalorieGoal');
+                    localStorage.removeItem('savedCaloriePlan');
                 }
             }
 
@@ -501,15 +504,17 @@
             }
             
             // Re-render lucide icons after injecting HTML
-            lucide.createIcons();
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                lucide.createIcons();
+            }
         }
         
         /**
          * Removes a specific plan from localStorage and reloads the page.
-         * @param {string} key - The localStorage key (e.g., 'savedCalorieGoal').
+         * @param {string} key - The localStorage key (e.g., 'savedCaloriePlan').
          */
         window.removePlan = function(key) {
-            const keyName = (key === 'savedCalorieGoal') ? 
+            const keyName = (key === 'savedCaloriePlan') ? 
                 (currentLang === 'en' ? 'Calorie Goal' : 'هدف السعرات') : 
                 (currentLang === 'en' ? 'Cycle Prediction' : 'توقع الدورة');
 
@@ -573,6 +578,9 @@
             });
 
             langToggle.addEventListener('click', () => {
+                // Ensure mobile menu is closed when toggling language
+                mobileMenu.classList.remove('active');
+                
                 const newLang = (currentLang === 'en') ? 'ar' : 'en';
                 updateContent(newLang);
             });
