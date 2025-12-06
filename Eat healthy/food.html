@@ -1,470 +1,470 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-translate-key="page_title">MALFIT | Health</title>
-        <link rel="icon" type="image/png" href="/favicon.ico" sizes="96x96" />
-    <link rel="manifest" href="/site.webmanifest" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-translate-key="page_title">MALFIT | Health</title>
+        <link rel="icon" type="image/png" href="/favicon.ico" sizes="96x96" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script> 
 
-    <style>
-        /* Custom styles copied and simplified from your original design for the overall look */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-        
-        :root {
-            --primary-color: #4f46e5; /* indigo-600 */
-            --primary-light: #eef2ff; /* indigo-50 */
-        }
-        
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #f0f4f8; /* Softer background */
-            overflow-x: hidden; 
-            min-height: 100vh;
-            position: relative; 
-        }
+    <style>
+        /* Custom styles copied and simplified from your original design for the overall look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        :root {
+            --primary-color: #4f46e5; /* indigo-600 */
+            --primary-light: #eef2ff; /* indigo-50 */
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f0f4f8; /* Softer background */
+            overflow-x: hidden; 
+            min-height: 100vh;
+            position: relative; 
+        }
 
-        /* --- Falling Item Styles (Moving Background) --- */
-        .falling-item {
-            position: absolute;
-            user-select: none;
-            pointer-events: none; 
-            opacity: 0.3; 
-            transition: opacity 2s ease-out;
-            z-index: 0; 
-            text-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
-        }
-        
-        /* Ensure all structural elements are above the moving background */
-        header, main, footer {
-            position: relative;
-            z-index: 10; 
-        }
-        
-        /* Define a container that strictly holds the main content and prevents items from falling into the footer */
-        #page-content-wrapper {
-            position: relative;
-            min-height: calc(100vh - 80px); 
-            overflow: hidden; 
-        }
-        
-        /* --- Header Specific Styles --- */
-        header {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            background-color: #ffffff;
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-        }
+        /* --- Falling Item Styles (Moving Background) --- */
+        .falling-item {
+            position: absolute;
+            user-select: none;
+            pointer-events: none; 
+            opacity: 0.3; 
+            transition: opacity 2s ease-out;
+            z-index: 0; 
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
+        }
+        
+        /* Ensure all structural elements are above the moving background */
+        header, main, footer {
+            position: relative;
+            z-index: 10; 
+        }
+        
+        /* Define a container that strictly holds the main content and prevents items from falling into the footer */
+        #page-content-wrapper {
+            position: relative;
+            min-height: calc(100vh - 80px); 
+            overflow: hidden; 
+        }
+        
+        /* --- Header Specific Styles --- */
+        header {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            background-color: #ffffff;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
 
-        /* Navigation Links Style */
-        .nav-link {
-            padding: 0.5rem 0.75rem;
-            color: #4b5563; 
-            font-size: 0.95rem;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-        .nav-link:hover {
-            color: #4f46e5; 
-        }
-        
-        /* General styling for header icons/buttons */
-        .icon-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 0.5rem; /* Default rounded corners */
-            transition: background-color 0.2s, border-color 0.2s;
-            color: #4b5563; /* Gray-600 */
-            cursor: pointer;
-        }
-        
-        /* --- Language Icon Specific Style (Circular) --- */
-        .lang-circle-btn {
-            border: 2px solid #d1d5db; /* Gray-300 border */
-            border-radius: 9999px; /* Fully circular */
-            width: 40px; 
-            height: 40px; 
-            font-weight: 600;
-            display: flex; 
-            align-items: center;
-            justify-content: center;
-            transition: border-color 0.2s;
-        }
-        .lang-circle-btn:hover {
-            border-color: #4f46e5; /* Highlight border on hover */
-        }
+        /* Navigation Links Style */
+        .nav-link {
+            padding: 0.5rem 0.75rem;
+            color: #4b5563; 
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-link:hover {
+            color: #4f46e5; 
+        }
+        
+        /* General styling for header icons/buttons */
+        .icon-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem; /* Default rounded corners */
+            transition: background-color 0.2s, border-color 0.2s;
+            color: #4b5563; /* Gray-600 */
+            cursor: pointer;
+        }
+        
+        /* --- Language Icon Specific Style (Circular) --- */
+        .lang-circle-btn {
+            border: 2px solid #d1d5db; /* Gray-300 border */
+            border-radius: 9999px; /* Fully circular */
+            width: 40px; 
+            height: 40px; 
+            font-weight: 600;
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.2s;
+        }
+        .lang-circle-btn:hover {
+            border-color: #4f46e5; /* Highlight border on hover */
+        }
 
-        /* Mobile Menu styles */
-        #mobile-menu {
-            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            background-color: #ffffff;
-            border-bottom: 1px solid #e5e7eb;
-        }
-        #mobile-menu.active {
-            max-height: 500px; /* Sufficient height for all links */
-            opacity: 1;
-        }
-        #mobile-menu a {
-            display: block;
-            padding: 0.75rem 1.5rem;
-            color: #4b5563;
-            border-top: 1px solid #f3f4f6;
-        }
+        /* Mobile Menu styles */
+        #mobile-menu {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        #mobile-menu.active {
+            max-height: 500px; /* Sufficient height for all links */
+            opacity: 1;
+        }
+        #mobile-menu a {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: #4b5563;
+            border-top: 1px solid #f3f4f6;
+        }
 
-        /* --- Main Button Styling (LARGER SIZE) --- */
-        .main-btn {
-            background-image: linear-gradient(to right, #4f46e5 0%, #3b82f6 100%); 
-            transition: all 0.3s ease;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
-            padding: 2.5rem 1.25rem; 
-            border-radius: 1.5rem; 
-        }
-        .main-btn:hover {
-            box-shadow: 0 8px 18px rgba(63, 131, 248, 0.5); 
-            transform: translateY(-2px); 
-            opacity: 0.95;
-        }
-        
-        /* Main content minimum height calculation (for vertical centering) */
-        .min-h-main {
-            min-height: calc(100vh - 140px);
-        }
+        /* --- Main Button Styling (LARGER SIZE) --- */
+        .main-btn {
+            background-image: linear-gradient(to right, #4f46e5 0%, #3b82f6 100%); 
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+            padding: 2.5rem 1.25rem; 
+            border-radius: 1.5rem; 
+        }
+        .main-btn:hover {
+            box-shadow: 0 8px 18px rgba(63, 131, 248, 0.5); 
+            transform: translateY(-2px); 
+            opacity: 0.95;
+        }
+        
+        /* Main content minimum height calculation (for vertical centering) */
+        .min-h-main {
+            min-height: calc(100vh - 140px);
+        }
 
-        /* Table specific styles for aesthetics */
-        .food-table-header {
-            background-color: #4f46e5; /* Primary color background */
-            color: white;
-            font-weight: 600;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-        }
-        .food-table-row:nth-child(even) {
-            background-color: #f9fafb; /* Light stripe for readability */
-        }
+        /* Table specific styles for aesthetics */
+        .food-table-header {
+            background-color: #4f46e5; /* Primary color background */
+            color: white;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        .food-table-row:nth-child(even) {
+            background-color: #f9fafb; /* Light stripe for readability */
+        }
 
-    </style>
+    </style>
 </head>
 <body>
-    
-    <header class="sticky top-0 z-50 w-full flex items-center justify-between px-4 md:px-8 lg:px-16 py-3 bg-white border-b border-gray-100">
-        
-        <div class="flex items-center">
-            <h1 class="text-3xl font-extrabold text-indigo-600 tracking-wide" data-translate-key="logo">MALFIT</h1>
-        </div>
+    
+    <header class="sticky top-0 z-50 w-full flex items-center justify-between px-4 md:px-8 lg:px-16 py-3 bg-white border-b border-gray-100">
+        
+        <div class="flex items-center">
+            <h1 class="text-3xl font-extrabold text-indigo-600 tracking-wide" data-translate-key="logo">MALFIT</h1>
+        </div>
 
-        <nav class="hidden md:flex flex-grow justify-center mx-10">
-            <a href="../Calories/calories.html" class="nav-link" data-translate-key="nav_calories">Calories</a>
-            <a href="eat healrhy.html" class="nav-link" data-translate-key="nav_eat_healthy">Eat Healthy</a>
-            <a href="../Plans/plans.html" class="nav-link" data-translate-key="nav_plans">Plans</a>             
-            <a href="../Clubs/clubs.html" class="nav-link" data-translate-key="nav_clubs">Clubs</a>             
+        <nav class="hidden md:flex flex-grow justify-center mx-10">
+            <a href="../Calories/calories.html" class="nav-link" data-translate-key="nav_calories">Calories</a>
+            <a href="eat healrhy.html" class="nav-link" data-translate-key="nav_eat_healthy">Eat Healthy</a>
+            <a href="../Plans/plans.html" class="nav-link" data-translate-key="nav_plans">Plans</a>           
+            <a href="../Clubs/clubs.html" class="nav-link" data-translate-key="nav_clubs">Clubs</a>           
             <a href="../Survey/survey.html" class="nav-link" data-translate-key="nav_survey">Survey</a>
-            <a href="../Contact us/contact us.html" class="nav-link" data-translate-key="nav_contact_us">Contact Us</a>
-        </nav>
+            <a href="../Contact us/contact us.html" class="nav-link" data-translate-key="nav_contact_us">Contact Us</a>
+        </nav>
 
-        <div class="icons-container flex items-center gap-2 md:gap-4">
-            
-            <button id="lang-toggle" class="lang-circle-btn">
-                <span id="current-lang" class="text-sm">EN</span> 
-            </button>
+        <div class="icons-container flex items-center gap-2 md:gap-4">
+            
+            <button id="lang-toggle" class="lang-circle-btn">
+                <span id="current-lang" class="text-sm">EN</span> 
+            </button>
 
-            <a href="../Home/home.html" class="icon-btn w-10 h-10 hover:bg-indigo-50">
-                <svg data-lucide="home" width="24" height="24"></svg>
-            </a>
+            <a href="../Home/home.html" class="icon-btn w-10 h-10 hover:bg-indigo-50">
+                <svg data-lucide="home" width="24" height="24"></svg>
+            </a>
 
-            <a href="../Account/account.html" class="icon-btn w-10 h-10 hover:bg-indigo-50">
-                <svg data-lucide="user" width="24" height="24"></svg>
-            </a>
+            <a href="../Account/account.html" class="icon-btn w-10 h-10 hover:bg-indigo-50">
+                <svg data-lucide="user" width="24" height="24"></svg>
+            </a>
 
-            <button id="menu-toggle" class="md:hidden icon-btn w-10 h-10">
-                <svg data-lucide="menu" width="24" height="24"></svg>
-            </button>
-        </div>
-    </header>
+            <button id="menu-toggle" class="md:hidden icon-btn w-10 h-10">
+                <svg data-lucide="menu" width="24" height="24"></svg>
+            </button>
+        </div>
+    </header>
 
-    <div id="mobile-menu" class="md:hidden">
-        <a href="../Calories/calories.html" class="nav-link" data-translate-key="nav_calories">Calories</a>
-        <a href="eat healrhy.html" class="nav-link" data-translate-key="nav_eat_healthy">Eat Healthy</a>
-        <a href="../Plans/plans.html" class="nav-link" data-translate-key="nav_plans">Plans</a>         
-        <a href="../Clubs/clubs.html" class="nav-link" data-translate-key="nav_clubs">Clubs</a>         
+    <div id="mobile-menu" class="md:hidden">
+        <a href="../Calories/calories.html" class="nav-link" data-translate-key="nav_calories">Calories</a>
+        <a href="eat healrhy.html" class="nav-link" data-translate-key="nav_eat_healthy">Eat Healthy</a>
+        <a href="../Plans/plans.html" class="nav-link" data-translate-key="nav_plans">Plans</a>        
+        <a href="../Clubs/clubs.html" class="nav-link" data-translate-key="nav_clubs">Clubs</a>        
         <a href="../Survey/survey.html" class="nav-link" data-translate-key="nav_survey">Survey</a>
-        <a href="../Contact us/contact us.html" class="nav-link" data-translate-key="nav_contact_us">Contact Us</a>
-    </div>
+        <a href="../Contact us/contact us.html" class="nav-link" data-translate-key="nav_contact_us">Contact Us</a>
+    </div>
 
-    <div id="page-content-wrapper">
-    
-        <main class="flex items-center justify-center p-4 md:p-8 lg:p-12 min-h-main"> 
-            
-            <div class="w-full max-w-4xl bg-white shadow-2xl rounded-3xl p-6 sm:p-10 border border-blue-50/50">
+    <div id="page-content-wrapper">
+    
+        <main class="flex items-center justify-center p-4 md:p-8 lg:p-12 min-h-main"> 
+            
+            <div class="w-full max-w-4xl bg-white shadow-2xl rounded-3xl p-6 sm:p-10 border border-blue-50/50">
 
-                <div class="text-center mb-10">
-                    <h2 class="text-4xl font-extrabold text-gray-800 mb-2" data-translate-key="h1_food_list">
-                        Healthy Food Calorie Reference
-                    </h2>
-                    <p class="text-gray-600" data-translate-key="subtitle_food_list">
-                        A quick reference for common food items and their approximate calorie counts per average serving.
-                    </p>
-                </div>
+                <div class="text-center mb-10">
+                    <h2 class="text-4xl font-extrabold text-gray-800 mb-2" data-translate-key="h1_food_list">
+                        Healthy Food Calorie Reference
+                    </h2>
+                    <p class="text-gray-600" data-translate-key="subtitle_food_list">
+                        A quick reference for common food items and their approximate calorie counts per average serving.
+                    </p>
+                </div>
 
-                <div class="overflow-x-auto rounded-xl">
-                    <table class="min-w-full divide-y divide-gray-200 shadow-lg rounded-xl">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="px-4 py-3 text-left text-xs food-table-header rounded-tl-xl" data-translate-key="col_food_item">
-                                    Food Item
-                                </th>
-                                <th scope="col" class="px-4 py-3 text-center text-xs food-table-header" data-translate-key="col_serving">
-                                    Serving Size
-                                </th>
-                                <th scope="col" class="px-4 py-3 text-right text-xs food-table-header rounded-tr-xl" data-translate-key="col_calories">
-                                    Calories (kcal)
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody id="food-calorie-table-body" class="bg-white divide-y divide-gray-100 text-gray-800 text-sm">
-                                                    </tbody>
-                    </table>
-                </div>
+                <div class="overflow-x-auto rounded-xl">
+                    <table class="min-w-full divide-y divide-gray-200 shadow-lg rounded-xl">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="px-4 py-3 text-left text-xs food-table-header rounded-tl-xl" data-translate-key="col_food_item">
+                                    Food Item
+                                </th>
+                                <th scope="col" class="px-4 py-3 text-center text-xs food-table-header" data-translate-key="col_serving">
+                                    Serving Size
+                                </th>
+                                <th scope="col" class="px-4 py-3 text-right text-xs food-table-header rounded-tr-xl" data-translate-key="col_calories">
+                                    Calories (kcal)
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="food-calorie-table-body" class="bg-white divide-y divide-gray-100 text-gray-800 text-sm">
+                                                                            </tbody>
+                    </table>
+                </div>
 
-                <div class="mt-8 p-4 bg-indigo-50/70 text-indigo-800 rounded-lg text-sm italic">
-                    <p data-translate-key="disclaimer_note">
-                        *Note: Calorie counts are approximate and can vary based on size, preparation, and brand.
-                    </p>
-                </div>
+                <div class="mt-8 p-4 bg-indigo-50/70 text-indigo-800 rounded-lg text-sm italic">
+                    <p data-translate-key="disclaimer_note">
+                        *Note: Calorie counts are approximate and can vary based on size, preparation, and brand.
+                    </p>
+                </div>
 
-            </div>
-        </main>
-    </div> 
-    
-    <footer class="p-6 bg-white border-t border-gray-100 shadow-inner">
-        <p class="text-gray-600 text-center text-sm" data-translate-key="footer_text">&copy; 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi</p>
-    </footer>
+            </div>
+        </main>
+    </div> 
+    
+    <footer class="p-6 bg-white border-t border-gray-100 shadow-inner">
+        <p class="text-gray-600 text-center text-sm" data-translate-key="footer_text">&copy; 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi</p>
+    </footer>
 
-    <script>
-        // --- Food Data Structure ---
-        const foodItems = [
-            { en: 'Apple', ar: 'تفاح', serving_en: '1 medium', serving_ar: '1 متوسطة', calories: 95 },
-            { en: 'Banana', ar: 'موز', serving_en: '1 medium', serving_ar: '1 متوسطة', calories: 105 },
-            { en: 'Grilled Chicken Breast', ar: 'صدر دجاج مشوي', serving_en: '100g / 3.5oz', serving_ar: '100 جرام', calories: 165 },
-            { en: 'Boiled Egg', ar: 'بيضة مسلوقة', serving_en: '1 large', serving_ar: '1 كبيرة', calories: 78 },
-            { en: 'Oatmeal', ar: 'شوفان', serving_en: '1 cup cooked', serving_ar: 'كوب مطبوخ', calories: 150 },
-            { en: 'Brown Rice', ar: 'أرز بني', serving_en: '1 cup cooked', serving_ar: 'كوب مطبوخ', calories: 215 },
-            { en: 'Broccoli', ar: 'بروكلي', serving_en: '1 cup raw', serving_ar: 'كوب نيئ', calories: 31 },
-            { en: 'Avocado', ar: 'أفوكادو', serving_en: '1/3 fruit', serving_ar: 'ثلث ثمرة', calories: 106 },
-            { en: 'Almonds', ar: 'لوز', serving_en: '1 oz / 23 nuts', serving_ar: '23 حبة', calories: 164 },
-            { en: 'Salmon Fillet', ar: 'فيليه سلمون', serving_en: '100g / 3.5oz', serving_ar: '100 جرام', calories: 208 },
-        ];
+    <script>
+        // --- Food Data Structure ---
+        const foodItems = [
+            { en: 'Apple', ar: 'تفاح', serving_en: '1 medium', serving_ar: '1 متوسطة', calories: 95 },
+            { en: 'Banana', ar: 'موز', serving_en: '1 medium', serving_ar: '1 متوسطة', calories: 105 },
+            { en: 'Grilled Chicken Breast', ar: 'صدر دجاج مشوي', serving_en: '100g / 3.5oz', serving_ar: '100 جرام', calories: 165 },
+            { en: 'Boiled Egg', ar: 'بيضة مسلوقة', serving_en: '1 large', serving_ar: '1 كبيرة', calories: 78 },
+            { en: 'Oatmeal', ar: 'شوفان', serving_en: '1 cup cooked', serving_ar: 'كوب مطبوخ', calories: 150 },
+            { en: 'Brown Rice', ar: 'أرز بني', serving_en: '1 cup cooked', serving_ar: 'كوب مطبوخ', calories: 215 },
+            { en: 'Broccoli', ar: 'بروكلي', serving_en: '1 cup raw', serving_ar: 'كوب نيئ', calories: 31 },
+            { en: 'Avocado', ar: 'أفوكادو', serving_en: '1/3 fruit', serving_ar: 'ثلث ثمرة', calories: 106 },
+            { en: 'Almonds', ar: 'لوز', serving_en: '1 oz / 23 nuts', serving_ar: '23 حبة', calories: 164 },
+            { en: 'Salmon Fillet', ar: 'فيليه سلمون', serving_en: '100g / 3.5oz', serving_ar: '100 جرام', calories: 208 },
+        ];
 
-        // --- Translation Data (Extended) ---
-        const translations = {
-            'en': {
-                'page_title': 'MALFIT | Health - Food Calories',
-                'logo': 'MALFIT',
-                'nav_calories': 'Calories',
-                'nav_eat_healthy': 'Eat Healthy',
-                'nav_plans': 'Plans',
-                'nav_clubs': 'Clubs',
-                'nav_survey': 'Survey',
-                'nav_contact_us': 'Contact Us',
-                'h1_food_list': 'Healthy Food Calorie Reference',
-                'subtitle_food_list': 'A quick reference for common food items and their approximate calorie counts per average serving.',
-                'col_food_item': 'Food Item',
-                'col_serving': 'Serving Size',
-                'col_calories': 'Calories (kcal)',
-                'disclaimer_note': '*Note: Calorie counts are approximate and can vary based on size, preparation, and brand.',
-                'footer_text': '© 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi',
-                'lang_code': 'AR',
-            },
-            'ar': {
-                'page_title': 'ملفت | صحة - سعرات الأطعمة',
-                'logo': 'ملفت',
-                'nav_calories': 'السعرات الحرارية',
-                'nav_eat_healthy': 'تناول طعام صحي',
-                'nav_plans': 'الخطط',
-                'nav_clubs': 'الأندية',
-                'nav_survey': 'الاستبيان',
-                'nav_contact_us': 'اتصل بنا',
-                'h1_food_list': 'مرجع السعرات الحرارية للأطعمة الصحية',
-                'subtitle_food_list': 'مرجع سريع لأصناف الطعام الشائعة وعدد السعرات الحرارية التقريبي لكل حصة.',
-                'col_food_item': 'صنف الطعام',
-                'col_serving': 'حجم الحصة',
-                'col_calories': 'السعرات الحرارية (كيلو كالوري)',
-                'disclaimer_note': '*ملاحظة: عدد السعرات الحرارية تقريبي وقد يختلف بناءً على الحجم أو طريقة التحضير أو العلامة التجارية.',
-                'footer_text': '© 2025، مشروع تخرج، مدى صالح، أحمد خليفة، لورا عادل، المشرف الدكتور عبد الله محمد خالد القادومي',
-                'lang_code': 'EN',
-            }
-        };
+        // --- Translation Data (Extended) ---
+        const translations = {
+            'en': {
+                'page_title': 'MALFIT | Health - Food Calories',
+                'logo': 'MALFIT',
+                'nav_calories': 'Calories',
+                'nav_eat_healthy': 'Eat Healthy',
+                'nav_plans': 'Plans',
+                'nav_clubs': 'Clubs',
+                'nav_survey': 'Survey',
+                'nav_contact_us': 'Contact Us',
+                'h1_food_list': 'Healthy Food Calorie Reference',
+                'subtitle_food_list': 'A quick reference for common food items and their approximate calorie counts per average serving.',
+                'col_food_item': 'Food Item',
+                'col_serving': 'Serving Size',
+                'col_calories': 'Calories (kcal)',
+                'disclaimer_note': '*Note: Calorie counts are approximate and can vary based on size, preparation, and brand.',
+                'footer_text': '© 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi',
+                'lang_code': 'AR',
+            },
+            'ar': {
+                'page_title': 'ملفت | صحة - سعرات الأطعمة',
+                'logo': 'ملفت',
+                'nav_calories': 'السعرات الحرارية',
+                'nav_eat_healthy': 'تناول طعام صحي',
+                'nav_plans': 'الخطط',
+                'nav_clubs': 'الأندية',
+                'nav_survey': 'الاستبيان',
+                'nav_contact_us': 'اتصل بنا',
+                'h1_food_list': 'مرجع السعرات الحرارية للأطعمة الصحية',
+                'subtitle_food_list': 'مرجع سريع لأصناف الطعام الشائعة وعدد السعرات الحرارية التقريبي لكل حصة.',
+                'col_food_item': 'صنف الطعام',
+                'col_serving': 'حجم الحصة',
+                'col_calories': 'السعرات الحرارية (كيلو كالوري)',
+                'disclaimer_note': '*ملاحظة: عدد السعرات الحرارية تقريبي وقد يختلف بناءً على الحجم أو طريقة التحضير أو العلامة التجارية.',
+                'footer_text': '© 2025، مشروع تخرج، مدى صالح، أحمد خليفة، لورا عادل، المشرف الدكتور عبد الله محمد خالد القادومي',
+                'lang_code': 'EN',
+            }
+        };
 
-        let currentLang = localStorage.getItem('malfitMainLang') || 'en';
-        
-        // Utility function to convert Lucide icons
-        function replaceLucideIcons() {
-            lucide.createIcons();
-        }
+        let currentLang = localStorage.getItem('malfitMainLang') || 'en';
+        
+        // Utility function to convert Lucide icons
+        function replaceLucideIcons() {
+            lucide.createIcons();
+        }
 
-        /**
-         * Generates and updates the food calorie table content.
-         * @param {string} lang - The target language code ('en' or 'ar').
-         */
-        function updateFoodTable(lang) {
-            const tbody = document.getElementById('food-calorie-table-body');
-            tbody.innerHTML = ''; // Clear existing rows
-            const dirClass = (lang === 'ar') ? 'text-right' : 'text-left';
+        /**
+         * Generates and updates the food calorie table content.
+         * @param {string} lang - The target language code ('en' or 'ar').
+         */
+        function updateFoodTable(lang) {
+            const tbody = document.getElementById('food-calorie-table-body');
+            tbody.innerHTML = ''; // Clear existing rows
+            const dirClass = (lang === 'ar') ? 'text-right' : 'text-left';
 
-            foodItems.forEach(item => {
-                const foodText = item[lang];
-                const servingText = item[`serving_${lang}`];
+            foodItems.forEach(item => {
+                const foodText = item[lang];
+                const servingText = item[`serving_${lang}`];
 
-                const row = document.createElement('tr');
-                row.className = 'food-table-row hover:bg-indigo-50/50 transition-colors duration-150';
-                
-                // Food Item Cell
-                row.innerHTML += `<td class="px-4 py-3 whitespace-nowrap font-medium ${dirClass}">${foodText}</td>`;
-                
-                // Serving Size Cell
-                row.innerHTML += `<td class="px-4 py-3 whitespace-nowrap text-center">${servingText}</td>`;
+                const row = document.createElement('tr');
+                row.className = 'food-table-row hover:bg-indigo-50/50 transition-colors duration-150';
+                
+                // Food Item Cell
+                row.innerHTML += `<td class="px-4 py-3 whitespace-nowrap font-medium ${dirClass}">${foodText}</td>`;
+                
+                // Serving Size Cell
+                row.innerHTML += `<td class="px-4 py-3 whitespace-nowrap text-center">${servingText}</td>`;
 
-                // Calories Cell
-                row.innerHTML += `<td class="px-4 py-3 whitespace-nowrap text-right font-bold text-indigo-600">${item.calories}</td>`;
+                // Calories Cell
+                row.innerHTML += `<td class="px-4 py-3 whitespace-nowrap text-right font-bold text-indigo-600">${item.calories}</td>`;
 
-                tbody.appendChild(row);
-            });
-        }
+                tbody.appendChild(row);
+            });
+        }
 
-        /**
-         * Updates the content of the page based on the selected language and handles RTL layout.
-         * @param {string} lang - The target language code ('en' or 'ar').
-         */
-        function updateContent(lang) {
-            currentLang = lang;
-            const dir = (lang === 'ar') ? 'rtl' : 'ltr';
-            const langData = translations[lang];
-            const html = document.documentElement;
+        /**
+         * Updates the content of the page based on the selected language and handles RTL layout.
+         * @param {string} lang - The target language code ('en' or 'ar').
+         */
+        function updateContent(lang) {
+            currentLang = lang;
+            const dir = (lang === 'ar') ? 'rtl' : 'ltr';
+            const langData = translations[lang];
+            const html = document.documentElement;
 
-            // 1. Update HTML language and direction attributes
-            html.setAttribute('lang', lang);
-            html.setAttribute('dir', dir);
-            
-            // 2. Update all translated elements
-            document.querySelectorAll('[data-translate-key]').forEach(element => {
-                const key = element.getAttribute('data-translate-key');
-                if (langData[key] !== undefined) {
-                    if (element.id === 'current-lang') {
-                        element.textContent = langData.lang_code;
-                    } else if (element.tagName === 'TITLE') {
-                        document.title = langData[key];
-                    } else {
-                        element.textContent = langData[key];
-                    }
-                }
-            });
+            // 1. Update HTML language and direction attributes
+            html.setAttribute('lang', lang);
+            html.setAttribute('dir', dir);
+            
+            // 2. Update all translated elements
+            document.querySelectorAll('[data-translate-key]').forEach(element => {
+                const key = element.getAttribute('data-translate-key');
+                if (langData[key] !== undefined) {
+                    if (element.id === 'current-lang') {
+                        element.textContent = langData.lang_code;
+                    } else if (element.tagName === 'TITLE') {
+                        document.title = langData[key];
+                    } else {
+                        element.textContent = langData[key];
+                    }
+                }
+            });
 
-            // 3. Update the food table content
-            updateFoodTable(lang);
+            // 3. Update the food table content
+            updateFoodTable(lang);
 
-            // 4. Persist the selection
-            localStorage.setItem('malfitMainLang', lang);
-        }
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            // --- 1. MALFIT Mobile Menu Toggle Handler ---
-            const menuToggle = document.getElementById('menu-toggle');
-            const mobileMenu = document.getElementById('mobile-menu');
-            const langToggle = document.getElementById('lang-toggle'); 
+            // 4. Persist the selection
+            localStorage.setItem('malfitMainLang', lang);
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- 1. MALFIT Mobile Menu Toggle Handler ---
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const langToggle = document.getElementById('lang-toggle'); 
 
-            menuToggle.addEventListener('click', () => {
-                mobileMenu.classList.toggle('active');
-            });
-            
-            // Close menu when a link is clicked
-            mobileMenu.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', () => {
-                    mobileMenu.classList.remove('active');
-                });
-            });
-            
-            // --- 2. Language Toggle Handler ---
-            langToggle.addEventListener('click', () => {
-                const newLang = (currentLang === 'en') ? 'ar' : 'en';
-                updateContent(newLang);
-            });
-            
-            // --- 3. Initial Language Load & Icon Replacement ---
-            // Load saved language or default to English
-            updateContent(currentLang);
-            // Replace placeholder SVGs with Lucide Icons (only needed once DOM is ready)
-            replaceLucideIcons();
+            menuToggle.addEventListener('click', () => {
+                mobileMenu.classList.toggle('active');
+            });
+            
+            // Close menu when a link is clicked
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('active');
+                });
+            });
+            
+            // --- 2. Language Toggle Handler ---
+            langToggle.addEventListener('click', () => {
+                const newLang = (currentLang === 'en') ? 'ar' : 'en';
+                updateContent(newLang);
+            });
+            
+            // --- 3. Initial Language Load & Icon Replacement ---
+            // Load saved language or default to English
+            updateContent(currentLang);
+            // Replace placeholder SVGs with Lucide Icons (only needed once DOM is ready)
+            replaceLucideIcons();
 
-            // --- 4. Falling Food Background Animation Script ---
-            const produceEmojis = ['🍎', '🍊', '🍋', '🍇', '🍓', '🍍', '🥦', '🥕', '🥬', '🌶️', '🌽', '🥝'];
-            const body = document.body;
-            const maxItems = 40; 
-            let itemsOnScreen = 0;
+            // --- 4. Falling Food Background Animation Script ---
+            const produceEmojis = ['🍎', '🍊', '🍋', '🍇', '🍓', '🍍', '🥦', '🥕', '🥬', '🌶️', '🌽', '🥝'];
+            const body = document.body;
+            const maxItems = 40; 
+            let itemsOnScreen = 0;
 
-            function createFallingItem() {
-                if (itemsOnScreen >= maxItems) return;
+            function createFallingItem() {
+                if (itemsOnScreen >= maxItems) return;
 
-                const emoji = produceEmojis[Math.floor(Math.random() * produceEmojis.length)];
-                // Smaller size range for subtlety
-                const size = Math.floor(Math.random() * 15) + 12; 
-                const initialX = Math.random() * window.innerWidth;
-                // Faster duration for slightly more noticeable movement
-                const duration = Math.random() * 8 + 4; 
-                const rotation = Math.random() * 360; 
-                
-                const item = document.createElement('div');
-                item.className = 'falling-item';
-                item.innerHTML = emoji;
-                item.style.fontSize = `${size}px`;
-                item.style.left = `${initialX}px`;
-                item.style.top = `-50px`; 
-                item.style.transform = `rotate(${rotation}deg)`;
-                
-                body.appendChild(item);
-                itemsOnScreen++;
+                const emoji = produceEmojis[Math.floor(Math.random() * produceEmojis.length)];
+                // Smaller size range for subtlety
+                const size = Math.floor(Math.random() * 15) + 12; 
+                const initialX = Math.random() * window.innerWidth;
+                // Faster duration for slightly more noticeable movement
+                const duration = Math.random() * 8 + 4; 
+                const rotation = Math.random() * 360; 
+                
+                const item = document.createElement('div');
+                item.className = 'falling-item';
+                item.innerHTML = emoji;
+                item.style.fontSize = `${size}px`;
+                item.style.left = `${initialX}px`;
+                item.style.top = `-50px`; 
+                item.style.transform = `rotate(${rotation}deg)`;
+                
+                body.appendChild(item);
+                itemsOnScreen++;
 
-                let currentY = -50;
-                const speed = (window.innerHeight + 100) / (duration * 60); 
-                const driftX = (Math.random() - 0.5) * 0.5; 
+                let currentY = -50;
+                const speed = (window.innerHeight + 100) / (duration * 60); 
+                const driftX = (Math.random() - 0.5) * 0.5; 
 
-                function animateFall() {
-                    if (currentY > window.innerHeight) {
-                        if (body.contains(item)) {
-                            body.removeChild(item);
-                        }
-                        itemsOnScreen--;
-                        return;
-                    }
+                function animateFall() {
+                    if (currentY > window.innerHeight) {
+                        if (body.contains(item)) {
+                            body.removeChild(item);
+                        }
+                        itemsOnScreen--;
+                        return;
+                    }
 
-                    currentY += speed;
-                    let currentX = parseFloat(item.style.left) || initialX;
-                    currentX += driftX;
+                    currentY += speed;
+                    let currentX = parseFloat(item.style.left) || initialX;
+                    currentX += driftX;
 
-                    item.style.top = `${currentY}px`;
-                    item.style.left = `${currentX}px`;
-                    
-                    requestAnimationFrame(animateFall);
-                }
+                    item.style.top = `${currentY}px`;
+                    item.style.left = `${currentX}px`;
+                    
+                    requestAnimationFrame(animateFall);
+                }
 
-                requestAnimationFrame(animateFall);
-            }
+                requestAnimationFrame(animateFall);
+            }
 
-            function spawnLoop() {
-                createFallingItem();
-                // Spawn a new item every 100ms to 500ms
-                const delay = Math.random() * 400 + 100;
-                setTimeout(spawnLoop, delay);
-            }
+            function spawnLoop() {
+                createFallingItem();
+                // Spawn a new item every 100ms to 500ms
+                const delay = Math.random() * 400 + 100;
+                setTimeout(spawnLoop, delay);
+            }
 
-            spawnLoop();
-        });
-    </script>
+            spawnLoop();
+        });
+    </script>
 </body>
 </html>
