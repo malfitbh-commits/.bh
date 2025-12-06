@@ -3,13 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-translate-key="page_title">MALFIT | Period Tracker</title>
+    <title data-translate-key="page_title">MALFIT | Period </title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-
-    <script src="https://cdn.tailwindcss.com" defer></script>
-    <script src="https://unpkg.com/lucide@latest" defer></script> 
 
     <style>
         /* Define the default (pink) theme for this page */
@@ -19,7 +16,7 @@
             --primary-light: #fdf2f8; /* pink-50 */
         }
         
-        /* Reset elements that use the platform's default indigo color back to pink */
+        /* Reset elements that use the primary color back to pink */
         .text-indigo-600 {
             color: var(--primary-color) !important;
         }
@@ -170,7 +167,7 @@
             border-right: 4px solid var(--primary-color); 
         }
         
-        /* Calendar/Date Picker styling */
+        /* Calendar/Date Picker styling (basic) */
         .date-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -209,7 +206,7 @@
             color: white;
         }
 
-        /* Amenorrhea Warning Style */
+        /* UPDATED: Amenorrhea Warning Style */
         .warning-box-style {
             background-color: #fef2f2; /* red-50 */
             border: 2px solid #f87171; /* red-400 */
@@ -234,36 +231,18 @@
             background-color: #fecaca; /* red-200 */
         }
 
-        /* --- Falling Items CSS --- */
+        /* --- FALLING ITEM STYLES (NEW) --- */
         .falling-item {
             position: fixed;
-            top: -50px;
-            z-index: 1; /* Keep them behind the main content */
-            pointer-events: none; /* Allows clicks to pass through */
-            opacity: 0.5; /* Make them subtle */
-            filter: blur(0.5px); /* Add a subtle blur effect */
-            transform: rotate(var(--rotation, 0deg)); /* Allows initial random rotation */
-            /* Define the falling animation */
-            animation: fall linear infinite;
-        }
-
-        @keyframes fall {
-            0% {
-                transform: translateY(-10vh) translateX(0) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.5;
-            }
-            100% {
-                transform: translateY(100vh) translateX(var(--drift, 0px)) rotate(360deg);
-            }
+            z-index: 0; /* Ensure it stays behind main content */
+            pointer-events: none; /* Allows clicks on elements beneath it */
+            white-space: nowrap;
+            opacity: 0.6; /* Slight transparency */
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
         }
     </style>
 </head>
 <body class="female-theme">
-    
-        <div id="falling-items-container"></div>
     
     <header class="sticky top-0 z-50 w-full flex items-center justify-between px-4 md:px-8 lg:px-16 py-3 bg-white border-b border-gray-100">
         
@@ -274,11 +253,11 @@
         <nav class="hidden md:flex flex-grow justify-center mx-10">
             <a href="../Calories/calories.html" class="nav-link" data-translate-key="nav_calories">Calories</a>
             <a href="period.html" class="nav-link active-period" data-translate-key="nav_period">Period</a> 
-            <a href="../Eat healthy/eat healthy.html" class="nav-link" data-translate-key="nav_eat_healthy">Eat Healthy</a>
+            <a href="../Eat healthy/eat healrhy.html" class="nav-link" data-translate-key="nav_eat_healthy">Eat Healthy</a>
             <a href="../Plans/plans.html" class="nav-link" data-translate-key="nav_plans">Plans</a>
             <a href="../Clubs/clubs.html" class="nav-link" data-translate-key="nav_clubs">Clubs</a>
             <a href="../Survey/survey.html" class="nav-link" data-translate-key="nav_survey">Survey</a>
-            <a href="../Contact cs/contact us.html" class="nav-link" data-translate-key="nav_contact_us">Contact Us</a>
+            <a href="../Contact us/contact us.html" class="nav-link" data-translate-key="nav_contact_us">Contact Us</a>
         </nav>
 
         <div class="icons-container flex items-center gap-2 md:gap-4">
@@ -302,13 +281,13 @@
     </header>
 
     <div id="mobile-menu" class="md:hidden">
-        <a href="../Calories/calories.html" class="nav-link" data-translate-key="nav_calories">Calories</a>
-        <a href="period.html" class="nav-link active-period" data-translate-key="nav_period">Period</a> 
-        <a href="../Eat healthy/eat healthy.html" class="nav-link" data-translate-key="nav_eat_healthy">Eat Healthy</a>
-        <a href="../Plans/plans.html" class="nav-link" data-translate-key="nav_plans">Plans</a>
-        <a href="../Clubs/clubs.html" class="nav-link" data-translate-key="nav_clubs">Clubs</a>
-        <a href="../Survey/survey.html" class="nav-link" data-translate-key="nav_survey">Survey</a>
-        <a href="../Contact us/contact us.html" class="nav-link" data-translate-key="nav_contact_us">Contact Us</a>
+        <a href="../Calories/calories.html" data-translate-key="nav_calories">Calories</a>
+        <a href="period.html" class="active-period" data-translate-key="nav_period">Period</a> 
+        <a href="../Eat healthy/eat healrhy.html" data-translate-key="nav_eat_healthy">Eat Healthy</a>
+        <a href="../P;ans/plans.html" data-translate-key="nav_plans">Plans</a>
+        <a href="../Clubs/clubs.html" data-translate-key="nav_clubs">Clubs</a>
+        <a href="../Survey/survey.html" data-translate-key="nav_survey">Survey</a>
+        <a href="../Contact us/contact us.html" data-translate-key="nav_contact_us">Contact Us</a>
     </div>
 
     <main class="flex flex-col items-center justify-start p-4 min-h-main"> 
@@ -366,7 +345,7 @@
             <div class="lg:col-span-2 space-y-6">
                 
                 <div id="cycle-info" class="cycle-info-box rounded-xl p-6 shadow-md hidden">
-                    <h2 class="text-xl font-bold text-pink-800 mb-3" data-translate-key="info_title">My Next Cycle Predictions </h2>
+                    <h2 class="text-xl font-bold text-pink-800 mb-3" data-translate-key="info_title">My Next Cycle Predictions</h2>
                     
                     <div class="grid grid-cols-2 gap-4 text-sm mb-4">
                         <div>
@@ -402,10 +381,10 @@
                     </div>
 
                     <div id="calendar-week-days" class="date-grid">
-                    </div>
+                        </div>
 
                     <div id="calendar-dates" class="date-grid mt-2">
-                    </div>
+                        </div>
                 </div>
             </div>
         </div>
@@ -414,6 +393,9 @@
     <footer class="p-6 bg-white border-t border-gray-100 shadow-inner">
         <p class="text-gray-600 text-center text-sm" data-translate-key="footer_text">&copy; 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi</p>
     </footer>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script> 
 
     <script>
         // --- GLOBAL STATE ---
@@ -427,13 +409,10 @@
         
         const AMENORRHEA_DAYS = 90; // 3 months for warning
 
-        // --- NEW: Falling Emojis Data ---
-        const fallingEmojis = ['💖', '🌸', '✨', '💧', '🎀', '💓', '💗', '🩸', '🌷', '💫'];
-
         // --- TRANSLATIONS (Updated) ---
         const translations = {
             'en': {
-                'page_title': 'MALFIT | Period Tracker',
+                'page_title': 'MALFIT | Period ',
                 'logo': 'MALFIT',
                 'nav_calories': 'Calories',
                 'nav_period': 'Period',
@@ -443,7 +422,7 @@
                 'nav_survey': 'Survey',
                 'nav_contact_us': 'Contact Us',
                 'footer_text': '© 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi',
-                'lang_code': 'ع', 
+                'lang_code': 'AR', 
                 
                 // Tracker Specific
                 'tracker_title': 'My Cycle Log',
@@ -468,13 +447,13 @@
                 'alert_no_cycle_to_save': 'Please calculate your next cycle dates before saving the plan.',
                 'alert_cycle_plan_saved': 'Cycle plan saved! Redirecting to the Plans page.',
 
-                // Amenorrhea Warning
+                // UPDATED: Amenorrhea Warning
                 'warning_title': '🚨 Medical Attention Recommended',
                 'warning_message': 'If your period has not started for 3 months or more, please consult a doctor for a professional health check-up.',
                 'btn_ok': 'OK, I Understand',
             },
             'ar': {
-                'page_title': 'ملفت | متتبع الدورة الشهرية',
+                'page_title': 'ملفت | الدورة الشهرية',
                 'logo': 'ملفت',
                 'nav_calories': 'السعرات الحرارية',
                 'nav_period': 'الدورة الشهرية',
@@ -509,50 +488,18 @@
                 'alert_no_cycle_to_save': 'الرجاء حساب تواريخ الدورة القادمة قبل حفظ الخطة.',
                 'alert_cycle_plan_saved': 'تم حفظ خطة الدورة! يتم التوجيه إلى صفحة الخطط.',
 
-                // Amenorrhea Warning
+                // UPDATED: Amenorrhea Warning
                 'warning_title': '🚨 يُنصح بالاهتمام الطبي',
                 'warning_message': 'إذا لم تبدأ دورتك الشهرية لمدة 3 أشهر أو أكثر، يرجى استشارة الطبيب لإجراء فحص صحي متخصص.',
                 'btn_ok': 'حسناً، أتفهم',
             }
         };
 
-        // --- UTILITY FUNCTIONS ---
-        function formatDate(date) {
-            return date.toLocaleDateString(currentLang, { year: 'numeric', month: 'long', day: 'numeric' });
-        }
-        
-        // --- NEW: Falling Items Animation Function ---
-        function startFallingAnimation() {
-            const container = document.getElementById('falling-items-container');
-            const count = 10; // Number of items
-
-            for (let i = 0; i < count; i++) {
-                const emoji = fallingEmojis[Math.floor(Math.random() * fallingEmojis.length)];
-                const size = Math.random() * 1.5 + 1; // Size between 1em and 2.5em
-                const duration = Math.random() * 10 + 10; // Duration between 10s and 20s
-                const delay = Math.random() * 15; // Delay up to 15s for staggered start
-                const startX = Math.random() * 100; // Starting position (0% to 100%)
-                const drift = Math.random() * 100 - 50; // Horizontal drift (-50px to 50px)
-
-                const item = document.createElement('div');
-                item.className = 'falling-item';
-                item.textContent = emoji;
-                
-                // Apply styles for animation and position
-                item.style.left = `${startX}vw`;
-                item.style.fontSize = `${size}em`;
-                item.style.animationDuration = `${duration}s`;
-                item.style.animationDelay = `${delay}s`;
-                item.style.setProperty('--drift', `${drift}px`);
-
-                container.appendChild(item);
-            }
-        }
-
-        // --- AMENORRHEA WARNING LOGIC ---
+        // --- AMENORRHEA WARNING LOGIC (Unchanged) ---
         function checkAmenorrheaWarning() {
             const warningBox = document.getElementById('amenorrhea-warning');
             
+            // Check localStorage to see if the user has already dismissed the warning recently
             const dismissed = localStorage.getItem('amenorrheaWarningDismissed');
             if (dismissed === 'true') {
                  warningBox.classList.add('hidden');
@@ -576,11 +523,13 @@
 
         function removeWarning() {
             document.getElementById('amenorrhea-warning').classList.add('hidden');
+            // Store dismissal state
             localStorage.setItem('amenorrheaWarningDismissed', 'true');
         }
 
 
-        // --- CYCLE CALCULATION LOGIC ---
+        // --- CYCLE CALCULATION LOGIC (Updated to store nextPeriodDate) ---
+
         function calculateCycle() {
             const lastPeriodDateInput = document.getElementById('last-period-date').value;
             const cycleLengthInput = parseInt(document.getElementById('cycle-length').value);
@@ -592,18 +541,21 @@
             }
 
             // Store the data in the global state
-            // Use replace to ensure cross-browser compatibility for date parsing
             lastPeriodStart = new Date(lastPeriodDateInput.replace(/-/g, '/')); 
             cycleLength = cycleLengthInput;
             periodDuration = periodLengthInput;
             
+            // Clear dismissal flag if a new cycle is logged (new period means no amenorrhea)
             localStorage.removeItem('amenorrheaWarningDismissed');
+
+            // Check for the health warning after logging the new date
             checkAmenorrheaWarning();
 
             // --- 1. Calculate Next Period Start ---
             let calculatedNextPeriod = new Date(lastPeriodStart);
             calculatedNextPeriod.setDate(calculatedNextPeriod.getDate() + cycleLength);
             
+            // Store globally for planning function
             nextPeriodDate = calculatedNextPeriod; 
 
             // --- 2. Calculate Ovulation Date (approximate: 14 days before next period) ---
@@ -614,7 +566,7 @@
             let fertileStart = new Date(ovulationDate);
             fertileStart.setDate(fertileStart.getDate() - 5);
             let fertileEnd = new Date(ovulationDate);
-            fertileEnd.setDate(fertileEnd.getDate() + 1); // CRITICAL FIX: Changed 'ferileEnd' to 'fertileEnd'
+            fertileEnd.setDate(fertileEnd.getDate() + 1); 
 
             // --- 4. Display Results ---
             document.getElementById('next-period-output').textContent = formatDate(nextPeriodDate);
@@ -623,11 +575,12 @@
             document.getElementById('cycle-info').classList.remove('hidden');
             
             // --- 5. Update Calendar ---
-            currentCalendarDate = new Date(); 
-            renderCalendar(nextPeriodDate, periodDuration); // Pass calculated dates for marking
+            currentCalendarDate = new Date(); // Reset calendar to current month/year after calculation
+            renderCalendar();
         }
         
-        // --- SAVE CYCLE PLAN LOGIC ---
+        // --- SAVE CYCLE PLAN LOGIC (NEW) ---
+
         function saveCyclePlan() {
             if (!nextPeriodDate) {
                 alert(translations[currentLang].alert_no_cycle_to_save);
@@ -642,184 +595,189 @@
                 dateSaved: new Date().toISOString()
             };
 
+            // Save the structured data to localStorage
             localStorage.setItem('savedCyclePlan', JSON.stringify(planData));
             
             alert(translations[currentLang].alert_cycle_plan_saved);
-            // Redirect to the Plans page as per navigation link:
-            window.location.href = '../Plans/plans.html'; 
+            window.location.href = 'plane.html';
         }
 
-        // --- CALENDAR LOGIC ---
+        // --- CALENDAR LOGIC (Unchanged) ---
 
         function changeMonth(delta) {
             currentCalendarDate.setMonth(currentCalendarDate.getMonth() + delta);
-            renderCalendar(nextPeriodDate, periodDuration);
+            renderCalendar();
         }
-        
-        /**
-         * Renders the calendar grid for the currentCalendarDate.
-         * @param {Date} [nextPeriod] - Calculated next period start date.
-         * @param {number} [duration] - Calculated period duration in days.
-         */
-        function renderCalendar(nextPeriod = null, duration = 0) {
+
+        function renderCalendar() {
             const month = currentCalendarDate.getMonth();
             const year = currentCalendarDate.getFullYear();
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
-            // Calculate cycle dates if available
-            let periodDates = [];
-            let fertileDates = [];
+            // Display Month and Year
+            document.getElementById('current-month-year').textContent = `${translations[currentLang].month_names[month]} ${year}`;
             
-            if (nextPeriod) {
-                // Get period dates
-                for (let i = 0; i < duration; i++) {
-                    let d = new Date(nextPeriod);
-                    d.setDate(d.getDate() + i);
-                    periodDates.push(d.toISOString().split('T')[0]);
-                }
-                
-                // Calculate Ovulation and Fertile Window based on the global nextPeriodDate
-                let ovulationDate = new Date(nextPeriod);
-                ovulationDate.setDate(ovulationDate.getDate() - 14);
-                let fertileStart = new Date(ovulationDate);
-                fertileStart.setDate(fertileStart.getDate() - 5);
-                let fertileEnd = new Date(ovulationDate);
-                fertileEnd.setDate(fertileEnd.getDate() + 1); 
-                
-                // Get fertile window dates (7 days including ovulation+1)
-                for (let d = new Date(fertileStart); d <= fertileEnd; d.setDate(d.getDate() + 1)) {
-                    // Check if date is not already a period day, to avoid overwriting the 'cycle-day' class
-                    const dateString = d.toISOString().split('T')[0];
-                    if (!periodDates.includes(dateString)) {
-                        fertileDates.push(dateString);
-                    }
-                }
-            }
-
-            // Set Month and Year Title
-            const monthName = translations[currentLang].month_names[month];
-            document.getElementById('current-month-year').textContent = `${monthName} ${year}`;
-
-            // Render Day Names
+            // Render Weekday Labels (only once or when language changes)
             const weekDaysContainer = document.getElementById('calendar-week-days');
             weekDaysContainer.innerHTML = translations[currentLang].day_names.map(day => 
                 `<div class="day-label">${day}</div>`
             ).join('');
-
+            
+            
             const datesContainer = document.getElementById('calendar-dates');
             datesContainer.innerHTML = '';
-
-            // Get the first day of the month (0=Sunday, 6=Saturday)
-            const firstDayOfMonth = new Date(year, month, 1).getDay();
-            // Get the number of days in the month
+            
+            const firstDayOfMonth = new Date(year, month, 1);
+            const startingDay = firstDayOfMonth.getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-            // Add empty cells for preceding days
-            for (let i = 0; i < firstDayOfMonth; i++) {
+            // --- Add blank placeholders for the start of the month ---
+            for (let i = 0; i < startingDay; i++) {
                 datesContainer.innerHTML += '<div></div>';
             }
 
-            // Render the days of the month
+            // --- Draw the actual dates ---
             for (let day = 1; day <= daysInMonth; day++) {
-                const currentDate = new Date(year, month, day);
-                currentDate.setHours(0, 0, 0, 0); 
-                const dateString = currentDate.toISOString().split('T')[0];
-
+                const date = new Date(year, month, day);
+                date.setHours(0, 0, 0, 0); // Normalize date for comparison
+                const dateString = date.toISOString().split('T')[0];
                 let classes = 'day-cell';
-                let isToday = currentDate.getTime() === today.getTime();
                 
-                // Determine CSS class for the date
-                if (isToday) {
+                // Check if it's today
+                if (date.getTime() === today.getTime()) {
                     classes += ' current-day';
                 }
-
-                if (periodDates.includes(dateString)) {
-                    classes += ' cycle-day';
-                } else if (fertileDates.includes(dateString)) {
-                    classes += ' cycle-prediction'; // Use a distinct class for fertile window
-                }
                 
-                // Prevent current-day from overriding cycle-day style
-                if (periodDates.includes(dateString) && isToday) {
-                    // This creates a visual conflict, but we prioritize the period marking
-                    // You might want to style this specific case with a ring/border
+                // Check if cycle is logged and mark period/fertile days
+                if (lastPeriodStart) {
+                    const cycleDayStatus = getCycleDayStatus(date);
+                    if (cycleDayStatus === 'period') {
+                        // Override current-day styling if it's also a period day
+                        classes = classes.replace(' current-day', '') + ' cycle-day';
+                    } else if (cycleDayStatus === 'fertile') {
+                         classes = classes.replace(' current-day', '') + ' cycle-prediction';
+                    }
                 }
 
-
-                datesContainer.innerHTML += `<div class="${classes}">${day}</div>`;
+                datesContainer.innerHTML += `<div class="${classes}" data-date="${dateString}">${day}</div>`;
             }
         }
-        
-        // --- TRANSLATION AND INIT LOGIC ---
-        function applyTranslations(lang) {
-            currentLang = lang;
-            const t = translations[lang];
 
-            // Set document direction and language code
-            document.documentElement.setAttribute('lang', lang);
-            document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+        function getCycleDayStatus(dateToCheck) {
+            const dayMillis = 24 * 60 * 60 * 1000;
+            
+            if (!lastPeriodStart || cycleLength === 0) return null;
+
+            // Normalize lastPeriodStart for comparison
+            const lastPeriodNormalized = new Date(lastPeriodStart);
+            lastPeriodNormalized.setHours(0, 0, 0, 0);
+            
+            // Ensure dateToCheck is also normalized
+            dateToCheck.setHours(0, 0, 0, 0);
+
+            const daysDifference = (date1, date2) => Math.round((date1.getTime() - date2.getTime()) / dayMillis);
+            
+            let daysSinceLastPeriod = daysDifference(dateToCheck, lastPeriodNormalized);
+            
+            if (daysSinceLastPeriod < 0) {
+                 // Check if the date is in the immediate current cycle (up to periodDuration days BEFORE the last recorded date)
+                 if (daysSinceLastPeriod >= -periodDuration) {
+                     return 'period';
+                 }
+                 return null;
+            }
+            
+            let cycleDay = daysSinceLastPeriod % cycleLength; 
+
+            // 1. Check for Period Days (Days 0 to PeriodDuration - 1 in a zero-indexed cycle day counter)
+            if (cycleDay < periodDuration) {
+                return 'period';
+            }
+            
+            // 2. Check for Predicted Fertile Window 
+            // Ovulation is 14 days BEFORE next period, which is (cycleLength - 14) days AFTER last period start.
+            const ovulationDay = cycleLength - 14; 
+            const fertileStartDay = ovulationDay - 5; 
+            const fertileEndDay = ovulationDay + 1; 
+
+            if (cycleDay >= fertileStartDay && cycleDay <= fertileEndDay) {
+                return 'fertile';
+            }
+
+            return null;
+        }
+
+        // --- UTILITIES & INITIALIZATION (Completed) ---
+
+        function formatDate(date) {
+            return `${date.getDate()} ${translations[currentLang].month_names[date.getMonth()]}, ${date.getFullYear()}`;
+        }
+        
+        // ** MISSING FUNCTION START **
+        function setLanguage(newLang) {
+            currentLang = newLang;
+            localStorage.setItem('malfitMainLang', newLang);
+            const t = translations[currentLang];
+
+            // Set global HTML attributes
+            document.documentElement.setAttribute('lang', currentLang);
+            document.documentElement.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+
+            // Update language code display
             document.getElementById('current-lang').textContent = t.lang_code;
 
-            // Apply text translations
+            // Update all translated elements
             document.querySelectorAll('[data-translate-key]').forEach(element => {
                 const key = element.getAttribute('data-translate-key');
                 if (t[key]) {
                     element.textContent = t[key];
                 }
             });
+            
+            // Re-render the calendar to update day names and month name
+            renderCalendar();
 
-            // Re-render calendar to update month/day names
-            renderCalendar(nextPeriodDate, periodDuration);
+            // Re-run cycle calculation/display if data exists to update date formats
+            if (lastPeriodStart) {
+                calculateCycle(); 
+            }
+            checkAmenorrheaWarning();
         }
 
-        // --- EVENT LISTENERS AND INITIALIZATION ---
-        
+
+        // Language Toggle Event Listener (Completed)
+        document.getElementById('lang-toggle').addEventListener('click', () => {
+             const newLang = (currentLang === 'en') ? 'ar' : 'en';
+             setLanguage(newLang);
+        });
+
+        // Mobile Menu Toggle
+        document.getElementById('menu-toggle').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('active');
+        });
+
+        // Final Initialization
         document.addEventListener('DOMContentLoaded', () => {
-            // 1. Initialize Animation
-            startFallingAnimation();
+            // Initialize all Lucide icons
+            lucide.createIcons();
             
-            // 2. Initialize Translations
-            applyTranslations(currentLang);
+            // Apply initial language settings and render initial calendar
+            setLanguage(currentLang); 
             
-            // 3. Load Saved State (if any)
-            const savedPlan = localStorage.getItem('savedCyclePlan');
-            if (savedPlan) {
-                const data = JSON.parse(savedPlan);
-                document.getElementById('last-period-date').value = new Date(data.nextPeriodStart); // Use next period as 'last' for display/re-calculation
-                document.getElementById('cycle-length').value = data.cycleLength;
-                document.getElementById('period-length').value = data.periodDuration;
-                
-                // Automatically calculate based on loaded data
-                // Need to manually set global state based on date input value due to async
-                const lastPeriodDateInput = document.getElementById('last-period-date').value;
-                if (lastPeriodDateInput) {
-                    lastPeriodStart = new Date(lastPeriodDateInput.replace(/-/g, '/'));
-                    cycleLength = parseInt(data.cycleLength);
-                    periodDuration = parseInt(data.periodDuration);
-                    calculateCycle(); // Re-calculate to populate info box and calendar
-                }
-            } else {
-                 // 4. Render initial calendar without cycle data
-                 renderCalendar();
+            // Attempt to load and display saved data on load
+            const savedLastPeriod = localStorage.getItem('lastPeriodDateInput');
+            if (savedLastPeriod) {
+                 document.getElementById('last-period-date').value = savedLastPeriod;
+                 // It's often better to save all three values (date, cycle length, period duration)
+                 // For now, let's just use the date and assume default lengths, or manually set them.
             }
             
-            // 5. Setup Language Toggle
-            document.getElementById('lang-toggle').addEventListener('click', () => {
-                const newLang = currentLang === 'en' ? 'ar' : 'en';
-                localStorage.setItem('malfitMainLang', newLang);
-                applyTranslations(newLang);
-            });
+            // We only call renderCalendar() inside setLanguage(), so we don't need a separate call here.
 
-            // 6. Setup Mobile Menu Toggle
-            document.getElementById('menu-toggle').addEventListener('click', () => {
-                document.getElementById('mobile-menu').classList.toggle('active');
-            });
-            
-            // 7. Check for Amenorrhea Warning on load
+            // Re-check warning based on stored state
             checkAmenorrheaWarning();
-
         });
+        
     </script>
-</body>
 </html>
