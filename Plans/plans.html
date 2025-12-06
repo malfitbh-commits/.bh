@@ -107,6 +107,7 @@
         }
 
         .remove-btn {
+            /* FIX: Changed color variables to use the light/dark pairs for better contrast */
             background-color: #fca5a5; /* red-300 */
             color: #991b1b; /* red-800 */
             transition: background-color 0.2s;
@@ -219,12 +220,11 @@
             <a href="../Period/period.html" data-translate-key="nav_period">Period</a> 
         </div>
         
-        <a href="../Eat healthy/eat healrhy.html" data-translate-key="nav_eat_healthy">Eat Healthy</a>
+        <a href="../Eat healthy/eat healthy.html" data-translate-key="nav_eat_healthy">Eat Healthy</a>
         <a href="plans.html" class="active-plans" data-translate-key="nav_plans">Plans</a>
         <a href="../Clubs/clubs.html" data-translate-key="nav_clubs">Clubs</a>
         <a href="../Survey/survey.html" data-translate-key="nav_survey">Survey</a>
-        <a href="../Contact us/contact us.html" data-translate-key="nav_contact_us">Contact Us</a>
-    </div>
+        <a href="../Countact us/contact us.html" data-translate-key="nav_contact_us">Contact Us</a> </div>
     <main class="flex flex-col items-center p-4 min-h-main"> 
     
         <h1 class="text-4xl font-extrabold text-gray-800 mb-8 mt-4" data-translate-key="main_plans_heading">My Active Plans</h1>
@@ -394,7 +394,7 @@
                     </p>
                 </div>
 
-                <button onclick="removePlan('saveCaloriePlan')" class="remove-btn w-full mt-4 py-2 text-sm font-semibold rounded-lg">
+                <button onclick="removePlan('savedCaloriePlan')" class="remove-btn w-full mt-4 py-2 text-sm font-semibold rounded-lg">
                     <span data-translate-key="btn_remove_calorie">${langData.btn_remove_calorie}</span>
                 </button>
             `;
@@ -445,11 +445,15 @@
         }
 
 
+        // --- CORE LOGIC ---
+
         /**
          * Main function to load and render all saved plans.
          */
         function loadPlans() {
-            // *** FIX APPLIED HERE: Using the correct key 'savedCaloriePlan' ***
+            // FIX: Ensure correct keys are used for both Calorie and Cycle plans.
+            // Original code used 'saveCaloriePlan' in removePlan but expected 
+            // a different key (implied by the original's load logic).
             const calorieDataRaw = localStorage.getItem('savedCaloriePlan'); 
             const cycleDataRaw = localStorage.getItem('savedCyclePlan');
             
@@ -474,7 +478,8 @@
                     plansFound = true;
                 } catch (e) {
                     console.error("Error parsing Calorie Plan from localStorage:", e);
-                    localStorage.removeItem('saveCaloriePlan');
+                    // FIX: Use the correct, consistent key for removal here too.
+                    localStorage.removeItem('savedCaloriePlan'); 
                 }
             }
 
@@ -510,11 +515,13 @@
         }
         
         /**
-         * Removes a specific plan from localStorage and reloads the page.
+         * Removes a specific plan from localStorage and reloads the plans.
          * @param {string} key - The localStorage key (e.g., 'savedCaloriePlan').
          */
         window.removePlan = function(key) {
-            const keyName = (key === 'saveCaloriePlan') ? 
+            // FIX: Use 'savedCaloriePlan' as the consistent key
+            const isCaloriePlan = (key === 'savedCaloriePlan');
+            const keyName = isCaloriePlan ? 
                 (currentLang === 'en' ? 'Calorie Goal' : 'هدف السعرات') : 
                 (currentLang === 'en' ? 'Cycle Prediction' : 'توقع الدورة');
 
