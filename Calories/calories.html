@@ -797,7 +797,7 @@
             };
 
             // Store the plan (replace or push to an array depending on desired functionality)
-            localStorage.setItem('malfitCaloriePlan', JSON.stringify(plan));
+            localStorage.setItem('saveCaloriePlan', JSON.stringify(plan));
             
             alert(translations[currentLang].alert_plan_saved);
             window.location.href = '../Plans/plans.html'; // Redirect to plans page
