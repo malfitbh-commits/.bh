@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-translate-key="page_title">MALFIT | Health</title>
-        <link rel="icon" type="image/png" href="/favicon.ico" sizes="96x96" />
+    
+    <link rel="icon" type="image/png" href="/favicon.ico" sizes="96x96" />
     <link rel="manifest" href="/site.webmanifest" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script> 
@@ -12,14 +13,22 @@
     <style>
         /* Custom styles copied and simplified from your original design for the overall look */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+
         :root {
             --primary-color: #4f46e5; /* indigo-600 */
             --primary-light: #eef2ff; /* indigo-50 */
         }
         
-        body { 
+        /* Define fonts based on direction */
+        html[dir="ltr"] body {
             font-family: 'Inter', sans-serif; 
+        }
+        html[dir="rtl"] body {
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body { 
             background-color: #f0f4f8; /* Softer background */
             overflow-x: hidden; 
             min-height: 100vh;
@@ -59,16 +68,26 @@
             align-items: center; 
         }
 
-        /* Navigation Links Style */
+        /* --- Custom Nav Link Styles (Pill-shaped - RESTORED) --- */
         .nav-link {
-            padding: 0.5rem 0.75rem;
-            color: #4b5563; 
-            font-size: 0.95rem;
+            text-decoration: none;
+            color: #474646; /* Slightly darker gray */
             font-weight: 500;
-            transition: color 0.2s;
+            padding: 10px 15px; /* Added padding */
+            margin-right: 10px;
+            transition: color 0.2s, background-color 0.2s, transform 0.1s;
+            border-radius: 9999px; /* Pill shape */
+            white-space: nowrap;
         }
         .nav-link:hover {
-            color: #4f46e5; 
+            color: var(--primary-color); 
+            background-color: var(--primary-light); /* Added hover background */
+            transform: translateY(-1px); /* Added subtle lift */
+        }
+        /* Adjustment for RTL layout for links margin */
+        html[dir="rtl"] header nav .nav-link {
+            margin-right: 0;
+            margin-left: 10px;
         }
         
         /* General styling for header icons/buttons */
@@ -105,6 +124,11 @@
             opacity: 0;
             overflow: hidden;
             background-color: #ffffff;
+            position: absolute; /* Added for correct positioning on top of content */
+            top: 67px; 
+            left: 0;
+            right: 0;
+            z-index: 40;
             border-bottom: 1px solid #e5e7eb;
         }
         #mobile-menu.active {
@@ -113,9 +137,16 @@
         }
         #mobile-menu a {
             display: block;
-            padding: 0.75rem 1.5rem;
+            padding: 12px 20px;
             color: #4b5563;
             border-top: 1px solid #f3f4f6;
+            text-align: left; /* Left align for LTR */
+        }
+        html[dir="rtl"] #mobile-menu a {
+            text-align: right; /* Right align for RTL */
+        }
+        #mobile-menu a:hover {
+            background-color: var(--primary-light);
         }
 
         /* --- Main Button Styling (LARGER SIZE) --- */
@@ -149,7 +180,6 @@
         .food-table-row:nth-child(even) {
             background-color: #f9fafb; /* Light stripe for readability */
         }
-
     </style>
 </head>
 <body>
@@ -163,8 +193,8 @@
         <nav class="hidden md:flex flex-grow justify-center mx-10">
             <a href="../Calories/calories.html" class="nav-link" data-translate-key="nav_calories">Calories</a>
             <a href="eat healthy.html" class="nav-link" data-translate-key="nav_eat_healthy">Eat Healthy</a>
-            <a href="../Plans/plans.html" class="nav-link" data-translate-key="nav_plans">Plans</a>           
-            <a href="../Clubs/clubs.html" class="nav-link" data-translate-key="nav_clubs">Clubs</a>           
+            <a href="../Plans/plans.html" class="nav-link" data-translate-key="nav_plans">Plans</a>       
+            <a href="../Clubs/clubs.html" class="nav-link" data-translate-key="nav_clubs">Clubs</a>       
             <a href="../Survey/survey.html" class="nav-link" data-translate-key="nav_survey">Survey</a>
             <a href="../Contact us/contact us.html" class="nav-link" data-translate-key="nav_contact_us">Contact Us</a>
         </nav>
@@ -192,8 +222,8 @@
     <div id="mobile-menu" class="md:hidden">
         <a href="../Calories/calories.html" class="nav-link" data-translate-key="nav_calories">Calories</a>
         <a href="eat healthy.html" class="nav-link" data-translate-key="nav_eat_healthy">Eat Healthy</a>
-        <a href="../Plans/plans.html" class="nav-link" data-translate-key="nav_plans">Plans</a>        
-        <a href="../Clubs/clubs.html" class="nav-link" data-translate-key="nav_clubs">Clubs</a>        
+        <a href="../Plans/plans.html" class="nav-link" data-translate-key="nav_plans">Plans</a>       
+        <a href="../Clubs/clubs.html" class="nav-link" data-translate-key="nav_clubs">Clubs</a>       
         <a href="../Survey/survey.html" class="nav-link" data-translate-key="nav_survey">Survey</a>
         <a href="../Contact us/contact us.html" class="nav-link" data-translate-key="nav_contact_us">Contact Us</a>
     </div>
@@ -229,7 +259,7 @@
                             </tr>
                         </thead>
                         <tbody id="food-calorie-table-body" class="bg-white divide-y divide-gray-100 text-gray-800 text-sm">
-                                                                            </tbody>
+                                                    </tbody>
                     </table>
                 </div>
 
@@ -241,7 +271,7 @@
 
             </div>
         </main>
-    </div> 
+    </div>
     
     <footer class="p-6 bg-white border-t border-gray-100 shadow-inner">
         <p class="text-gray-600 text-center text-sm" data-translate-key="footer_text">&copy; 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi</p>
