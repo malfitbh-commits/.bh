@@ -211,8 +211,8 @@
                 <a id="email-contact-link"
                     target="_blank"
                     class="contact-btn w-full flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-2xl shadow-xl text-white">
-                    <span class="rtl-ml-2 mr-2" data-translate-key="btn_send_email">Send Email</span>
-                    <svg data-lucide="send" width="20" height="20" stroke="currentColor" stroke-width="2"></svg>
+                    <span class="rtl-ml-2 mr-2" data-translate-key="btn_send_email">Search Contact Info</span>
+                    <svg data-lucide="search" width="20" height="20" stroke="currentColor" stroke-width="2"></svg>
                 </a>
             </div>
 
@@ -254,7 +254,8 @@
                 'nav_contact_us': 'Contact Us',
                 'card_title': 'Get in Touch',
                 'card_description': 'We are happy to answer any questions you may have regarding our plans, clubs, or calorie tracking features.',
-                'btn_send_email': 'Send Email',
+                // Updated button text to reflect the Google search action
+                'btn_send_email': 'Search Contact Info', 
                 'card_footer': 'For urgent matters, expect a reply within 24 hours. Our support team is available Sunday to Thursday.',
                 'footer_text': '© 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi',
                 'lang_code': 'AR', // Display 'AR' to switch to Arabic
@@ -275,7 +276,8 @@
                 'nav_contact_us': 'اتصل بنا',
                 'card_title': 'تواصل معنا',
                 'card_description': 'يسعدنا الإجابة على أي أسئلة قد تكون لديكم بخصوص خططنا أو الأندية أو ميزات تتبع السعرات الحرارية.',
-                'btn_send_email': 'إرسال بريد إلكتروني',
+                // Updated button text to reflect the Google search action
+                'btn_send_email': 'البحث عن معلومات الاتصال',
                 'card_footer': 'للمسائل العاجلة، توقعوا رداً خلال 24 ساعة. فريق الدعم متاح من الأحد إلى الخميس.',
                 'footer_text': '© 2025، مشروع تخرج، مدى صالح، أحمد خليفة، لورا عادل، المشرف الدكتور عبد الله محمد خالد القادومي',
                 'lang_code': 'EN',  // Display 'EN' to switch to English
@@ -322,8 +324,7 @@
         }
 
         /**
-         * Dynamically updates the mailto link's href attribute based on the current language.
-         * Using standard mailto: for better compatibility with all email clients.
+         * Dynamically updates the link's href attribute to perform a Google search.
          * @param {string} lang - The target language code ('en' or 'ar').
          */
         function updateEmailLink(lang) {
@@ -331,17 +332,21 @@
             const emailLink = document.getElementById('email-contact-link');
 
             if (!emailLink) return;
+            
+            // Construct the search query to include the email and a relevant title
+            const searchQuery = `"${CONTACT_EMAIL}" ${langData.email_subject || 'MALFIT Contact'}`;
+            
+            // Encode the query for use in a URL
+            const encodedQuery = encodeURIComponent(searchQuery);
 
-            // Construct the subject and body from translation keys
-            const subject = encodeURIComponent(langData.email_subject || 'Website Inquiry');
-            // Combine prefix, a new line, and the translated suffix for the body
-            const bodyContent = langData.email_body_prefix + langData.email_body_suffix;
-            const body = encodeURIComponent(bodyContent); 
+            // Construct the Google search URL
+            const googleLink = `https://www.google.com/search?q=${encodedQuery}`;
 
-            // Construct the final mailto href
-            const mailtoLink = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
-
-            emailLink.href = mailtoLink;
+            emailLink.href = googleLink;
+            
+            // Update the icon to reflect the action (changed to 'search' in the HTML as well)
+            emailLink.querySelector('svg[data-lucide]').setAttribute('data-lucide', 'search');
+            replaceLucideIcons(); // Re-run to update the icon
         }
 
         /**
@@ -373,7 +378,7 @@
                 }
             });
 
-            // 3. Update the Email Link
+            // 3. Update the Email Link (now Google search link)
             updateEmailLink(lang);
 
             // 4. Persist the selection
