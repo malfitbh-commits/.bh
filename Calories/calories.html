@@ -217,7 +217,7 @@
         </div>
 
         <nav class="hidden md:flex flex-grow justify-center mx-10">
-            <a href="Calories/calories.html" class="nav-link active-calorie" data-translate-key="nav_calories">Calories</a>
+            <a href="calories.html" class="nav-link active-calorie" data-translate-key="nav_calories">Calories</a>
             <a href="../Period/period.html" id="nav-period-desktop" class="nav-link hidden-until-female" data-translate-key="nav_period">Period</a> 
             <a href="../Eat Healthy/Eat Healthy.html" class="nav-link" data-translate-key="nav_eat_healthy">Eat Healthy</a>
             <a href="../Plans/plans.html" class="nav-link" data-translate-key="nav_plans">Plans</a>
@@ -247,7 +247,7 @@
     </header>
 
     <div id="mobile-menu" class="md:hidden">
-        <a href="Calories/calories.html" data-translate-key="nav_calories">Calories</a>
+        <a href="calories.html" data-translate-key="nav_calories">Calories</a>
         <a href="../Period/period.html" id="nav-period-mobile" class="hidden-until-female" data-translate-key="nav_period">Period</a>
         <a href="../Eat healthy/eat healthy.html" data-translate-key="nav_eat_healthy">Eat Healthy</a>
         <a href="../Plans/plans.html" data-translate-key="nav_plans">Plans</a>
@@ -764,7 +764,7 @@
             };
 
             // Save the plan to a designated key in localStorage
-            // NOTE: For a real app, you might want an array of plans. Here, we overwrite the current goal.
+            // NOTE: we overwrite the current goal.
             localStorage.setItem('malfitCaloriePlan', JSON.stringify(plan));
             
             // Alert and redirect
