@@ -394,7 +394,7 @@
                     </p>
                 </div>
 
-                <button onclick="removePlan('savedCaloriePlan')" class="remove-btn w-full mt-4 py-2 text-sm font-semibold rounded-lg">
+                <button onclick="removePlan('saveCaloriePlan')" class="remove-btn w-full mt-4 py-2 text-sm font-semibold rounded-lg">
                     <span data-translate-key="btn_remove_calorie">${langData.btn_remove_calorie}</span>
                 </button>
             `;
@@ -474,7 +474,7 @@
                     plansFound = true;
                 } catch (e) {
                     console.error("Error parsing Calorie Plan from localStorage:", e);
-                    localStorage.removeItem('savedCaloriePlan');
+                    localStorage.removeItem('saveCaloriePlan');
                 }
             }
 
@@ -514,7 +514,7 @@
          * @param {string} key - The localStorage key (e.g., 'savedCaloriePlan').
          */
         window.removePlan = function(key) {
-            const keyName = (key === 'savedCaloriePlan') ? 
+            const keyName = (key === 'saveCaloriePlan') ? 
                 (currentLang === 'en' ? 'Calorie Goal' : 'هدف السعرات') : 
                 (currentLang === 'en' ? 'Cycle Prediction' : 'توقع الدورة');
 
