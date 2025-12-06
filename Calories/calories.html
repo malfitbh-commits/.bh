@@ -530,7 +530,6 @@
             }
         }
 
-
         // --- LIFECYCLE & THEME/LANG FUNCTIONS ---
 
         /**
@@ -614,210 +613,187 @@
          * Toggles the mobile menu visibility.
          */
         function toggleMobileMenu() {
-            const mobileNav = document.getElementById('mobile-menu');
-            const menuIconSvgContainer = document.querySelector('#menu-toggle');
-            
-            mobileNav.classList.toggle('active'); 
-            
-            // Change the menu icon
-            if (mobileNav.classList.contains('active')) {
-                 menuIconSvgContainer.innerHTML = '<svg data-lucide="x" width="24" height="24" aria-hidden="true"></svg>';
-            } else {
-                 menuIconSvgContainer.innerHTML = '<svg data-lucide="menu" width="24" height="24" aria-hidden="true"></svg>';
-            }
+            document.getElementById('menu-toggle').querySelector('svg').dataset.lucide = document.getElementById('mobile-menu').classList.toggle('active') ? 'x' : 'menu';
             if (typeof lucide !== 'undefined' && lucide.createIcons) {
                 lucide.createIcons();
             }
         }
-
+        
         /**
-         * Toggles the visibility of cycle tracking fields and links based on gender selection.
-         */
-        function toggleCycleTrackingFields() {
-            const genderSelect = document.getElementById('gender');
-            // Ensure genderSelect exists before trying to access its value
-            const gender = genderSelect ? genderSelect.value : userGender; 
-
-            const cycleFields = document.getElementById('cycle-tracking-fields');
-            
-            // Period links (Desktop & Mobile)
-            const periodDesktop = document.getElementById('nav-period-desktop');
-            const periodMobile = document.getElementById('nav-period-mobile');
-
-            if (gender === 'female') {
-                if (cycleFields) cycleFields.classList.remove('hidden');
-                if (periodDesktop) periodDesktop.classList.remove('hidden-until-female');
-                if (periodMobile) periodMobile.classList.remove('hidden-until-female');
-            } else {
-                if (cycleFields) cycleFields.classList.add('hidden');
-                if (periodDesktop) periodDesktop.classList.add('hidden-until-female');
-                if (periodMobile) periodMobile.classList.add('hidden-until-female');
-            }
-        }
-
-
-        /**
-         * Updates the page theme based on the selected gender.
+         * Updates the global user gender, applies the theme, and saves to localStorage.
          * @param {string} gender - 'male' or 'female'.
-         * @param {boolean} [savePreference=true] - Whether to save the gender to localStorage.
+         * @param {boolean} [save=true] - Whether to save the preference to localStorage.
          */
-        function updateTheme(gender, savePreference = true) {
-            const html = document.documentElement;
-            userGender = gender; // Update global state
-
+        function updateTheme(gender, save = true) {
+            const body = document.body;
+            const periodLinks = document.querySelectorAll('.hidden-until-female');
+            
+            userGender = gender;
+            
             if (gender === 'female') {
-                html.classList.add('female-theme');
+                body.classList.add('female-theme');
+                periodLinks.forEach(link => link.classList.remove('hidden-until-female'));
             } else {
-                html.classList.remove('female-theme');
+                body.classList.remove('female-theme');
+                periodLinks.forEach(link => link.classList.add('hidden-until-female'));
             }
-
-            if (savePreference) {
+            
+            if (save) {
                 localStorage.setItem('malfitGender', gender);
             }
-
-            // Update logo color based on gender
-            const logo = document.getElementById('logo');
-            if (logo) {
-                logo.style.color = getComputedStyle(document.documentElement).getPropertyValue('--logo-color');
-            }
         }
 
-
-        // --- CORE CALCULATION LOGIC ---
-
         /**
-         * Calculates the Basal Metabolic Rate (BMR) using the Mifflin-St Jeor equation.
-         * @param {number} weight - Weight in kg.
-         * @param {number} height - Height in cm.
-         * @param {number} age - Age in years.
-         * @param {string} gender - 'male' or 'female'.
-         * @returns {number} The calculated BMR.
+         * Toggles the visibility of cycle tracking fields based on gender.
          */
-        function calculateBMR(weight, height, age, gender) {
-            // Mifflin-St Jeor Equation
-            if (gender === 'male') {
-                // BMR = 10 * weight (kg) + 6.25 * height (cm) - 5 * age (y) + 5
-                return (10 * weight) + (6.25 * height) - (5 * age) + 5;
+        function toggleCycleTrackingFields() {
+            const fields = document.getElementById('cycle-tracking-fields');
+            if (userGender === 'female') {
+                fields.classList.remove('hidden');
             } else {
-                // BMR = 10 * weight (kg) + 6.25 * height (cm) - 5 * age (y) - 161
-                return (10 * weight) + (6.25 * height) - (5 * age) - 161;
+                fields.classList.add('hidden');
             }
         }
 
+        // --- CALCULATION LOGIC (COMPLETED AND MODIFIED) ---
+
         /**
-         * Main function to perform the calorie calculation.
+         * Calculates BMR, TDEE, and Target Calories based on user inputs.
          */
         function calculatePlan() {
-            displayWarning(null); // Clear previous warnings
-            document.getElementById('result-box').classList.add('hidden');
-
-            // 1. Get Inputs and Validate
+            // 1. Get Inputs and validate
             const age = parseFloat(document.getElementById('age').value);
-            const gender = document.getElementById('gender').value;
             const height = parseFloat(document.getElementById('height').value);
             const weight = parseFloat(document.getElementById('weight').value);
             const activityFactor = parseFloat(document.getElementById('activity').value);
             const goalWeight = parseFloat(document.getElementById('goal_weight').value);
-            const timeFrameWeeks = parseFloat(document.getElementById('time_frame').value);
+            const timeFrame = parseFloat(document.getElementById('time_frame').value);
 
-            // Required fields check
-            if (!age || !height || !weight || !activityFactor || !goalWeight || !timeFrameWeeks) {
+            // Hide previous results/warnings
+            document.getElementById('result-box').classList.add('hidden');
+            displayWarning(); 
+
+            if (!age || !height || !weight || !activityFactor || !goalWeight || !timeFrame) {
                 displayWarning('warning_fill_fields');
                 return;
             }
 
-            // 2. Calculate TDEE (Maintenance Calories)
-            const bmr = calculateBMR(weight, height, age, gender);
-            const tdee = Math.round(bmr * activityFactor);
+            // 2. Calculate BMR (Mifflin-St Jeor Equation)
+            let bmr = 0;
+            userGender = document.getElementById('gender').value; // Ensure gender is current
 
-            // 3. Calculate Required Deficit
-            const totalDeficitKcal = goalWeight * KCAL_PER_KG_FAT;
-            const totalDays = timeFrameWeeks * DAYS_IN_WEEK;
-            const dailyDeficit = totalDeficitKcal / totalDays;
-
-            // 4. Determine Target Calories
-            let targetCalories = Math.round(tdee - dailyDeficit);
-            const safeMinimum = gender === 'male' ? MIN_CALORIES_MALE : MIN_CALORIES_FEMALE;
-
-            // 5. Health Check & Warnings
-            if (targetCalories < safeMinimum) {
-                // Goal is too aggressive/fast, cap the calories at the safe minimum
-                targetCalories = safeMinimum;
-                
-                // Calculate the time needed with the safe minimum (TDEE - safeMinimum)
-                const safeDailyDeficit = tdee - safeMinimum;
-                const resultingDays = totalDeficitKcal / safeDailyDeficit;
-                const resultingWeeks = Math.ceil(resultingDays / DAYS_IN_WEEK);
-
-                displayWarning('warning_goal_too_fast', {
-                    safeMinimum: safeMinimum,
-                    resultingWeeks: resultingWeeks
-                });
-            } else if (dailyDeficit > 1000) {
-                // If the calculated deficit is over 1000 kcal/day, it's considered very fast loss
-                displayWarning('warning_loss_fast');
+            if (userGender === 'male') {
+                // Male: BMR = (10 * weight in kg) + (6.25 * height in cm) - (5 * age in years) + 5
+                bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
+            } else {
+                // Female: BMR = (10 * weight in kg) + (6.25 * height in cm) - (5 * age in years) - 161
+                bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
             }
 
-            // 6. Calculate Weekly Loss Rate for display
-            const actualDailyDeficit = tdee - targetCalories; // Use the potentially capped target
-            const actualWeeklyDeficitKcal = actualDailyDeficit * DAYS_IN_WEEK;
-            const weeklyLossKg = actualWeeklyDeficitKcal / KCAL_PER_KG_FAT;
+            // 3. Calculate TDEE (Total Daily Energy Expenditure / Maintenance Calories)
+            const tdee = Math.round(bmr * activityFactor);
 
-            // 7. Update Global State
+            // 4. Calculate Caloric Deficit needed
+            // Total calories to cut: goalWeight (kg) * KCAL_PER_KG_FAT (7700 kcal/kg)
+            const totalDeficitKcal = goalWeight * KCAL_PER_KG_FAT;
+            
+            // Total time in days: timeFrame (weeks) * DAYS_IN_WEEK (7 days/week)
+            const totalDays = timeFrame * DAYS_IN_WEEK;
+            
+            // Daily deficit needed: totalDeficitKcal / totalDays
+            const dailyDeficit = totalDeficitKcal / totalDays;
+
+            // 5. Calculate Target Daily Calories
+            let targetCalories = Math.round(tdee - dailyDeficit);
+            const safeMinimum = userGender === 'male' ? MIN_CALORIES_MALE : MIN_CALORIES_FEMALE;
+
+            // 6. Check for safety/health warnings
+            if (targetCalories < safeMinimum) {
+                
+                // Recalculate time needed for safe minimum
+                const safeDailyDeficit = tdee - safeMinimum;
+                const safeTotalDays = totalDeficitKcal / safeDailyDeficit;
+                const resultingWeeks = Math.ceil(safeTotalDays / DAYS_IN_WEEK);
+
+                displayWarning('warning_goal_too_fast', {
+                    safeMinimum: safeMinimum, 
+                    resultingWeeks: resultingWeeks
+                });
+                
+                // Use the safe minimum target
+                targetCalories = safeMinimum;
+            }
+            
+            // Calculate weekly loss based on the final target calories (for display)
+            const actualDailyDeficit = tdee - targetCalories;
+            const actualWeeklyDeficit = actualDailyDeficit * DAYS_IN_WEEK;
+            const weeklyLossKg = (actualWeeklyDeficit / KCAL_PER_KG_FAT).toFixed(2);
+
+
+            // 7. Update Global Variables (CRUCIAL FIX FOR 'ADD TO PLAN')
             lastTdee = tdee;
             lastTargetCalories = targetCalories;
-            lastGoalWeight = goalWeight;
-            lastTimeFrameWeeks = timeFrameWeeks;
+            lastGoalWeight = goalWeight; // The initial goal weight
+            lastTimeFrameWeeks = timeFrame; // The initial time frame
+
 
             // 8. Display Results
-            document.getElementById('tdee-output').textContent = tdee.toLocaleString(currentLang);
-            document.getElementById('target-calories-output').textContent = targetCalories.toLocaleString(currentLang);
-            document.getElementById('weekly-loss-output').textContent = weeklyLossKg.toFixed(2).toLocaleString(currentLang);
-            
+            document.getElementById('tdee-output').textContent = tdee.toLocaleString('en');
+            document.getElementById('target-calories-output').textContent = targetCalories.toLocaleString('en');
+            document.getElementById('weekly-loss-output').textContent = weeklyLossKg;
             document.getElementById('result-box').classList.remove('hidden');
         }
 
 
+        // --- SAVE FUNCTION (THE MISSING PIECE) ---
+
         /**
-         * Saves the last calculated plan to local storage for use on the Plans page.
+         * Saves the calculated calorie plan (stored in global variables) to localStorage 
+         * and redirects the user to the Plans page.
          */
         function saveCaloriePlan() {
-            if (lastTargetCalories <= 0) {
-                alert(translations[currentLang].warning_no_plan_to_save);
-                return;
+            // 1. Check if a plan has been calculated (lastTargetCalories should be > 0)
+            if (lastTargetCalories === 0) {
+                displayWarning('warning_no_plan_to_save');
+                return; 
             }
 
-            const plan = {
-                type: lastGoalType,
-                target: lastTargetCalories,
-                maintenance: lastTdee,
-                goalKg: lastGoalWeight,
-                timeWeeks: lastTimeFrameWeeks,
-                dateSaved: new Date().toISOString()
+            // 2. Structure the plan data to be saved
+            const planData = {
+                dateSaved: new Date().toISOString(),
+                tdee: lastTdee,
+                targetCalories: lastTargetCalories,
+                goalWeight: lastGoalWeight,
+                timeFrameWeeks: lastTimeFrameWeeks,
+                goalType: lastGoalType, // 'lose'
+                userGender: userGender,
             };
 
-            // Store the plan (replace or push to an array depending on desired functionality)
-            localStorage.setItem('saveCaloriePlan', JSON.stringify(plan));
-            
-            alert(translations[currentLang].alert_plan_saved);
-            window.location.href = '../Plans/plans.html'; // Redirect to plans page
+            // 3. Save the plan data to localStorage
+            try {
+                localStorage.setItem('malfitCaloriePlan', JSON.stringify(planData));
+                
+                // 4. Alert user and redirect
+                const alertMessage = translations[currentLang]['alert_plan_saved'] || 'Plan saved successfully! Redirecting to Plans page.';
+                alert(alertMessage);
+                
+                // Redirect to the Plans page
+                window.location.href = '../Plans/plans.html'; 
+
+            } catch (e) {
+                console.error("Error saving plan to local storage: ", e);
+                alert("Error saving plan. Please try again.");
+            }
         }
 
 
-        // --- EVENT LISTENERS & INITIALIZATION ---
-
-        document.getElementById('lang-toggle').addEventListener('click', toggleLanguage);
-        document.getElementById('menu-toggle').addEventListener('click', toggleMobileMenu);
-
-        // Run initialization functions on page load
+        // --- EVENT LISTENERS ---
         document.addEventListener('DOMContentLoaded', () => {
-            loadUserPreferences(); // Loads gender, applies theme, and translates
+            loadUserPreferences();
+            document.getElementById('lang-toggle').addEventListener('click', toggleLanguage);
+            document.getElementById('menu-toggle').addEventListener('click', toggleMobileMenu);
         });
 
-        // Apply the correct theme and translations immediately before DOMContentLoaded in case of slow loading
-        // NOTE: These lines are needed to prevent FOUC (Flash of Unstyled/Untranslated Content)
-        updateTheme(userGender, false); 
-        applyTranslations();
     </script>
 </body>
 </html>
