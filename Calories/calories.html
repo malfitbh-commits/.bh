@@ -365,6 +365,12 @@
             <div id="warning-box" class="mt-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 rounded-lg hidden">
                 <p id="warning-message" class="text-sm font-medium text-yellow-800"></p>
             </div>
+            
+            <div id="limit-box" class="mt-4 p-4 bg-red-100 border-l-4 border-red-500 rounded-lg hidden">
+                <p id="limit-message" class="text-sm font-medium text-red-800" data-translate-key="warning_plan_limit">
+                    Limit reached: You can only save up to 3 plans. Please remove an old plan from the Plans page to save a new one.
+                </p>
+            </div>
 
         </div>
     </main>
@@ -385,6 +391,7 @@
         const MIN_CALORIES_MALE = 1500;
         const MIN_CALORIES_FEMALE = 1200; // Standard minimum for healthy female weight loss
         const DAYS_IN_WEEK = 7;
+        const PLAN_LIMIT = 3; // NEW: Maximum number of plans allowed
 
         // --- GLOBAL VARIABLES TO STORE LAST RESULT ---
         let lastTdee = 0;
@@ -447,6 +454,7 @@
                 'warning_loss_fast': 'Warning: Losing weight this quickly can be challenging. We recommend consulting a professional.',
                 'warning_error': 'Calculation Error: Using fallback target of {fallbackTarget} kcal.',
                 'alert_plan_saved': 'Plan saved successfully! Redirecting to Plans page.',
+                'warning_plan_limit': 'Limit reached: You can only save up to 3 plans. Please remove an old plan from the Plans page to save a new one.', // NEW
             },
             'ar': {
                 'page_title': 'ملفت | السعرات الحرارية',
@@ -499,13 +507,14 @@
                 'warning_loss_fast': 'تحذير: خسارة الوزن بهذه السرعة قد تكون صعبة. نوصي باستشارة مختص.',
                 'warning_error': 'خطأ في الحساب: سيتم استخدام الهدف الافتراضي {fallbackTarget} سعرة حرارية.',
                 'alert_plan_saved': 'تم حفظ الخطة بنجاح! سيتم إعادة توجيهك إلى صفحة الخطط.',
+                'warning_plan_limit': 'تم الوصول إلى الحد الأقصى: يمكنك حفظ 3 خطط كحد أقصى فقط. يرجى إزالة خطة قديمة من صفحة الخطط لحفظ خطة جديدة.', // NEW
             }
         };
 
         // --- UTILITY FUNCTIONS ---
 
         /**
-         * Clears and optionally displays a warning message.
+         * Clears and optionally displays a warning message in the yellow box.
          * @param {string} [messageKey] - The translation key for the message.
          * @param {Object} [replacements] - Key-value pairs for string replacement in the warning.
          */
@@ -527,6 +536,18 @@
 
                 warningMessage.textContent = message;
                 warningBox.classList.remove('hidden');
+            }
+        }
+        
+        /**
+         * NEW: Displays a warning in the RED limit box.
+         */
+        function displayLimitWarning(show) {
+            const limitBox = document.getElementById('limit-box');
+            if (show) {
+                limitBox.classList.remove('hidden');
+            } else {
+                limitBox.classList.add('hidden');
             }
         }
 
@@ -658,134 +679,164 @@
         // --- CALCULATION LOGIC (COMPLETED AND MODIFIED) ---
 
         /**
-         * Calculates BMR, TDEE, and Target Calories based on user inputs.
+         * Calculates BMR (Basal Metabolic Rate).
+         * Uses the Mifflin-St Jeor equation (generally considered more accurate).
+         * BMR (kcal) = (10 * weight in kg) + (6.25 * height in cm) - (5 * age in years) + S
+         */
+        function calculateBmr(gender, weight, height, age) {
+            let s = (gender === 'male') ? 5 : -161; // S value for Mifflin-St Jeor
+            return (10 * weight) + (6.25 * height) - (5 * age) + s;
+        }
+
+        /**
+         * Main function to calculate TDEE and Target Calories.
          */
         function calculatePlan() {
-            // 1. Get Inputs and validate
+            // Hide previous warnings and limit box
+            displayWarning();
+            displayLimitWarning(false); 
+            document.getElementById('result-box').classList.add('hidden');
+
             const age = parseFloat(document.getElementById('age').value);
+            const gender = document.getElementById('gender').value;
             const height = parseFloat(document.getElementById('height').value);
             const weight = parseFloat(document.getElementById('weight').value);
             const activityFactor = parseFloat(document.getElementById('activity').value);
             const goalWeight = parseFloat(document.getElementById('goal_weight').value);
-            const timeFrame = parseFloat(document.getElementById('time_frame').value);
+            const timeFrameWeeks = parseFloat(document.getElementById('time_frame').value);
 
-            // Hide previous results/warnings
-            document.getElementById('result-box').classList.add('hidden');
-            displayWarning(); 
-
-            if (!age || !height || !weight || !activityFactor || !goalWeight || !timeFrame) {
+            // 1. Validation
+            if (!age || !height || !weight || !goalWeight || !timeFrameWeeks || age < 15 || height < 100 || weight < 40 || goalWeight < 0.5 || timeFrameWeeks < 1) {
                 displayWarning('warning_fill_fields');
                 return;
             }
-
-            // 2. Calculate BMR (Mifflin-St Jeor Equation)
-            let bmr = 0;
-            userGender = document.getElementById('gender').value; // Ensure gender is current
-
-            if (userGender === 'male') {
-                // Male: BMR = (10 * weight in kg) + (6.25 * height in cm) - (5 * age in years) + 5
-                bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
-            } else {
-                // Female: BMR = (10 * weight in kg) + (6.25 * height in cm) - (5 * age in years) - 161
-                bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
-            }
-
-            // 3. Calculate TDEE (Total Daily Energy Expenditure / Maintenance Calories)
-            const tdee = Math.round(bmr * activityFactor);
-
-            // 4. Calculate Caloric Deficit needed
-            // Total calories to cut: goalWeight (kg) * KCAL_PER_KG_FAT (7700 kcal/kg)
-            const totalDeficitKcal = goalWeight * KCAL_PER_KG_FAT;
             
-            // Total time in days: timeFrame (weeks) * DAYS_IN_WEEK (7 days/week)
-            const totalDays = timeFrame * DAYS_IN_WEEK;
-            
-            // Daily deficit needed: totalDeficitKcal / totalDays
-            const dailyDeficit = totalDeficitKcal / totalDays;
+            let bmr;
+            try {
+                // 2. Calculate BMR & TDEE
+                bmr = calculateBmr(gender, weight, height, age);
+                lastTdee = Math.round(bmr * activityFactor);
 
-            // 5. Calculate Target Daily Calories
-            let targetCalories = Math.round(tdee - dailyDeficit);
-            const safeMinimum = userGender === 'male' ? MIN_CALORIES_MALE : MIN_CALORIES_FEMALE;
-
-            // 6. Check for safety/health warnings
-            if (targetCalories < safeMinimum) {
+                // 3. Calculate Required Calorie Deficit/Surplus
+                const totalKcalToLose = goalWeight * KCAL_PER_KG_FAT;
+                const totalDays = timeFrameWeeks * DAYS_IN_WEEK;
+                const requiredDailyChange = totalKcalToLose / totalDays;
                 
-                // Recalculate time needed for safe minimum
-                const safeDailyDeficit = tdee - safeMinimum;
-                const safeTotalDays = totalDeficitKcal / safeDailyDeficit;
-                const resultingWeeks = Math.ceil(safeTotalDays / DAYS_IN_WEEK);
+                // Determine target calories (Current TDEE - required daily deficit)
+                lastTargetCalories = Math.round(lastTdee - requiredDailyChange);
+                lastGoalWeight = goalWeight;
+                lastTimeFrameWeeks = timeFrameWeeks;
 
-                displayWarning('warning_goal_too_fast', {
-                    safeMinimum: safeMinimum, 
-                    resultingWeeks: resultingWeeks
-                });
+                const minSafeCalories = (gender === 'male') ? MIN_CALORIES_MALE : MIN_CALORIES_FEMALE;
+                let warningMessage = null;
+
+                // 4. Safety Checks
+                if (lastTargetCalories < minSafeCalories) {
+                    // Goal is too aggressive
+                    
+                    // Calculate the maximum safe weight loss time
+                    const maxSafeDeficit = lastTdee - minSafeCalories;
+                    const maxSafeTotalLoss = maxSafeDeficit * totalDays; // Total loss if sticking to aggressive time frame
+                    
+                    // Recalculate the minimum healthy time frame to lose the full goalWeight at minSafeCalories
+                    const minHealthyDailyDeficit = lastTdee - minSafeCalories;
+                    const resultingDays = totalKcalToLose / minHealthyDailyDeficit;
+                    const resultingWeeks = Math.ceil(resultingDays / DAYS_IN_WEEK);
+                    
+                    // Set the target to the safe minimum
+                    lastTargetCalories = minSafeCalories;
+                    
+                    warningMessage = 'warning_goal_too_fast';
+                    displayWarning(warningMessage, {
+                        safeMinimum: minSafeCalories, 
+                        resultingWeeks: resultingWeeks 
+                    });
+
+                } else if (requiredDailyChange > 1100) { 
+                    // Daily deficit is too high (more than ~1kg per week) but still above minSafeCalories
+                    warningMessage = 'warning_loss_fast';
+                    displayWarning(warningMessage);
+                }
+
+                // 5. Display Results
+                document.getElementById('tdee-output').textContent = lastTdee.toLocaleString(currentLang);
+                document.getElementById('target-calories-output').textContent = lastTargetCalories.toLocaleString(currentLang);
                 
-                // Use the safe minimum target
-                targetCalories = safeMinimum;
+                // Calculate weekly loss needed for display
+                const weeklyLossNeeded = (goalWeight / timeFrameWeeks).toFixed(2);
+                document.getElementById('weekly-loss-output').textContent = weeklyLossNeeded;
+
+                document.getElementById('result-box').classList.remove('hidden');
+
+            } catch (error) {
+                console.error("Calculation failed:", error);
+                // Fallback in case of unexpected error
+                const fallbackTarget = (gender === 'male') ? MIN_CALORIES_MALE + 500 : MIN_CALORIES_FEMALE + 500;
+                lastTargetCalories = fallbackTarget;
+                lastTdee = fallbackTarget + 500; // Placeholder
+                
+                document.getElementById('tdee-output').textContent = 'N/A';
+                document.getElementById('target-calories-output').textContent = lastTargetCalories;
+                document.getElementById('weekly-loss-output').textContent = 'N/A';
+
+                displayWarning('warning_error', {fallbackTarget: fallbackTarget});
+                document.getElementById('result-box').classList.remove('hidden');
             }
-            
-            // Calculate weekly loss based on the final target calories (for display)
-            const actualDailyDeficit = tdee - targetCalories;
-            const actualWeeklyDeficit = actualDailyDeficit * DAYS_IN_WEEK;
-            const weeklyLossKg = (actualWeeklyDeficit / KCAL_PER_KG_FAT).toFixed(2);
-
-
-            // 7. Update Global Variables (CRUCIAL FIX FOR 'ADD TO PLAN')
-            lastTdee = tdee;
-            lastTargetCalories = targetCalories;
-            lastGoalWeight = goalWeight; // The initial goal weight
-            lastTimeFrameWeeks = timeFrame; // The initial time frame
-
-
-            // 8. Display Results
-            document.getElementById('tdee-output').textContent = tdee.toLocaleString('en');
-            document.getElementById('target-calories-output').textContent = targetCalories.toLocaleString('en');
-            document.getElementById('weekly-loss-output').textContent = weeklyLossKg;
-            document.getElementById('result-box').classList.remove('hidden');
         }
 
-
-        // --- SAVE FUNCTION (THE MISSING PIECE) ---
-
         /**
-         * Saves the calculated calorie plan (stored in global variables) to localStorage 
-         * and redirects the user to the Plans page.
+         * Saves the calculated plan to localStorage and redirects to the Plans page.
+         * Enforces the PLAN_LIMIT constraint.
          */
         function saveCaloriePlan() {
-            // 1. Check if a plan has been calculated (lastTargetCalories should be > 0)
+            // 1. Check if a plan has been calculated
             if (lastTargetCalories === 0) {
                 displayWarning('warning_no_plan_to_save');
+                return;
+            }
+            
+            // Clear any old warnings, including the red limit box
+            displayWarning();
+            displayLimitWarning(false);
+
+            // 2. Load existing plans
+            const existingPlansJson = localStorage.getItem('malfitPlans');
+            let existingPlans = [];
+            if (existingPlansJson) {
+                try {
+                    existingPlans = JSON.parse(existingPlansJson);
+                } catch (e) {
+                    console.error("Error parsing existing plans from localStorage:", e);
+                    // Continue with an empty array if parsing fails
+                }
+            }
+
+            // 3. Check the plan limit
+            if (existingPlans.length >= PLAN_LIMIT) {
+                displayLimitWarning(true);
                 return; 
             }
 
-            // 2. Structure the plan data to be saved
-            const planData = {
-                dateSaved: new Date().toISOString(),
-                tdee: lastTdee,
-                targetCalories: lastTargetCalories,
+            // 4. Create the new plan object
+            const newPlan = {
+                id: Date.now(), // Unique ID based on timestamp
+                type: 'Calorie Goal',
+                calories: lastTargetCalories,
+                maintenance: lastTdee,
                 goalWeight: lastGoalWeight,
                 timeFrameWeeks: lastTimeFrameWeeks,
-                goalType: lastGoalType, // 'lose'
-                userGender: userGender,
+                date: new Date().toLocaleDateString('en-US'), // Save date in a standard format
+                gender: userGender,
             };
 
-            // 3. Save the plan data to localStorage
-            try {
-                localStorage.setItem('malfitCaloriePlan', JSON.stringify(planData));
-                
-                // 4. Alert user and redirect
-                const alertMessage = translations[currentLang]['alert_plan_saved'] || 'Plan saved successfully! Redirecting to Plans page.';
-                alert(alertMessage);
-                
-                // Redirect to the Plans page
-                window.location.href = '../Plans/plans.html'; 
+            // 5. Add the new plan and save
+            existingPlans.push(newPlan);
+            localStorage.setItem('malfitPlans', JSON.stringify(existingPlans));
 
-            } catch (e) {
-                console.error("Error saving plan to local storage: ", e);
-                alert("Error saving plan. Please try again.");
-            }
+            // 6. Alert and Redirect
+            alert(translations[currentLang].alert_plan_saved);
+            window.location.href = '../Plans/plans.html';
         }
-
 
         // --- EVENT LISTENERS ---
         document.addEventListener('DOMContentLoaded', () => {
