@@ -224,7 +224,9 @@
         <a href="plans.html" class="active-plans" data-translate-key="nav_plans">Plans</a>
         <a href="../Clubs/clubs.html" data-translate-key="nav_clubs">Clubs</a>
         <a href="../Survey/survey.html" data-translate-key="nav_survey">Survey</a>
-        <a href="../Countact us/contact us.html" data-translate-key="nav_contact_us">Contact Us</a> </div>
+        <a href="../Countact us/contact us.html" data-translate-key="nav_contact_us">Contact Us</a> 
+    </div>
+    
     <main class="flex flex-col items-center p-4 min-h-main"> 
     
         <h1 class="text-4xl font-extrabold text-gray-800 mb-8 mt-4" data-translate-key="main_plans_heading">My Active Plans</h1>
@@ -349,7 +351,7 @@
             const ovulationDate = new Date(nextPeriodDate);
             // Ovulation is approximately 14 days before the next period
             ovulationDate.setDate(ovulationDate.getDate() - 14); 
-            // Return the formatted date string
+            // Return the formatted date string (first convert it back to YYYY-MM-DD for consistency with formatDateForDisplay)
             return formatDateForDisplay(ovulationDate.toISOString().split('T')[0]);
         }
 
@@ -451,9 +453,7 @@
          * Main function to load and render all saved plans.
          */
         function loadPlans() {
-            // FIX: Ensure correct keys are used for both Calorie and Cycle plans.
-            // Original code used 'saveCaloriePlan' in removePlan but expected 
-            // a different key (implied by the original's load logic).
+            // Ensure correct keys are used for both Calorie and Cycle plans.
             const calorieDataRaw = localStorage.getItem('savedCaloriePlan'); 
             const cycleDataRaw = localStorage.getItem('savedCyclePlan');
             
@@ -478,7 +478,6 @@
                     plansFound = true;
                 } catch (e) {
                     console.error("Error parsing Calorie Plan from localStorage:", e);
-                    // FIX: Use the correct, consistent key for removal here too.
                     localStorage.removeItem('savedCaloriePlan'); 
                 }
             }
@@ -519,7 +518,7 @@
          * @param {string} key - The localStorage key (e.g., 'savedCaloriePlan').
          */
         window.removePlan = function(key) {
-            // FIX: Use 'savedCaloriePlan' as the consistent key
+            // Use 'savedCaloriePlan' as the consistent key
             const isCaloriePlan = (key === 'savedCaloriePlan');
             const keyName = isCaloriePlan ? 
                 (currentLang === 'en' ? 'Calorie Goal' : 'هدف السعرات') : 
