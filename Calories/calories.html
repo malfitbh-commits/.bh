@@ -34,15 +34,16 @@
             --result-highlight-color: #be185d; /* Pink-700 */
         }
         
-        /* Hide Period link until Female theme is active. Use a class that can be toggled by JS. */
+        /* Hide Period link until Female theme is active. Use a class that can be toggled by CSS/JS. */
         .period-link {
             display: none !important;
         }
         .female-theme .period-link {
-            display: flex !important; /* Show on desktop nav */
+            display: flex !important; /* Show on desktop nav (flex layout) */
         }
-        #mobile-menu .period-link {
-            display: block !important; /* Ensure block display on mobile */
+        /* Mobile menu links are typically block elements */
+        #mobile-menu a.period-link {
+            display: block !important; 
         }
         /* --- END: FEMALE THEME OVERRIDE --- */
 
@@ -387,24 +388,22 @@
 
     <script>
         // --- GLOBAL STATE ---
-        // Initialize currentLang from localStorage or default to 'en'
         let currentLang = localStorage.getItem('malfitLang') || 'en';
-        // NEW: Initialize gender preference from localStorage or default to 'male'
         let userGender = localStorage.getItem('malfitGender') || 'male'; 
 
         // Constants for Calculation Logic
         const KCAL_PER_KG_FAT = 7700;
         const MIN_CALORIES_MALE = 1500;
-        const MIN_CALORIES_FEMALE = 1200; // Standard minimum for healthy female weight loss
+        const MIN_CALORIES_FEMALE = 1200;
         const DAYS_IN_WEEK = 7;
-        const PLAN_LIMIT = 3; // NEW: Maximum number of plans allowed
+        const PLAN_LIMIT = 3; // Maximum number of plans allowed
 
         // --- GLOBAL VARIABLES TO STORE LAST RESULT ---
         let lastTdee = 0;
         let lastTargetCalories = 0;
         let lastGoalWeight = 0;
         let lastTimeFrameWeeks = 0;
-        let lastGoalType = 'lose'; // Default type for the Calorie Plan
+        let lastGoalType = 'lose'; 
         // --------------------------------------------------
 
         // --- TRANSLATION DATA (FIXED AND COMPLETE) ---
@@ -421,12 +420,8 @@
                 'nav_contact_us': 'Contact Us',
                 'footer_text': '© 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi',
                 'lang_code': 'AR', 
-
-                // NEW Cycle Tracking Translations
                 'label_cycle_length': 'Average Cycle Length (Days)',
                 'label_last_period': 'Last Period Start Date',
-
-                // Calculator Specific Translations
                 'calc_title': 'Calculate Calories',
                 'calc_subtitle': 'Find your daily calorie target based on your goal.',
                 'label_age': 'Your Age (Years)',
@@ -444,23 +439,19 @@
                 'label_goal_weight': 'How many kg do you want to lose?',
                 'label_time_frame': 'How many Weeks do you have?',
                 'btn_calculate': 'Find My Daily Calorie Goal',
-                
-                // Result Box Translations
                 'result_title': 'Your Simple Plan',
                 'result_maintenance': 'Calories to Stay the Same:',
                 'result_daily_goal': 'Your Target Daily Calorie Goal is:',
                 'btn_add_to_plane': 'Add to Plan',
                 'result_weekly_loss_info_part1': 'To reach your goal on time, you need to lose about ',
                 'result_weekly_loss_info_part2': ' kg each week.',
-                
-                // Warning Messages
                 'warning_fill_fields': 'Please fill in all required fields to calculate your plan.',
                 'warning_no_plan_to_save': 'Please calculate a plan first.',
                 'warning_goal_too_fast': 'Warning: Goal too aggressive! To maintain health, we recommend a minimum of {safeMinimum} kcal/day. This will take about {resultingWeeks} weeks.',
                 'warning_loss_fast': 'Warning: Losing weight this quickly can be challenging. We recommend consulting a professional.',
                 'warning_error': 'Calculation Error: Using fallback target of {fallbackTarget} kcal.',
                 'alert_plan_saved': 'Plan saved successfully! Redirecting to Plans page.',
-                'warning_plan_limit': 'Limit reached: You can only save up to 3 plans. Please remove an old plan from the Plans page to save a new one.', // NEW
+                'warning_plan_limit': 'Limit reached: You can only save up to 3 plans. Please remove an old plan from the Plans page to save a new one.',
             },
             'ar': {
                 'page_title': 'ملفت | السعرات الحرارية',
@@ -474,12 +465,8 @@
                 'nav_contact_us': 'اتصل بنا',
                 'footer_text': '© 2025، مشروع تخرج، مدى صالح، أحمد خليفة، لورا عادل، المشرف الدكتور عبد الله محمد خالد القادومي',
                 'lang_code': 'EN', 
-                
-                // NEW Cycle Tracking Translations
                 'label_cycle_length': 'متوسط طول الدورة (بالأيام)',
                 'label_last_period': 'تاريخ بدء آخر دورة',
-
-                // Calculator Specific Translations
                 'calc_title': 'حساب السعرات الحرارية',
                 'calc_subtitle': 'اعثر على هدفك اليومي من السعرات الحرارية بناءً على هدفك.',
                 'label_age': 'عمرك (بالسنوات)',
@@ -497,23 +484,19 @@
                 'label_goal_weight': 'كم كيلوغراماً تريد أن تخسر؟',
                 'label_time_frame': 'كم أسبوعاً لديك؟',
                 'btn_calculate': 'اكتشف هدفي اليومي من السعرات', 
-                
-                // Result Box Translations
                 'result_title': 'خطتك البسيطة',
                 'result_maintenance': 'السعرات الحرارية للحفاظ على الوزن:',
                 'result_daily_goal': 'هدف السعرات اليومي المستهدف هو:',
                 'btn_add_to_plane': 'أضف إلى الخطة',
                 'result_weekly_loss_info_part1': 'للوصول إلى هدفك في الوقت المحدد، تحتاج إلى خسارة حوالي ',
                 'result_weekly_loss_info_part2': ' كجم كل أسبوع.',
-                
-                // Warning Messages
                 'warning_fill_fields': 'الرجاء ملء جميع الحقول المطلوبة لحساب خطتك.',
                 'warning_no_plan_to_save': 'الرجاء حساب الخطة أولاً.',
                 'warning_goal_too_fast': 'تحذير: الهدف مفرط في السرعة! للحفاظ على الصحة، نوصي بحد أدنى {safeMinimum} سعرة حرارية/يوم. سيستغرق هذا حوالي {resultingWeeks} أسابيع.',
                 'warning_loss_fast': 'تحذير: خسارة الوزن بهذه السرعة قد تكون صعبة. نوصي باستشارة مختص.',
                 'warning_error': 'خطأ في الحساب: سيتم استخدام الهدف الافتراضي {fallbackTarget} سعرة حرارية.',
                 'alert_plan_saved': 'تم حفظ الخطة بنجاح! سيتم إعادة توجيهك إلى صفحة الخطط.',
-                'warning_plan_limit': 'تم الوصول إلى الحد الأقصى: يمكنك حفظ 3 خطط كحد أقصى فقط. يرجى إزالة خطة قديمة من صفحة الخطط لحفظ خطة جديدة.', // NEW
+                'warning_plan_limit': 'تم الوصول إلى الحد الأقصى: يمكنك حفظ 3 خطط كحد أقصى فقط. يرجى إزالة خطة قديمة من صفحة الخطط لحفظ خطة جديدة.',
             }
         };
 
@@ -560,7 +543,7 @@
         // --- LIFECYCLE & THEME/LANG FUNCTIONS ---
 
         /**
-         * **IMPROVED:** Toggles visibility of the cycle tracking fields in the form and the 'Period' links in the navigation based on the currently selected gender.
+         * Toggles visibility of the cycle tracking fields in the form and the 'Period' links in the navigation based on the currently selected gender.
          */
         function toggleCycleTrackingFields() {
             const genderSelect = document.getElementById('gender');
@@ -573,9 +556,7 @@
             } else {
                 cycleFields.classList.add('hidden');
             }
-            
-            // The visibility of the Period links in the navigation is now handled automatically
-            // by the body's 'female-theme' class, which is set in updateTheme().
+            // Note: Visibility of the Period links in the nav is handled by CSS/updateTheme.
         }
 
         /**
@@ -594,7 +575,6 @@
             }
             
             // 2. Apply theme based on loaded gender (don't save again on load)
-            // This is crucial for correctly setting the initial theme and nav visibility.
             updateTheme(userGender, false); 
             
             // 3. Ensure cycle fields are correctly toggled based on the saved gender
@@ -603,7 +583,6 @@
             // 4. Apply initial translations
             applyTranslations();
         }
-
 
         /**
          * Applies the translations based on the currentLang setting.
@@ -621,10 +600,8 @@
                 const translation = translations[currentLang][key];
                 
                 if (element.tagName === 'INPUT' && element.hasAttribute('placeholder')) {
-                    // Update placeholder
                     element.setAttribute('placeholder', translation || element.getAttribute('placeholder'));
                 } else if (element.tagName === 'OPTION') {
-                    // Update select options
                     element.textContent = translation || element.textContent;
                 } else if (element.tagName === 'TITLE') {
                     document.title = translation || element.textContent;
@@ -660,216 +637,197 @@
          * Toggles the mobile menu visibility.
          */
         function toggleMobileMenu() {
-            document.getElementById('menu-toggle').querySelector('svg').dataset.lucide = document.getElementById('mobile-menu').classList.toggle('active') ? 'x' : 'menu';
+            const mobileNav = document.getElementById('mobile-menu');
+            const menuIconSvgContainer = document.querySelector('#menu-toggle');
+            
+            mobileNav.classList.toggle('active'); 
+            
+            // Change the menu icon
+            if (mobileNav.classList.contains('active')) {
+                 menuIconSvgContainer.innerHTML = '<svg data-lucide="x" width="24" height="24" aria-hidden="true"></svg>';
+            } else {
+                 menuIconSvgContainer.innerHTML = '<svg data-lucide="menu" width="24" height="24" aria-hidden="true"></svg>';
+            }
             if (typeof lucide !== 'undefined' && lucide.createIcons) {
                 lucide.createIcons();
             }
         }
-        
-        /**
-         * **IMPROVED:** Updates the global user gender, applies the theme, and saves to localStorage.
-         * Controls the visibility of the "Period" links via the 'female-theme' class on the body.
-         * @param {string} gender - 'male' or 'female'.
-         * @param {boolean} [save=true] - Whether to save the preference to localStorage.
-         */
-        function updateTheme(gender, save = true) {
-            const body = document.body;
-            userGender = gender;
 
-            // 1. Toggle the theme class on the body
+        /**
+         * Updates the page theme based on the selected gender.
+         * @param {string} gender - 'male' or 'female'.
+         * @param {boolean} [savePreference=true] - Whether to save the gender to localStorage.
+         */
+        function updateTheme(gender, savePreference = true) {
+            const html = document.documentElement;
+            userGender = gender; // Update global state
+
             if (gender === 'female') {
-                body.classList.add('female-theme');
+                html.classList.add('female-theme');
             } else {
-                body.classList.remove('female-theme');
+                html.classList.remove('female-theme');
             }
 
-            // 2. Save gender preference
-            if (save) {
+            if (savePreference) {
                 localStorage.setItem('malfitGender', gender);
             }
+
+            // Update logo color based on theme
+            const logo = document.getElementById('logo');
+            if (logo) {
+                logo.style.color = getComputedStyle(document.documentElement).getPropertyValue('--logo-color');
+            }
             
-            // 3. Update logo color based on new theme
-            document.getElementById('logo').style.color = `var(--logo-color)`;
+            // Re-apply translation to refresh colors of buttons/icons/links if needed
+            applyTranslations();
         }
 
-        // --- CALCULATION LOGIC ---
+
+        // --- CORE CALCULATION LOGIC ---
 
         /**
          * Calculates the Basal Metabolic Rate (BMR) using the Mifflin-St Jeor equation.
-         * Formula: (10 * weight_kg) + (6.25 * height_cm) - (5 * age) + S
-         * S: +5 for male, -161 for female.
+         * @param {number} weight - Weight in kg.
+         * @param {number} height - Height in cm.
+         * @param {number} age - Age in years.
+         * @param {string} gender - 'male' or 'female'.
+         * @returns {number} The calculated BMR.
          */
         function calculateBMR(weight, height, age, gender) {
-            let bmr = (10 * weight) + (6.25 * height) - (5 * age);
-            return bmr + (gender === 'male' ? 5 : -161);
+            // Mifflin-St Jeor Equation
+            if (gender === 'male') {
+                // BMR = 10 * weight (kg) + 6.25 * height (cm) - 5 * age (y) + 5
+                return (10 * weight) + (6.25 * height) - (5 * age) + 5;
+            } else {
+                // BMR = 10 * weight (kg) + 6.25 * height (cm) - 5 * age (y) - 161
+                return (10 * weight) + (6.25 * height) - (5 * age) - 161;
+            }
         }
 
         /**
-         * Calculates the Total Daily Energy Expenditure (TDEE).
-         * TDEE = BMR * Activity Multiplier
-         */
-        function calculateTDEE(bmr, activityMultiplier) {
-            return bmr * activityMultiplier;
-        }
-
-        /**
-         * Calculates the total calorie deficit required to reach the goal.
-         * Required Deficit = Goal Weight Loss (kg) * KCAL_PER_KG_FAT
-         */
-        function calculateRequiredDeficit(goalWeight) {
-            return goalWeight * KCAL_PER_KG_FAT;
-        }
-
-        /**
-         * Main function to calculate the daily calorie target and update the UI.
+         * Main function to perform the calorie calculation.
          */
         function calculatePlan() {
+            displayWarning(null); // Clear previous warnings
+            displayLimitWarning(false); // Clear limit warning
+            document.getElementById('result-box').classList.add('hidden');
+
+            // 1. Get Inputs and Validate
             const age = parseFloat(document.getElementById('age').value);
             const gender = document.getElementById('gender').value;
             const height = parseFloat(document.getElementById('height').value);
             const weight = parseFloat(document.getElementById('weight').value);
-            const activityMultiplier = parseFloat(document.getElementById('activity').value);
+            const activityFactor = parseFloat(document.getElementById('activity').value);
             const goalWeight = parseFloat(document.getElementById('goal_weight').value);
             const timeFrameWeeks = parseFloat(document.getElementById('time_frame').value);
 
-            // Hide previous results and warnings
-            document.getElementById('result-box').classList.add('hidden');
-            displayWarning();
-            displayLimitWarning(false);
-            
-            // Input Validation
-            if (!age || !height || !weight || !goalWeight || !timeFrameWeeks) {
+            // Required fields check
+            if (!age || !height || !weight || !activityFactor || !goalWeight || !timeFrameWeeks) {
                 displayWarning('warning_fill_fields');
                 return;
             }
 
-            if (age < 15 || height < 100 || weight < 40 || goalWeight <= 0 || timeFrameWeeks <= 0) {
-                 displayWarning('warning_fill_fields'); // Use generic for bad values
-                 return;
+            // 2. Calculate TDEE (Maintenance Calories)
+            const bmr = calculateBMR(weight, height, age, gender);
+            const tdee = Math.round(bmr * activityFactor);
+
+            // 3. Calculate Required Deficit
+            const totalDeficitKcal = goalWeight * KCAL_PER_KG_FAT;
+            const totalDays = timeFrameWeeks * DAYS_IN_WEEK;
+            const dailyDeficit = totalDeficitKcal / totalDays;
+
+            // 4. Determine Target Calories
+            let targetCalories = Math.round(tdee - dailyDeficit);
+            const safeMinimum = gender === 'male' ? MIN_CALORIES_MALE : MIN_CALORIES_FEMALE;
+
+            // 5. Health Check & Warnings
+            if (targetCalories < safeMinimum) {
+                // Goal is too aggressive/fast, cap the calories at the safe minimum
+                targetCalories = safeMinimum;
+                
+                // Calculate the time needed with the safe minimum (TDEE - safeMinimum)
+                const safeDailyDeficit = tdee - safeMinimum;
+                const resultingDays = totalDeficitKcal / safeDailyDeficit;
+                const resultingWeeks = Math.ceil(resultingDays / DAYS_IN_WEEK);
+
+                displayWarning('warning_goal_too_fast', {
+                    safeMinimum: safeMinimum,
+                    resultingWeeks: resultingWeeks
+                });
+            } else if (dailyDeficit > 1000) {
+                // If the calculated deficit is over 1000 kcal/day, it's considered very fast loss
+                displayWarning('warning_loss_fast');
             }
 
-            try {
-                // 1. Calculate BMR and TDEE (Maintenance Calories)
-                const bmr = calculateBMR(weight, height, age, gender);
-                const tdee = calculateTDEE(bmr, activityMultiplier);
-                
-                // 2. Calculate Required Total Deficit
-                const totalDeficitKcal = calculateRequiredDeficit(goalWeight);
+            // 6. Calculate Weekly Loss Rate for display
+            const actualDailyDeficit = tdee - targetCalories; // Use the potentially capped target
+            const actualWeeklyDeficitKcal = actualDailyDeficit * DAYS_IN_WEEK;
+            const weeklyLossKg = actualWeeklyDeficitKcal / KCAL_PER_KG_FAT;
 
-                // 3. Calculate Required Daily Deficit
-                const totalDays = timeFrameWeeks * DAYS_IN_WEEK;
-                const dailyDeficitKcal = totalDeficitKcal / totalDays;
+            // 7. Update Global State
+            lastTdee = tdee;
+            lastTargetCalories = targetCalories;
+            lastGoalWeight = goalWeight;
+            lastTimeFrameWeeks = timeFrameWeeks;
 
-                // 4. Calculate Target Calories
-                let targetCalories = Math.round(tdee - dailyDeficitKcal);
-
-                // 5. Determine Minimum Safe Calories
-                const safeMinimum = (gender === 'male' ? MIN_CALORIES_MALE : MIN_CALORIES_FEMALE);
-                let warningMessage = '';
-
-                if (targetCalories < safeMinimum) {
-                    // Recalculate based on safe minimum and show warning
-                    const safeDailyDeficit = tdee - safeMinimum;
-                    const safeTotalDays = Math.round(totalDeficitKcal / safeDailyDeficit);
-                    const resultingWeeks = (safeTotalDays / DAYS_IN_WEEK).toFixed(1);
-
-                    warningMessage = 'warning_goal_too_fast';
-                    targetCalories = safeMinimum; // Set target to the safe minimum
-                    
-                    displayWarning(warningMessage, {
-                        safeMinimum: safeMinimum, 
-                        resultingWeeks: resultingWeeks
-                    });
-                } else if (dailyDeficitKcal > 1000) {
-                     // Check for very aggressive loss (over 1kg/week for most)
-                     displayWarning('warning_loss_fast');
-                }
-
-                // 6. Update global storage for saving
-                lastTdee = Math.round(tdee);
-                lastTargetCalories = targetCalories;
-                lastGoalWeight = goalWeight;
-                lastTimeFrameWeeks = timeFrameWeeks;
-
-                // 7. Update Results Box
-                const weeklyLossRate = (goalWeight / timeFrameWeeks).toFixed(2);
-                
-                document.getElementById('tdee-output').textContent = lastTdee;
-                document.getElementById('target-calories-output').textContent = lastTargetCalories;
-                document.getElementById('weekly-loss-output').textContent = weeklyLossRate;
-                document.getElementById('result-box').classList.remove('hidden');
-
-            } catch (error) {
-                console.error("Calculation failed:", error);
-                // Fallback in case of unexpected error
-                const fallbackTarget = gender === 'male' ? 2000 : 1600;
-                lastTdee = 0;
-                lastTargetCalories = fallbackTarget;
-                displayWarning('warning_error', {fallbackTarget: fallbackTarget});
-                document.getElementById('tdee-output').textContent = "N/A";
-                document.getElementById('target-calories-output').textContent = fallbackTarget;
-                document.getElementById('weekly-loss-output').textContent = "N/A";
-                document.getElementById('result-box').classList.remove('hidden');
-            }
+            // 8. Display Results
+            document.getElementById('tdee-output').textContent = tdee.toLocaleString(currentLang);
+            document.getElementById('target-calories-output').textContent = targetCalories.toLocaleString(currentLang);
+            document.getElementById('weekly-loss-output').textContent = weeklyLossKg.toFixed(2).toLocaleString(currentLang);
+            
+            document.getElementById('result-box').classList.remove('hidden');
         }
-        
+
+
         /**
-         * Saves the calculated plan to localStorage, enforcing the plan limit.
+         * Saves the last calculated plan to local storage for use on the Plans page.
          */
         function saveCaloriePlan() {
             if (lastTargetCalories <= 0) {
-                alert(translations[currentLang]['warning_no_plan_to_save']);
+                alert(translations[currentLang].warning_no_plan_to_save);
                 return;
             }
 
-            let plans = [];
-            try {
-                const savedPlans = localStorage.getItem('malfitPlans');
-                if (savedPlans) {
-                    plans = JSON.parse(savedPlans);
-                }
-            } catch (e) {
-                console.error("Error loading plans:", e);
-                // Continue with an empty array if parsing fails
-            }
+            // Get existing plans from localStorage or initialize an empty array
+            const existingPlans = JSON.parse(localStorage.getItem('malfitSavedPlans')) || [];
 
-            // Check limit
-            if (plans.length >= PLAN_LIMIT) {
-                displayLimitWarning(true);
+            // 1. Check for the Plan Limit
+            if (existingPlans.length >= PLAN_LIMIT) {
+                displayWarning(null); // Clear yellow warning
+                displayLimitWarning(true); // Show red limit warning
+                // Use alert for a more immediate notification if needed, but the box is better.
+                // alert(translations[currentLang].warning_plan_limit);
                 return;
             }
-            
-            displayLimitWarning(false);
 
-            // Create new plan object
-            const newPlan = {
-                type: 'calorie',
-                date: new Date().toISOString(),
-                maintenanceCalories: lastTdee,
-                targetCalories: lastTargetCalories,
-                currentWeight: parseFloat(document.getElementById('weight').value),
-                goalWeight: lastGoalWeight, // The total kg to lose
-                timeFrameWeeks: lastTimeFrameWeeks,
-                goalType: lastGoalType
+            // 2. Create the new plan object
+            const plan = {
+                type: lastGoalType, // 'lose'
+                target: lastTargetCalories,
+                maintenance: lastTdee,
+                goalKg: lastGoalWeight,
+                timeWeeks: lastTimeFrameWeeks,
+                dateSaved: new Date().toISOString()
             };
 
-            // Add new plan
-            plans.push(newPlan);
+            // 3. Add the new plan and save back to local storage
+            existingPlans.push(plan);
+            localStorage.setItem('malfitSavedPlans', JSON.stringify(existingPlans));
             
-            // Save back to localStorage
-            localStorage.setItem('malfitPlans', JSON.stringify(plans));
-
-            // Alert user and redirect (after a slight delay for better UX)
-            alert(translations[currentLang]['alert_plan_saved']);
-            window.location.href = '../Plans/plans.html';
+            // 4. Success message and redirect
+            alert(translations[currentLang].alert_plan_saved);
+            window.location.href = '../Plans/plans.html'; // Redirect to plans page
         }
 
 
-        // --- EVENT LISTENERS (Standard setup) ---
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('lang-toggle').addEventListener('click', toggleLanguage);
-            document.getElementById('menu-toggle').addEventListener('click', toggleMobileMenu);
-        });
+        // --- EVENT LISTENERS & INITIALIZATION ---
+
+        // Note: Event listeners for toggleLanguage and toggleMobileMenu were already added inline
+        // in the HTML using onclick="..." for simplicity. We ensure all other code is completed.
+
+        // Run initialization functions on page load (via body onload="loadUserPreferences()")
+        // This ensures the theme and translations are correctly applied after the page content loads.
+        
     </script>
 </body>
 </html>
