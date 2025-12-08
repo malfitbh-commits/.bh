@@ -1,3 +1,5 @@
+accpunt 
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
@@ -23,6 +25,7 @@
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
         
+        // --- 1. Global Setup ---
         const firebaseConfig = {
             apiKey: "AIzaSyAJrDZrl1jeKFeEsDTM_lUTxxwW7lib5U0",
             authDomain: "malfit-app.firebaseapp.com",
@@ -763,7 +766,7 @@
                         <svg data-lucide="bell" class="w-5 h-5 mr-2 rtl-ml-2"></svg>
                         Notifications
                     </a>
-                    <a href="change.html" class="flex items-center p-3 rounded-lg text-gray-600 hover:text-indigo-700 hover:bg-indigo-100 transition">
+                    <a href=".../Change/change.html" class="flex items-center p-3 rounded-lg text-gray-600 hover:text-indigo-700 hover:bg-indigo-100 transition">
                         <svg data-lucide="lock" class="w-5 h-5 mr-2 rtl-ml-2"></svg>
                         Change Password
                     </a>
