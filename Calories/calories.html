@@ -276,33 +276,33 @@
             </div>
 
             <div class="space-y-4 mt-8">
-                <div class="flex space-x-4">
+                <div class="flex space-x-4 rtl:space-x-reverse">
                     <div class="w-1/2">
                         <label for="age" class="block text-sm font-medium text-gray-700 mb-1" data-translate-key="label_age">Your Age (Years)</label>
-                        <input type="number" id="age" min="15" class="input-style" placeholder="e.g., 30">
+                        <input type="number" id="age" min="15" class="input-style" placeholder="e.g., 30" required>
                     </div>
                     <div class="w-1/2">
                         <label for="gender" class="block text-sm font-medium text-gray-700 mb-1" data-translate-key="label_gender">Are you Male or Female?</label>
-                        <select id="gender" class="input-style" onchange="updateTheme(this.value); toggleCycleTrackingFields();">
+                        <select id="gender" class="input-style" onchange="updateTheme(this.value); toggleCycleTrackingFields();" required>
                             <option value="male" data-translate-key="option_male" selected>Male</option>
                             <option value="female" data-translate-key="option_female">Female</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="flex space-x-4">
+                <div class="flex space-x-4 rtl:space-x-reverse">
                     <div class="w-1/2">
                         <label for="height" class="block text-sm font-medium text-gray-700 mb-1" data-translate-key="label_height">Your Height (cm)</label>
-                        <input type="number" id="height" min="100" class="input-style" placeholder="e.g., 175">
+                        <input type="number" id="height" min="100" class="input-style" placeholder="e.g., 175" required>
                     </div>
                     <div class="w-1/2">
                         <label for="weight" class="block text-sm font-medium text-gray-700 mb-1" data-translate-key="label_weight">Your Current Weight (kg)</label>
-                        <input type="number" id="weight" min="40" class="input-style" placeholder="e.g., 75">
+                        <input type="number" id="weight" min="40" class="input-style" placeholder="e.g., 75" required>
                     </div>
                 </div>
 
                 <div id="cycle-tracking-fields" class="hidden">
-                    <div class="flex space-x-4">
+                    <div class="flex space-x-4 rtl:space-x-reverse">
                         <div class="w-1/2">
                             <label for="cycle_length" class="block text-sm font-medium text-gray-700 mb-1" data-translate-key="label_cycle_length">Average Cycle Length (Days)</label>
                             <input type="number" id="cycle_length" min="20" max="45" class="input-style" placeholder="e.g., 28">
@@ -316,7 +316,7 @@
                 
                 <div>
                     <label for="activity" class="block text-sm font-medium text-gray-700 mb-1" data-translate-key="label_activity">How Active Are You?</label>
-                    <select id="activity" class="input-style">
+                    <select id="activity" class="input-style" required>
                         <option value="1.2" data-translate-key="activity_1_2">Not Active (Desk job, little exercise)</option>
                         <option value="1.375" data-translate-key="activity_1_375">A Bit Active (Exercise 1-3 times a week)</option>
                         <option value="1.55" selected data-translate-key="activity_1_55">Active (Exercise 3-5 times a week)</option>
@@ -327,14 +327,14 @@
 
                 <hr class="border-gray-200 pt-2">
 
-                <div class="flex space-x-4">
+                <div class="flex space-x-4 rtl:space-x-reverse">
                     <div class="w-1/2">
                         <label for="goal_weight" class="block text-sm font-medium text-gray-700 mb-1" data-translate-key="label_goal_weight">How many kg do you want to lose?</label>
-                        <input type="number" id="goal_weight" min="0.5" class="input-style" placeholder="e.g., 5">
+                        <input type="number" id="goal_weight" min="0.5" class="input-style" placeholder="e.g., 5" required>
                     </div>
                     <div class="w-1/2">
                         <label for="time_frame" class="block text-sm font-medium text-gray-700 mb-1" data-translate-key="label_time_frame">How many Weeks do you have?</label>
-                        <input type="number" id="time_frame" min="1" class="input-style" placeholder="e.g., 8">
+                        <input type="number" id="time_frame" min="1" class="input-style" placeholder="e.g., 8" required>
                     </div>
                 </div>
 
@@ -396,6 +396,7 @@
         const MIN_CALORIES_MALE = 1500;
         const MIN_CALORIES_FEMALE = 1200;
         const DAYS_IN_WEEK = 7;
+        const CALORIE_SAVING_KEY = 'malfitCaloriePlans'; // Key for saving multiple plans
         // const PLAN_LIMIT = 3; // REMOVED: Limit is removed as requested.
 
         // --- GLOBAL VARIABLES TO STORE LAST RESULT ---
@@ -560,6 +561,14 @@
         }
 
         /**
+         * Toggles the mobile navigation menu.
+         */
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('active');
+        }
+
+        /**
          * Updates the theme (colors) based on the selected gender.
          * @param {string} gender - 'male' or 'female'.
          * @param {boolean} [save=true] - Whether to save the preference to localStorage.
@@ -580,7 +589,7 @@
         /**
          * Loads saved user preferences (like gender) and applies them on page load.
          */
-        function loadUserPreferences() {
+        window.loadUserPreferences = function() {
             // 1. Load Gender from localStorage
             const savedGender = localStorage.getItem('malfitGender');
             if (savedGender) {
@@ -642,171 +651,157 @@
         /**
          * Toggles the language and re-applies translations.
          */
-        function toggleLanguage() {
+        window.toggleLanguage = function() {
             currentLang = currentLang === 'en' ? 'ar' : 'en';
-            localStorage.setItem('malfitLang', currentLang); // Save preference
-            
-            // Close mobile menu when language is toggled, if open
-            if (document.getElementById('mobile-menu').classList.contains('active')) {
-                toggleMobileMenu();
-            }
+            localStorage.setItem('malfitLang', currentLang);
             applyTranslations();
-        }
-
-        /**
-         * Toggles the mobile menu visibility.
-         */
-        function toggleMobileMenu() {
-            const mobileNav = document.getElementById('mobile-menu');
-            // The rest of the icon change logic is missing from the provided code,
-            // but the basic toggle still works on the `active` class.
-            mobileNav.classList.toggle('active'); 
+            // Close mobile menu on language switch for better UX
+            document.getElementById('mobile-menu').classList.remove('active');
         }
 
         // --- CORE CALCULATION LOGIC ---
 
         /**
-         * Calculates Basal Metabolic Rate (BMR) using the Mifflin-St Jeor equation.
-         * @param {number} weight - Weight in kg.
-         * @param {number} height - Height in cm.
-         * @param {number} age - Age in years.
-         * @param {string} gender - 'male' or 'female'.
+         * Calculates BMR using the Harris-Benedict formula (adjusted/simplified for common use).
+         * Male BMR: 66 + (13.7 × weight in kg) + (5 × height in cm) – (6.8 × age in years)
+         * Female BMR: 655 + (9.6 × weight in kg) + (1.8 × height in cm) – (4.7 × age in years)
          * @returns {number} BMR in kcal/day.
          */
         function calculateBMR(weight, height, age, gender) {
-            // Mifflin-St Jeor Equation:
-            // Male: (10 * weight_kg) + (6.25 * height_cm) - (5 * age) + 5
-            // Female: (10 * weight_kg) + (6.25 * height_cm) - (5 * age) - 161
-            
-            let bmr = (10 * weight) + (6.25 * height) - (5 * age);
-
             if (gender === 'male') {
-                bmr += 5;
-            } else {
-                bmr -= 161;
+                return 66 + (13.7 * weight) + (5 * height) - (6.8 * age);
+            } else { // female
+                return 655 + (9.6 * weight) + (1.8 * height) - (4.7 * age);
             }
-
-            return bmr;
         }
 
         /**
-         * Calculates Total Daily Energy Expenditure (TDEE).
-         * @param {number} bmr - BMR in kcal/day.
-         * @param {number} activityFactor - Activity multiplier.
+         * Calculates the total daily energy expenditure (TDEE).
          * @returns {number} TDEE in kcal/day.
          */
-        function calculateTDEE(bmr, activityFactor) {
-            return bmr * activityFactor;
+        function calculateTDEE(bmr, activityMultiplier) {
+            return bmr * activityMultiplier;
         }
 
-        /**
-         * Main function to calculate the calorie plan and display results.
-         */
-        function calculatePlan() {
-            displayWarning(null); // Clear previous warnings
-            displayLimitWarning(false); // Ensure limit warning is hidden
 
-            // 1. Get Inputs
+        /**
+         * Calculates the required daily calorie goal to achieve the weight loss target.
+         */
+        window.calculatePlan = function() {
+            // 1. Reset
+            document.getElementById('result-box').classList.add('hidden');
+            displayWarning(null); // Clear previous warnings
+            
+            // 2. Get Inputs
             const age = parseFloat(document.getElementById('age').value);
             const gender = document.getElementById('gender').value;
             const height = parseFloat(document.getElementById('height').value);
             const weight = parseFloat(document.getElementById('weight').value);
-            const activityFactor = parseFloat(document.getElementById('activity').value);
-            const goalWeight = parseFloat(document.getElementById('goal_weight').value); // kg to lose
-            const timeFrame = parseFloat(document.getElementById('time_frame').value); // weeks
+            const activityMultiplier = parseFloat(document.getElementById('activity').value);
+            const goalWeight = parseFloat(document.getElementById('goal_weight').value);
+            const timeFrameWeeks = parseFloat(document.getElementById('time_frame').value);
 
-            // 2. Validation
-            if (!age || !height || !weight || !activityFactor || !goalWeight || !timeFrame || age < 15 || height < 100 || weight < 40 || timeFrame < 1 || goalWeight < 0.5) {
-                document.getElementById('result-box').classList.add('hidden');
+            // 3. Validation
+            if (!age || !height || !weight || !goalWeight || !timeFrameWeeks || age <= 0 || height <= 0 || weight <= 0 || goalWeight <= 0 || timeFrameWeeks <= 0) {
                 displayWarning('warning_fill_fields');
                 return;
             }
 
-            // 3. Core Calculation (BMR & TDEE)
-            const bmr = calculateBMR(weight, height, age, gender);
-            const tdee = calculateTDEE(bmr, activityFactor);
-            
-            // 4. Calorie Deficit Calculation
-            const totalCalorieDeficitNeeded = goalWeight * KCAL_PER_KG_FAT; // Total kcal deficit required
-            const totalDays = timeFrame * DAYS_IN_WEEK; // Total days available
-            const dailyDeficitTarget = totalCalorieDeficitNeeded / totalDays; // Required daily deficit
+            try {
+                // 4. Core Calculation
+                const bmr = calculateBMR(weight, height, age, gender);
+                const tdee = calculateTDEE(bmr, activityMultiplier);
 
-            let targetCalories = tdee - dailyDeficitTarget;
-            const weeklyLossRate = goalWeight / timeFrame;
-
-            // 5. Safety Check (Prevent extremely low calories)
-            const safeMinimum = (gender === 'male') ? MIN_CALORIES_MALE : MIN_CALORIES_FEMALE;
-            
-            if (targetCalories < safeMinimum) {
-                // Adjust target to the safe minimum
-                targetCalories = safeMinimum;
+                // Total calorie deficit needed: Goal weight (kg) * KCAL_PER_KG_FAT
+                const totalCalorieDeficit = goalWeight * KCAL_PER_KG_FAT;
                 
-                // Calculate new time frame based on the safe minimum
-                const actualDailyDeficit = tdee - safeMinimum;
-                const newTotalDays = totalCalorieDeficitNeeded / actualDailyDeficit;
-                const resultingWeeks = Math.ceil(newTotalDays / DAYS_IN_WEEK);
+                // Total days in the time frame
+                const totalDays = timeFrameWeeks * DAYS_IN_WEEK;
+                
+                // Daily calorie deficit needed: Total Calorie Deficit / Total Days
+                const dailyCalorieDeficit = totalCalorieDeficit / totalDays;
+                
+                // Target daily calories: TDEE - Daily Deficit
+                let targetCalories = tdee - dailyCalorieDeficit;
 
-                // Display safety warning
-                displayWarning('warning_goal_too_fast', {
-                    safeMinimum: safeMinimum,
-                    resultingWeeks: resultingWeeks
-                });
-            } else if (weeklyLossRate > 1) { 
-                // Loss rate warning (more than 1kg/week is aggressive)
-                displayWarning('warning_loss_fast');
+                const safeMinimum = (gender === 'male') ? MIN_CALORIES_MALE : MIN_CALORIES_FEMALE;
+                
+                // 5. Safety and Warning Check
+                if (targetCalories < safeMinimum) {
+                    // Recalculate time if aiming for the safe minimum
+                    const safeDailyDeficit = tdee - safeMinimum;
+                    const safeTimeWeeks = Math.ceil(totalCalorieDeficit / safeDailyDeficit / DAYS_IN_WEEK);
+                    
+                    displayWarning('warning_goal_too_fast', {
+                        safeMinimum: safeMinimum.toLocaleString(),
+                        resultingWeeks: safeTimeWeeks
+                    });
+                    
+                    // Set target to the safe minimum limit
+                    targetCalories = safeMinimum;
+
+                } else if (dailyCalorieDeficit > 1000) { // Warning if deficit is too large (over 1kg/week loss)
+                    displayWarning('warning_loss_fast');
+                }
+
+                // 6. Update Global State
+                lastTdee = Math.round(tdee);
+                lastTargetCalories = Math.round(targetCalories);
+                lastGoalWeight = goalWeight;
+                lastTimeFrameWeeks = timeFrameWeeks;
+                lastGoalType = 'lose'; // Fixed to 'lose' since the form only calculates loss.
+
+                // 7. Display Results
+                const weeklyLoss = (dailyCalorieDeficit * DAYS_IN_WEEK / KCAL_PER_KG_FAT).toFixed(2);
+                
+                document.getElementById('tdee-output').textContent = lastTdee.toLocaleString();
+                document.getElementById('target-calories-output').textContent = lastTargetCalories.toLocaleString();
+                document.getElementById('weekly-loss-output').textContent = weeklyLoss;
+                document.getElementById('result-box').classList.remove('hidden');
+
+            } catch (e) {
+                console.error("Calculation failed:", e);
+                // Fallback in case of unexpected error
+                const fallbackTarget = (gender === 'male') ? 2000 : 1600;
+                lastTargetCalories = fallbackTarget;
+                displayWarning('warning_error', { fallbackTarget: fallbackTarget.toLocaleString() });
             }
-
-            // 6. Update Global Variables
-            lastTdee = Math.round(tdee);
-            lastTargetCalories = Math.round(targetCalories);
-            lastGoalWeight = goalWeight;
-            lastTimeFrameWeeks = timeFrame;
-            lastGoalType = 'lose';
-
-            // 7. Display Results
-            document.getElementById('tdee-output').textContent = lastTdee.toLocaleString(currentLang);
-            document.getElementById('target-calories-output').textContent = lastTargetCalories.toLocaleString(currentLang);
-            document.getElementById('weekly-loss-output').textContent = weeklyLossRate.toFixed(2).toLocaleString(currentLang);
-            document.getElementById('result-box').classList.remove('hidden');
         }
 
+
         /**
-         * Saves the calculated plan to localStorage (now without a limit check).
+         * Saves the calculated plan to local storage and redirects to the Plans page.
          */
-        function saveCaloriePlan() {
-            if (lastTargetCalories <= 0) {
+        window.saveCaloriePlan = function() {
+            if (lastTargetCalories === 0) {
                 displayWarning('warning_no_plan_to_save');
                 return;
             }
-
-            // Load existing plans or initialize empty array
-            let savedPlans = JSON.parse(localStorage.getItem('malfitPlans') || '[]');
             
-            // The limit check is removed as requested!
-
-            // Create new plan object
+            // Get existing plans or initialize an empty array
+            const existingPlans = JSON.parse(localStorage.getItem(CALORIE_SAVING_KEY) || '[]');
+            
             const newPlan = {
-                id: Date.now(), // Unique ID
-                dateSaved: new Date().toISOString().split('T')[0],
+                id: Date.now(), // Unique ID for keying/deleting
+                type: lastGoalType,
                 target: lastTargetCalories,
-                maintenance: lastTdee,
-                goal: lastGoalWeight, // kg to lose
-                time: lastTimeFrameWeeks, // weeks
+                tdee: lastTdee,
+                goalWeight: lastGoalWeight,
+                timeFrameWeeks: lastTimeFrameWeeks,
                 gender: userGender,
-                type: 'Weight Loss'
+                date: new Date().toISOString() // Save the current timestamp
             };
 
-            // Add new plan
-            savedPlans.push(newPlan);
-
+            // Add the new plan
+            existingPlans.push(newPlan);
+            
             // Save back to localStorage
-            localStorage.setItem('malfitPlans', JSON.stringify(savedPlans));
-
-            // Alert user and redirect
+            localStorage.setItem(CALORIE_SAVING_KEY, JSON.stringify(existingPlans));
+            
+            // Alert and Redirect
             alert(translations[currentLang].alert_plan_saved);
-            window.location.href = "../Plans/plans.html"; 
+            window.location.href = '../Plans/plans.html';
         }
-        window.saveCaloriePlan = saveCaloriePlan; // Expose to global scope
     </script>
 </body>
 </html>
