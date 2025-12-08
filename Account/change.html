@@ -8,6 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest" defer></script> 
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
     <style>
         /* CSS Variables for Theming */
         :root {
@@ -59,7 +61,7 @@
             border-left: 4px solid;
         }
         
-        /* 🆕 Specific style for the small language button */
+        /* Language Button Style */
         .lang-btn-style {
             font-size: 0.875rem; /* text-sm */
             padding: 0.375rem 0.75rem; /* px-3 py-1.5 */
@@ -136,6 +138,10 @@
             messagingSenderId: "118730063574",
             appId: "1:118730063574:web:1a34284a69ae0e7097d377"
         };
+        
+        // 🆕 FIREBASE INITIALIZATION
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
 
         const translations = {
             'en': {
@@ -150,8 +156,9 @@
                 'success_password_changed': 'Password changed successfully! Redirecting to account page.',
                 'error_fill_all': 'Please fill in all fields.',
                 'error_match': 'New password and confirmation do not match.',
-                'error_current_password': 'Current password entered is incorrect.',
-                'error_no_user': 'User not found or password not set. Please log in first.',
+                'error_current_password': 'Current password entered is incorrect.', // Used for auth/wrong-password
+                'error_no_user': 'User not found or not logged in. Please log in first.',
+                'error_weak_password': 'The new password is too weak. Please choose a longer, more complex password.', // 🆕 New Key
             },
             'ar': {
                 'page_title_change_password': 'ملفت | تغيير كلمة المرور',
@@ -166,11 +173,12 @@
                 'error_fill_all': 'الرجاء ملء جميع الحقول.',
                 'error_match': 'كلمة المرور الجديدة والتأكيد غير متطابقين.',
                 'error_current_password': 'كلمة المرور الحالية المدخلة غير صحيحة.',
-                'error_no_user': 'المستخدم غير موجود أو لم يتم تعيين كلمة مرور. الرجاء تسجيل الدخول أولاً.',
+                'error_no_user': 'المستخدم غير موجود أو غير مسجل الدخول. الرجاء تسجيل الدخول أولاً.',
+                'error_weak_password': 'كلمة المرور الجديدة ضعيفة جدًا. الرجاء اختيار كلمة مرور أطول وأكثر تعقيدًا.', // 🆕 New Key
             }
         };
 
-        // --- UTILITY & LIFE CYCLE FUNCTIONS ---
+        // --- UTILITY & LIFE CYCLE FUNCTIONS (Unchanged) ---
 
         function updateTheme(gender) {
             document.documentElement.classList.toggle('female-theme', gender === 'female');
@@ -179,7 +187,6 @@
         function updateLanguageButtonText() {
             const btn = document.getElementById('lang-toggle-btn');
             if (btn) {
-                // If current language is English ('en'), the button shows the Arabic option ('عربي / English')
                 btn.textContent = currentLang === 'en' ? 'عربي / English' : 'English / عربي';
             }
         }
@@ -210,26 +217,14 @@
             applyTranslations();
         }
 
-        /**
-         * Toggles the application language.
-         */
         window.toggleLanguage = function() {
             const newLang = currentLang === 'en' ? 'ar' : 'en';
-
             currentLang = newLang;
             localStorage.setItem('malfitLang', newLang);
-
             applyTranslations();
-            
-            // Clear any existing messages as they are language-dependent
             document.getElementById('message-box').classList.add('hidden');
         }
 
-        /**
-         * Displays a message in the designated box.
-         * @param {string} messageKey - Translation key.
-         * @param {boolean} isSuccess - True for success (green), False for error (red).
-         */
         function displayMessage(messageKey, isSuccess) {
             const box = document.getElementById('message-box');
             const text = document.getElementById('message-text');
@@ -247,15 +242,16 @@
             text.textContent = translation;
         }
 
-        // --- CORE LOGIC ---
+        // --- CORE LOGIC (UPDATED FOR FIREBASE AUTH) ---
 
         /**
-         * Handles the password change process using localStorage.
+         * 🆕 Handles the password change process using secure Firebase Authentication.
          */
-        window.changePassword = function() {
+        window.changePassword = async function() {
             const currentPassword = document.getElementById('current-password').value;
             const newPassword = document.getElementById('new-password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
+            const user = auth.currentUser; // Get the currently signed-in user
 
             // 1. Basic Validation
             if (!currentPassword || !newPassword || !confirmPassword) {
@@ -268,30 +264,44 @@
                 return;
             }
 
-            // 2. Retrieve Stored Password 
-            const userDataString = localStorage.getItem('malfitUser');
-            if (!userDataString) {
-                displayMessage('error_no_user', false);
+            if (!user || !user.email) {
+                displayMessage('error_no_user', false); // User not logged in
                 return;
             }
-            const userData = JSON.parse(userDataString);
-
-            // 3. Current Password Check
-            if (userData.password !== currentPassword) {
-                displayMessage('error_current_password', false);
-                return;
-            }
-
-            // 4. Update Password
-            userData.password = newPassword;
-            localStorage.setItem('malfitUser', JSON.stringify(userData));
-
-            // 5. Success Message and Redirect
-            displayMessage('success_password_changed', true);
             
-            setTimeout(() => {
-                window.location.href = 'account.html'; // Redirect to account page
-            }, 1500);
+            // 2. Prepare for Re-authentication
+            const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
+
+            try {
+                // Step 3: Re-authenticate the user (Crucial security step)
+                await user.reauthenticateWithCredential(credential);
+
+                // Step 4: Update the password with the new one
+                await user.updatePassword(newPassword);
+
+                // Step 5: Success
+                displayMessage('success_password_changed', true);
+                
+                setTimeout(() => {
+                    window.location.href = 'account.html'; // Redirect to account page
+                }, 1500);
+
+            } catch (error) {
+                // Step 6: Handle Firebase Errors
+                let messageKey = 'error_fill_all'; 
+                
+                if (error.code === 'auth/wrong-password') {
+                    messageKey = 'error_current_password'; 
+                } else if (error.code === 'auth/requires-recent-login') {
+                    // This error often means the user needs to log out and log back in completely.
+                    messageKey = 'error_no_user'; 
+                } else if (error.code === 'auth/weak-password') {
+                    messageKey = 'error_weak_password'; 
+                }
+                
+                displayMessage(messageKey, false);
+                console.error("Firebase Password Update Error:", error.code, error.message);
+            }
         }
     </script>
 </body>
