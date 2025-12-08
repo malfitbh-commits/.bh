@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-translate-key="page_title_change_password">MALFIT | Change Password</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest" defer></script> 
+    <style>
+        /* CSS Variables for Theming */
+        :root {
+            --primary-color: #4f46e5;
+            --primary-light: #eef2ff;
+            --calc-gradient-start: #4f46e5;
+            --calc-gradient-end: #3b82f6;
+        }
+        .female-theme {
+            --primary-color: #ec4899;
+            --primary-light: #fdf2f8;
+            --calc-gradient-start: #ec4899;
+            --calc-gradient-end: #f43f5e;
+        }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f0f4f8; 
+            min-height: 100vh;
+        }
+        html[dir="rtl"] body {
+            font-family: 'Cairo', sans-serif;
+            text-align: right;
+        }
+        /* Custom Button Style for Primary Action */
+        .contact-btn {
+            background-image: linear-gradient(to right, var(--calc-gradient-start) 0%, var(--calc-gradient-end) 100%); 
+            transition: all 0.2s ease;
+        }
+        .contact-btn:hover {
+            box-shadow: 0 8px 15px rgba(63, 131, 248, 0.4); 
+            transform: scale(1.02);
+            opacity: 0.95;
+        }
+        /* Input and Alert Styles */
+        .input-style {
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            width: 100%;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            background-color: #ffffff;
+        }
+        .input-style:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+        .alert-box {
+            border-left: 4px solid;
+        }
+        
+        /* 🆕 Specific style for the small language button */
+        .lang-btn-style {
+            font-size: 0.875rem; /* text-sm */
+            padding: 0.375rem 0.75rem; /* px-3 py-1.5 */
+            border-radius: 9999px; /* rounded-full */
+            color: white;
+            /* Use the same gradient and hover effects as contact-btn */
+            background-image: linear-gradient(to right, var(--calc-gradient-start) 0%, var(--calc-gradient-end) 100%); 
+            transition: all 0.2s ease;
+        }
+        .lang-btn-style:hover {
+            box-shadow: 0 4px 8px rgba(63, 131, 248, 0.4); /* Smaller shadow for a smaller button */
+            transform: scale(1.05); /* Slightly bigger scale for high visibility */
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body onload="loadUserPreferences()">
+    
+    <div class="absolute top-4 right-4 z-10 p-2 sm:p-4">
+        <button id="lang-toggle-btn" onclick="toggleLanguage()" 
+            class="lang-btn-style">
+            عربي / English
+        </button>
+    </div>
+    <main class="flex items-center justify-center p-4 min-h-screen"> 
+        <div class="w-full max-w-md bg-white shadow-2xl rounded-3xl p-8 border border-gray-100/50">
+
+            <div class="text-center">
+                <h1 class="text-3xl font-extrabold text-gray-900 leading-tight" data-translate-key="change_title">Change Your Password</h1>
+                <p class="mt-2 text-md text-gray-500" data-translate-key="change_subtitle">Enter your current password and choose a new one.</p>
+            </div>
+
+            <div class="space-y-5 mt-8">
+                <div>
+                    <label for="current-password" class="block text-sm font-medium text-gray-700 mb-1" data-translate-key="label_current_password">Current Password</label>
+                    <input type="password" id="current-password" class="input-style" required>
+                </div>
+                <div>
+                    <label for="new-password" class="block text-sm font-medium text-gray-700 mb-1" data-translate-key="label_new_password">New Password</label>
+                    <input type="password" id="new-password" class="input-style" required>
+                </div>
+                <div>
+                    <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-1" data-translate-key="label_confirm_password">Confirm New Password</label>
+                    <input type="password" id="confirm-password" class="input-style" required>
+                </div>
+
+                <div id="message-box" class="alert-box p-4 rounded-lg hidden" role="alert">
+                    <p id="message-text" class="text-sm font-medium"></p>
+                </div>
+
+                <button onclick="changePassword()" 
+                    class="contact-btn w-full flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-2xl shadow-xl text-white mt-6">
+                    <span data-translate-key="btn_change_password">Change Password</span>
+                </button>
+            </div>
+            
+            <a href="account.html" class="block text-center mt-6 text-sm text-gray-500 hover:text-indigo-600 transition-colors" data-translate-key="back_to_account">
+                &larr; Back to Account
+            </a>
+
+        </div>
+    </main>
+
+    <script>
+        // --- GLOBAL STATE ---
+        let currentLang = localStorage.getItem('malfitLang') || 'en';
+        let userGender = localStorage.getItem('malfitGender') || 'male'; 
+
+        const translations = {
+            'en': {
+                'page_title_change_password': 'MALFIT | Change Password',
+                'change_title': 'Change Your Password',
+                'change_subtitle': 'Enter your current password and choose a new one.',
+                'label_current_password': 'Current Password',
+                'label_new_password': 'New Password',
+                'label_confirm_password': 'Confirm New Password',
+                'btn_change_password': 'Change Password',
+                'back_to_account': '← Back to Account',
+                'success_password_changed': 'Password changed successfully! Redirecting to account page.',
+                'error_fill_all': 'Please fill in all fields.',
+                'error_match': 'New password and confirmation do not match.',
+                'error_current_password': 'Current password entered is incorrect.',
+                'error_no_user': 'User not found or password not set. Please log in first.',
+            },
+            'ar': {
+                'page_title_change_password': 'ملفت | تغيير كلمة المرور',
+                'change_title': 'تغيير كلمة المرور الخاصة بك',
+                'change_subtitle': 'أدخل كلمة المرور الحالية واختر كلمة مرور جديدة.',
+                'label_current_password': 'كلمة المرور الحالية',
+                'label_new_password': 'كلمة المرور الجديدة',
+                'label_confirm_password': 'تأكيد كلمة المرور الجديدة',
+                'btn_change_password': 'تغيير كلمة المرور',
+                'back_to_account': 'العودة إلى صفحة الحساب ←',
+                'success_password_changed': 'تم تغيير كلمة المرور بنجاح! يتم إعادة التوجيه إلى صفحة الحساب.',
+                'error_fill_all': 'الرجاء ملء جميع الحقول.',
+                'error_match': 'كلمة المرور الجديدة والتأكيد غير متطابقين.',
+                'error_current_password': 'كلمة المرور الحالية المدخلة غير صحيحة.',
+                'error_no_user': 'المستخدم غير موجود أو لم يتم تعيين كلمة مرور. الرجاء تسجيل الدخول أولاً.',
+            }
+        };
+
+        // --- UTILITY & LIFE CYCLE FUNCTIONS ---
+
+        function updateTheme(gender) {
+            document.documentElement.classList.toggle('female-theme', gender === 'female');
+        }
+
+        function updateLanguageButtonText() {
+            const btn = document.getElementById('lang-toggle-btn');
+            if (btn) {
+                // If current language is English ('en'), the button shows the Arabic option ('عربي / English')
+                btn.textContent = currentLang === 'en' ? 'عربي / English' : 'English / عربي';
+            }
+        }
+
+        function applyTranslations() {
+            const html = document.documentElement;
+            const newDir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            html.setAttribute('lang', currentLang);
+            html.setAttribute('dir', newDir);
+            
+            document.querySelectorAll('[data-translate-key]').forEach(element => {
+                const key = element.getAttribute('data-translate-key');
+                const translation = translations[currentLang][key];
+                if (element.tagName === 'TITLE') {
+                    document.title = translation || element.textContent;
+                } else if (translation) {
+                    element.textContent = translation;
+                }
+            });
+            updateLanguageButtonText(); 
+        }
+        
+        window.loadUserPreferences = function() {
+            const savedGender = localStorage.getItem('malfitGender') || 'male';
+            userGender = savedGender;
+            currentLang = localStorage.getItem('malfitLang') || 'en'; 
+            updateTheme(userGender);
+            applyTranslations();
+        }
+
+        /**
+         * Toggles the application language.
+         */
+        window.toggleLanguage = function() {
+            const newLang = currentLang === 'en' ? 'ar' : 'en';
+
+            currentLang = newLang;
+            localStorage.setItem('malfitLang', newLang);
+
+            applyTranslations();
+            
+            // Clear any existing messages as they are language-dependent
+            document.getElementById('message-box').classList.add('hidden');
+        }
+
+        /**
+         * Displays a message in the designated box.
+         * @param {string} messageKey - Translation key.
+         * @param {boolean} isSuccess - True for success (green), False for error (red).
+         */
+        function displayMessage(messageKey, isSuccess) {
+            const box = document.getElementById('message-box');
+            const text = document.getElementById('message-text');
+            const translation = translations[currentLang][messageKey] || messageKey;
+            
+            box.classList.remove('hidden', 'bg-green-100', 'border-green-500', 'text-green-800', 'bg-red-100', 'border-red-500', 'text-red-800');
+            
+            if (isSuccess) {
+                box.classList.add('bg-green-100', 'border-green-500');
+                text.classList.add('text-green-800');
+            } else {
+                box.classList.add('bg-red-100', 'border-red-500');
+                text.classList.add('text-red-800');
+            }
+            text.textContent = translation;
+        }
+
+        // --- CORE LOGIC ---
+
+        /**
+         * Handles the password change process using localStorage.
+         */
+        window.changePassword = function() {
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            // 1. Basic Validation
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                displayMessage('error_fill_all', false);
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                displayMessage('error_match', false);
+                return;
+            }
+
+            // 2. Retrieve Stored Password 
+            const userDataString = localStorage.getItem('malfitUser');
+            if (!userDataString) {
+                displayMessage('error_no_user', false);
+                return;
+            }
+            const userData = JSON.parse(userDataString);
+
+            // 3. Current Password Check
+            if (userData.password !== currentPassword) {
+                displayMessage('error_current_password', false);
+                return;
+            }
+
+            // 4. Update Password
+            userData.password = newPassword;
+            localStorage.setItem('malfitUser', JSON.stringify(userData));
+
+            // 5. Success Message and Redirect
+            displayMessage('success_password_changed', true);
+            
+            setTimeout(() => {
+                window.location.href = 'account.html'; // Redirect to account page
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
