@@ -128,6 +128,15 @@
         let currentLang = localStorage.getItem('malfitLang') || 'en';
         let userGender = localStorage.getItem('malfitGender') || 'male'; 
 
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJrDZrl1jeKFeEsDTM_lUTxxwW7lib5U0",
+            authDomain: "malfit-app.firebaseapp.com",
+            projectId: "malfit-app",
+            storageBucket: "malfit-app.firebasestorage.app",
+            messagingSenderId: "118730063574",
+            appId: "1:118730063574:web:1a34284a69ae0e7097d377"
+        };
+
         const translations = {
             'en': {
                 'page_title_change_password': 'MALFIT | Change Password',
