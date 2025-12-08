@@ -255,7 +255,7 @@
         // --- GLOBAL STATE ---
         let currentLang = localStorage.getItem('malfitMainLang') || 'en';
         
-        // --- TRANSLATIONS ---
+        // --- TRANSLATIONS (TRUNCATED FOR BREVITY) ---
         const translations = {
             'en': {
                 'page_title': 'MALFIT | My Plans',
@@ -568,6 +568,34 @@
         // --- INITIALIZATION ---
 
         document.addEventListener('DOMContentLoaded', () => {
+             
+            // **********************************************
+            // MODIFICATION START: Pre-load sample data
+            // **********************************************
+            const sampleCaloriePlan = {
+                target: 1850,
+                type: 'lose', // Options: 'lose', 'maintain', 'gain'
+                date: '2025-12-08T10:00:00Z' // Current date
+            };
+            
+            // Save the sample data to localStorage so loadPlans() finds it.
+            // NOTE: This overwrites any existing plan for testing.
+            localStorage.setItem('savedCaloriePlan', JSON.stringify(sampleCaloriePlan));
+
+            // To also show a Cycle Plan, uncomment the following block:
+            /*
+            const sampleCyclePlan = {
+                nextPeriodStart: '2026-01-05',
+                cycleLength: 28,
+                periodDuration: 5
+            };
+            localStorage.setItem('savedCyclePlan', JSON.stringify(sampleCyclePlan));
+            */
+            // **********************************************
+            // MODIFICATION END: Pre-load sample data
+            // **********************************************
+
+
             // --- Handlers ---
             const menuToggle = document.getElementById('menu-toggle');
             const mobileMenu = document.getElementById('mobile-menu');
