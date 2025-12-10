@@ -11,29 +11,24 @@
     <script src="https://unpkg.com/lucide@latest" defer></script> 
 
     <style>
-        /* Custom styles */
-        /* REDUNDANT FONT IMPORT REMOVED: @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap'); */
-
         :root {
-            --primary-color: #4f46e5; /* indigo-600 */
-            --primary-light: #eef2ff; /* indigo-50 */
+            --primary-color: #4f46e5;
+            --primary-light: #eef2ff; 
         }
         
         body { 
             font-family: 'Inter', sans-serif; 
-            background-color: #f0f4f8; /* Softer background */
+            background-color: #f0f4f8;
             overflow-x: hidden; 
             min-height: 100vh;
             position: relative; 
         }
 
-        /* Set Arabic font when direction is RTL, uses Cairo from <head> link */
         html[dir="rtl"] body {
             font-family: 'Cairo', sans-serif;
             text-align: right;
         }
 
-        /* --- Falling Item Styles (Moving Background) --- */
         .falling-item {
             position: absolute;
             user-select: none;
@@ -44,21 +39,17 @@
             text-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
         }
         
-        /* Ensure all structural elements are above the moving background */
         header, main, footer {
             position: relative;
             z-index: 10; 
         }
         
-        /* Define a container that strictly holds the main content and prevents items from falling into the footer */
         #page-content-wrapper {
             position: relative;
-            /* Recalculate if header height changes */
             min-height: calc(100vh - 120px); 
             overflow: hidden; 
         }
         
-        /* --- Header Specific Styles --- */
         header {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             background-color: #ffffff;
@@ -67,7 +58,6 @@
             align-items: center; 
         }
 
-        /* Navigation Links Style */
         .nav-link {
             padding: 0.5rem 0.75rem;
             color: #4b5563; 
@@ -79,7 +69,6 @@
             color: #4f46e5; 
         }
         
-        /* General styling for header icons/buttons */
         .icon-btn {
             display: flex;
             align-items: center;
@@ -90,7 +79,6 @@
             cursor: pointer;
         }
         
-        /* --- Language Icon Specific Style (Circular) --- */
         .lang-circle-btn {
             border: 2px solid #d1d5db;
             border-radius: 9999px;
@@ -107,7 +95,6 @@
             border-color: #4f46e5;
         }
 
-        /* --- Club Button Styling (Standard Sports) --- */
         .club-button {
             background-image: linear-gradient(to right, #4f46e5 0%, #3b82f6 100%); 
             box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
@@ -122,7 +109,6 @@
             opacity: 0.95;
         }
         
-        /* --- Personal Training Button Styling (Unique Hot Pink Color) --- */
         .personal-training-button {
             background-image: linear-gradient(to right, #ec4899 0%, #f472b6 100%); 
             box-shadow: 0 4px 10px rgba(236, 72, 153, 0.4); 
@@ -145,14 +131,12 @@
             font-family: 'Inter', sans-serif; 
         }
 
-        /* Responsive Grid for Clubs (3 columns on large screens) */
         @media (min-width: 1024px) {
             #clubs-container {
                 grid-template-columns: repeat(3, 1fr);
             }
         }
         
-        /* Custom Mobile Menu Styling */
         #mobile-nav a {
             display: block;
             padding: 12px 24px;
@@ -165,7 +149,6 @@
             background-color: #eef2ff; /* indigo-50 */
             color: #4f46e5;
         }
-        /* Highlight the current page (uses the data-translate-key for consistency) */
         #mobile-nav a[data-translate-key="clubs"] {
             background-color: #f3f4f6;
             color: #4f46e5;
@@ -252,75 +235,53 @@
     </footer>
 
     <script>
-        // --- 1. SHOPPING CART MANAGEMENT ---
         
-        // Key for localStorage
         const CART_STORAGE_KEY = 'malfitShoppingCart';
         
-        // Initialize cart state from localStorage or use an empty array
         let shoppingCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
         
         const cartCountLink = document.querySelector('a[title="Shopping Cart"]');
         
-        /**
-         * Updates the visual count next to the shopping cart icon.
-         */
         function updateCartCountUI() {
             const count = shoppingCart.length;
             
-            // Remove existing badge if present
             let badge = cartCountLink.querySelector('.cart-badge');
             if (badge) {
                 badge.remove();
             }
 
             if (count > 0) {
-                // Create a new badge element
                 badge = document.createElement('span');
-                // Tailwind classes for a small red notification badge
                 badge.className = 'cart-badge absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full';
                 badge.textContent = count;
-                
-                // Set the cart link to relative position for the absolute badge
                 cartCountLink.style.position = 'relative';
                 cartCountLink.appendChild(badge);
             }
         }
 
-        /**
-         * Adds a club item to the shopping cart and saves it to localStorage.
-         * @param {object} clubData - The data for the club to add.
-         */
+        
         function addToCart(clubData) {
-            // Prevent adding the same club multiple times (optional, but good practice)
             const existingItem = shoppingCart.find(item => item.name === clubData.name);
             if (existingItem) {
                 alertMessage(currentLang === 'ar' ? `النادي مُضاف بالفعل إلى سلة التسوق: ${clubData.nameAr}` : `Club already in cart: ${clubData.name}`);
                 return;
             }
 
-            // Add the club to the cart array
             shoppingCart.push({
                 name: clubData.name,
                 nameAr: clubData.nameAr,
-                price: 'Free', // Placeholder
+                price: 'Free',
                 type: 'Club Membership'
             });
 
-            // Save the updated cart to localStorage
             localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(shoppingCart));
 
-            // Update the UI
             updateCartCountUI();
             
-            // Show success message
             alertMessage(currentLang === 'ar' ? `تمت إضافة: ${clubData.nameAr} إلى سلة التسوق!` : `Added: ${clubData.name} to the shopping cart!`);
         }
 
-        // --- 2. GLOBAL AND TRANSLATION LOGIC ---
         
-        // Global variables for language state and elements
-        // Use 'currentLang' to store language preference
         let currentLang = localStorage.getItem('currentLang') || 'en'; 
 
         const langToggleBtn = document.getElementById('lang-toggle');
@@ -332,7 +293,6 @@
         const footerText = document.getElementById('footer-text'); 
         const htmlElement = document.documentElement;
 
-        // Static translations for the main headers and navigation links
         const staticTranslations = {
             'main-title': {
                 'en': 'Join a Club!',
@@ -346,7 +306,6 @@
                 'en': '&copy; 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi.',
                 'ar': '© 2025، مشروع تخرج، مدى صالح، أحمد خليفة، لورا عادل، المشرف الدكتور عبد الله محمد خالد القادومي.'
             },
-            // Navigation link translations (Keys match data-translate-key)
             'calories': { 'en': 'Calories', 'ar': 'السعرات الحرارية' },
             'eat-healthy': { 'en': 'Eat Healthy', 'ar': 'تناول طعامًا صحيًا' },
             'plans': { 'en': 'Plans', 'ar': 'الخطط' },
@@ -355,7 +314,6 @@
             'contact-us': { 'en': 'Contact Us', 'ar': 'اتصل بنا' }
         };
 
-        // List of clubs with their data, including Arabic translations
         const clubsData = [
             {
                 name: "Personal Training", nameAr: "تدريب شخصي",
@@ -416,7 +374,6 @@
 
         const container = document.getElementById('clubs-container');
 
-        // Custom alert function (simulates a toast notification)
         function alertMessage(message) {
             console.log("App Message: " + message);
             const isRTL = htmlElement.getAttribute('dir') === 'rtl';
@@ -434,43 +391,36 @@
             }, 3000);
         }
 
-        // Function to update static page elements (headers, footer, and navigation links)
         function updateStaticText() {
             mainTitle.textContent = staticTranslations['main-title'][currentLang];
             mainSubtitle.textContent = staticTranslations['main-subtitle'][currentLang];
-            // Use innerHTML for footer since it contains HTML entities (&copy;)
             footerText.innerHTML = staticTranslations['footer-text'][currentLang]; 
             
             const navKeys = ['calories', 'eat-healthy', 'plans', 'clubs', 'survey', 'contact-us'];
-
             navKeys.forEach(key => {
-                // Update Desktop Navigation Links (using ID)
                 const desktopId = `nav-${key}`;
                 const desktopEl = document.getElementById(desktopId);
                 if (desktopEl) {
                     desktopEl.textContent = staticTranslations[key][currentLang];
                 }
 
-                // Update Mobile Navigation Links (using data-translate-key)
                 document.querySelectorAll(`#mobile-nav a[data-translate-key="${key}"]`).forEach(mobileEl => {
                     mobileEl.textContent = staticTranslations[key][currentLang];
                 });
             });
 
 
-            // Set document direction for proper RTL display
             if (currentLang === 'ar') {
                 htmlElement.setAttribute('dir', 'rtl');
-                htmlElement.setAttribute('lang', 'ar'); // Set language attribute
+                htmlElement.setAttribute('lang', 'ar'); 
                 currentLangSpan.textContent = 'EN';
             } else {
                 htmlElement.setAttribute('dir', 'ltr');
-                htmlElement.setAttribute('lang', 'en'); // Set language attribute
+                htmlElement.setAttribute('lang', 'en'); 
                 currentLangSpan.textContent = 'ع';
             }
         }
 
-        // Function to render the club buttons
         function renderClubs() {
             const nameKey = currentLang === 'ar' ? 'nameAr' : 'name';
             const descKey = currentLang === 'ar' ? 'descriptionAr' : 'description';
@@ -483,12 +433,10 @@
                 const buttonClass = club.specialStyle ? 'personal-training-button' : 'club-button';
                 const directionClass = currentLang === 'ar' ? 'sm:flex-row-reverse' : 'sm:flex-row';
                 const textAlignment = currentLang === 'ar' ? 'sm:text-right' : 'sm:text-left';
-                // Adjust margin based on direction
                 const marginClass = currentLang === 'ar' ? 'sm:ml-6' : 'sm:mr-6'; 
 
                 button.className = `${buttonClass} w-full flex flex-col ${directionClass} items-center p-6 text-white rounded-3xl`;
                 
-                // Event Handler Logic: PT Navigates, Others Add to Cart
                 if (club.name === 'Personal Training') {
                     button.onclick = () => {
                         window.location.href = 'pt.html'; 
@@ -520,58 +468,44 @@
 
                 container.appendChild(button);
             });
-            // Re-run lucide.createIcons() after adding new SVGs to the DOM
             lucide.createIcons();
         }
 
-        // Function to toggle the language state
         function toggleLanguage() {
             currentLang = currentLang === 'en' ? 'ar' : 'en';
-            
-            // Save the new language choice to localStorage
             localStorage.setItem('currentLang', currentLang);
             
             updateStaticText();
             renderClubs();
             
-            // Close mobile menu when language is toggled, if open
             if (!mobileNav.classList.contains('hidden')) {
                 toggleMobileMenu();
             }
         }
         
-        // Function to toggle the mobile menu visibility
         function toggleMobileMenu() {
             mobileNav.classList.toggle('hidden'); 
             
-            // Change the menu icon (menu <-> x)
             const menuIconSvg = menuToggleBtn.querySelector('svg');
             if (mobileNav.classList.contains('hidden')) {
                  menuIconSvg.outerHTML = '<svg data-lucide="menu" width="24" height="24"></svg>';
             } else {
                  menuIconSvg.outerHTML = '<svg data-lucide="x" width="24" height="24"></svg>';
             }
-            // Re-run lucide.createIcons() to render the new icon
             lucide.createIcons();
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- 1. Initial Setup and Content Load ---
             lucide.createIcons();
             
-            // Set initial event listeners
             langToggleBtn.onclick = toggleLanguage;
             menuToggleBtn.onclick = toggleMobileMenu;
 
-            // Load content based on the saved 'currentLang' value
             updateStaticText();
             renderClubs();
-            
-            // LOAD INITIAL CART COUNT ON PAGE LOAD
             updateCartCountUI(); 
 
-            // --- 2. Falling Item Background Animation Script ---
             const produceEmojis = ['⚽', '🏀', '⛳', '🏊', '🏐', '🏃', '🎾', '🤸', '🏆', '💪'];
             const body = document.body;
             const maxItems = 40; 
@@ -600,11 +534,9 @@
                 let currentY = -50;
                 const speed = (window.innerHeight + 100) / (duration * 60); 
                 const driftX = (Math.random() - 0.5) * 0.5; 
-                // Calculate the safe height to prevent items from falling below the main content/above the footer
                 const footerHeight = document.querySelector('footer').offsetHeight + 20;
 
                 function animateFall() {
-                    // Stop animation when item reaches the calculated floor
                     if (currentY > window.innerHeight - footerHeight) {
                         if (body.contains(item)) {
                             body.removeChild(item);
