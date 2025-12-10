@@ -12,10 +12,9 @@
     <script src="https://unpkg.com/lucide@latest"></script> 
 
     <style>
-        /* Custom styles integrated from plans page */
         :root {
-            --primary-color: #4f46e5; /* indigo-600 */
-            --primary-light: #eef2ff; /* indigo-50 */
+            --primary-color: #4f46e5;
+            --primary-light: #eef2ff;
         }
         
         body { 
@@ -31,18 +30,16 @@
             text-align: right;
         }
 
-        /* --- Falling Item Styles (Background Layer) --- */
         .falling-item {
             position: absolute;
             user-select: none;
             pointer-events: none; 
-            opacity: 0.5; /* More subtle opacity */
+            opacity: 0.5; 
             transition: opacity 2s ease-out;
             z-index: 0; 
             text-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
         }
         
-        /* Ensure all structural elements are above the falling background */
         header, main, footer, .calendar-container {
             position: relative; 
             z-index: 10; 
@@ -69,7 +66,6 @@
             margin-left: 10px;
         }
         
-        /* Highlight the active link for this page */
         .nav-link.active-plan {
             color: var(--primary-color); 
             background-color: var(--primary-light); 
@@ -139,7 +135,6 @@
             text-align: right; 
         }
         
-        /* --- Calendar Specific Styles (Kept for completeness, though unused here) --- */
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -177,7 +172,7 @@
             border: 2px solid white;
         }
         .calendar-end-date {
-            background-color: #10b981 !important; /* Emerald Green */
+            background-color: #10b981 !important;
             color: white !important;
             font-weight: 700;
             box-shadow: 0 2px 4px rgba(16, 185, 129, 0.5);
@@ -262,7 +257,6 @@
 
 
     <script>
-        // --- TRANSLATIONS (Updated with Survey Keys) ---
         const translations = {
             'en': {
                 'page_title': 'MALFIT | Survey',
@@ -274,9 +268,7 @@
                 'nav_survey': 'Survey',
                 'nav_contact_us': 'Contact Us',
                 'footer_text': '© 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi',
-                'lang_code': 'AR',
-                
-                // Survey Page Specific
+                'lang_code': 'AR',                
                 'survey_page_title': 'Health & Fitness Survey',
                 'survey_subtitle': 'Please answer a few questions to help us personalize your recommendations.',
                 'survey_instructions': 'Survey form construction area.',
@@ -293,8 +285,6 @@
                 'nav_contact_us': 'اتصل بنا',
                 'footer_text': '© 2025، مشروع تخرج، مدى صالح، أحمد خليفة، لورا عادل، المشرف الدكتور عبد الله محمد خالد القادومي',
                 'lang_code': 'EN', 
-
-                // Survey Page Specific
                 'survey_page_title': 'استبيان الصحة واللياقة البدنية',
                 'survey_subtitle': 'يرجى الإجابة على بعض الأسئلة لمساعدتنا في تخصيص توصياتك.',
                 'survey_instructions': 'منطقة بناء نموذج الاستبيان.',
@@ -303,13 +293,9 @@
         };
 
         let currentLang = localStorage.getItem('malfitMainLang') || 'en';
-
-        // Utility function to convert Lucide icons
         function replaceLucideIcons() {
             lucide.createIcons();
         }
-
-        // --- LANGUAGE SWITCHING LOGIC ---
         function updateContent(lang) {
             currentLang = lang;
             const dir = (lang === 'ar') ? 'rtl' : 'ltr';
@@ -335,10 +321,7 @@
             localStorage.setItem('malfitMainLang', lang);
         }
 
-        // --- CORE EVENT HANDLERS & INITIALIZATION ---
-
         document.addEventListener('DOMContentLoaded', () => {
-            // --- Menu Toggle ---
             const menuToggle = document.getElementById('menu-toggle');
             const mobileMenu = document.getElementById('mobile-menu');
             const langToggle = document.getElementById('lang-toggle'); 
@@ -353,13 +336,11 @@
                 });
             });
 
-            // --- Language Toggle ---
             langToggle.addEventListener('click', () => {
                 const newLang = (currentLang === 'en') ? 'ar' : 'en';
                 updateContent(newLang);
             });
             
-            // --- Falling Food Background Animation Script ---
             const produceEmojis = ['🍎', '🍊', '🍋', '🍇', '🍓', '🍍', '🥦', '🥕', '🥬', '🌶️', '🌽', '🥝'];
             const body = document.body;
             const maxItems = 40; 
@@ -369,10 +350,8 @@
                 if (itemsOnScreen >= maxItems) return;
 
                 const emoji = produceEmojis[Math.floor(Math.random() * produceEmojis.length)];
-                // Smaller size range for subtlety
                 const size = Math.floor(Math.random() * 15) + 12; 
                 const initialX = Math.random() * window.innerWidth;
-                // Faster duration for slightly more noticeable movement
                 const duration = Math.random() * 8 + 4; 
                 const rotation = Math.random() * 360; 
                 
@@ -412,17 +391,13 @@
 
                 requestAnimationFrame(animateFall);
             }
-
             function spawnLoop() {
                 createFallingItem();
-                // Spawn a new item every 100ms to 500ms
                 const delay = Math.random() * 400 + 100;
                 setTimeout(spawnLoop, delay);
             }
 
-            spawnLoop();
-            
-            // --- Final Initialization Calls ---
+            spawnLoop();            
             updateContent(currentLang);
             replaceLucideIcons();
         });
