@@ -10,23 +10,20 @@
     <script src="https://unpkg.com/lucide@latest"></script> 
 
     <style>
-        /* Custom styles for the overall structure */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         
         :root {
-            /* Fallback Primary Color (Used for header links/buttons only) */
-            --primary-color: #4f46e5; /* indigo-600 */
+            --primary-color: #4f46e5;
         }
         
         body { 
             font-family: 'Inter', sans-serif; 
-            background-color: #f0f4f8; /* Softer background */
+            background-color: #f0f4f8;
             overflow-x: hidden; 
             min-height: 100vh;
             position: relative; 
         }
 
-        /* --- Falling Item Styles (Moving Background) --- */
         .falling-item {
             position: absolute;
             user-select: none;
@@ -37,21 +34,17 @@
             text-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
         }
         
-        /* Ensure all structural elements are above the moving background */
         header, main, footer {
             position: relative;
             z-index: 10; 
         }
         
-        /* Define a container that strictly holds the main content and prevents items from falling into the footer */
         #page-content-wrapper {
             position: relative;
-            /* Adjust height calculation if footer height changes */
             min-height: calc(100vh - 80px); 
             overflow: hidden; 
         }
         
-        /* --- Header Specific Styles --- */
         header {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             background-color: #ffffff;
@@ -60,7 +53,6 @@
             align-items: center; 
         }
 
-        /* Navigation Links Style */
         .nav-link {
             padding: 0.5rem 0.75rem;
             color: #4b5563; 
@@ -72,7 +64,6 @@
             color: var(--primary-color); 
         }
         
-        /* General styling for header icons/buttons */
         .icon-btn {
             display: flex;
             align-items: center;
@@ -83,10 +74,9 @@
             cursor: pointer;
         }
         
-        /* --- Language Icon Specific Style (Circular) --- */
         .lang-circle-btn {
-            border: 2px solid #d1d5db; /* Gray-300 border */
-            border-radius: 9999px; /* Fully circular */
+            border: 2px solid #d1d5db; 
+            border-radius: 9999px; 
             width: 40px; 
             height: 40px; 
             font-weight: 600;
@@ -96,10 +86,9 @@
             transition: border-color 0.2s;
         }
         .lang-circle-btn:hover {
-            border-color: var(--primary-color); /* Highlight border on hover */
+            border-color: var(--primary-color);
         }
 
-        /* Mobile Menu styles */
         #mobile-menu {
             transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
             max-height: 0;
@@ -119,7 +108,6 @@
             border-top: 1px solid #f3f4f6;
         }
 
-        /* Recipe Card Styling - Colors are now injected via JS classes */
         .recipe-card {
             background-color: #ffffff;
             border-radius: 1.5rem;
@@ -127,21 +115,19 @@
             transition: transform 0.2s, box-shadow 0.2s;
             cursor: pointer;
             border: 1px solid #e5e7eb;
-            /* The dynamic border is handled by Tailwind classes assigned via JS */
         }
         .recipe-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
         }
         
-        /* Ingredient Details Toggle Style */
         .recipe-details {
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
         }
         .recipe-details.active {
-            max-height: 500px; /* Sufficient height to show content */
+            max-height: 500px; 
             padding-top: 1rem;
         }
         .recipe-details ul {
@@ -158,25 +144,24 @@
             min-width: 20px;
         }
         
-        /* General color classes for dynamic assignment */
-        /* These are used for text and background colors */
-        .theme-red-text { color: #dc2626; } /* Red-600 */
-        .theme-red-bg { background-color: #fee2e2; } /* Red-100 */
+        
+        .theme-red-text { color: #dc2626; } 
+        .theme-red-bg { background-color: #fee2e2; } 
 
-        .theme-green-text { color: #16a34a; } /* Green-600 */
-        .theme-green-bg { background-color: #dcfce7; } /* Green-100 */
+        .theme-green-text { color: #16a34a; } 
+        .theme-green-bg { background-color: #dcfce7; }
 
-        .theme-blue-text { color: #2563eb; } /* Blue-600 */
-        .theme-blue-bg { background-color: #eff6ff; } /* Blue-100 */
+        .theme-blue-text { color: #2563eb; } 
+        .theme-blue-bg { background-color: #eff6ff; } 
 
-        .theme-yellow-text { color: #d97706; } /* Amber-600 */
-        .theme-yellow-bg { background-color: #fef3c7; } /* Amber-100 */
+        .theme-yellow-text { color: #d97706; } 
+        .theme-yellow-bg { background-color: #fef3c7; }
 
-        .theme-purple-text { color: #9333ea; } /* Violet-600 */
-        .theme-purple-bg { background-color: #f3e8ff; } /* Violet-100 */
+        .theme-purple-text { color: #9333ea; }
+        .theme-purple-bg { background-color: #f3e8ff; } 
 
-        .theme-cyan-text { color: #0891b2; } /* Cyan-600 */
-        .theme-cyan-bg { background-color: #ecfeff; } /* Cyan-100 */
+        .theme-cyan-text { color: #0891b2; }
+        .theme-cyan-bg { background-color: #ecfeff; } 
 
     </style>
 </head>
@@ -252,8 +237,6 @@
     </footer>
 
     <script>
-        // Define color themes that correspond to the CSS classes
-        // IMPROVEMENT: Added Tailwind border classes for dynamic border styling
         const colorThemes = [
             { text: 'theme-green-text', bg: 'theme-green-bg', border: 'border-green-400' }, 
             { text: 'theme-red-text', bg: 'theme-red-bg', border: 'border-red-400' },
@@ -263,7 +246,6 @@
             { text: 'theme-cyan-text', bg: 'theme-cyan-bg', border: 'border-cyan-400' }
         ];
 
-        // --- Recipe Data Structure (Detailed) ---
         const recipes = [
             {
                 id: 1,
@@ -271,7 +253,7 @@
                 calories: 380,
                 prepTime: { en: '30 min', ar: '30 دقيقة' },
                 description: { en: 'A light, high-protein, and fiber-rich meal perfect for lunch.', ar: 'وجبة خفيفة وغنية بالبروتين والألياف ومثالية لوجبة الغداء.' },
-                themeIndex: 0, // Green Theme
+                themeIndex: 0, 
                 ingredients: [
                     { en: '1 cup cooked Quinoa', ar: 'كوب كينوا مطبوخ' },
                     { en: '1/2 cup Roasted Bell Peppers', ar: 'نصف كوب فلفل رومي مشوي' },
@@ -285,7 +267,7 @@
                 calories: 450,
                 prepTime: { en: '25 min', ar: '25 دقيقة' },
                 description: { en: 'Omega-3 rich salmon baked with fresh lemon and dill.', ar: 'سلمون غني بأوميغا 3 مخبوز بالليمون والشبت الطازج.' },
-                themeIndex: 1, // Red Theme
+                themeIndex: 1,
                 ingredients: [
                     { en: '1 Salmon Fillet (150g)', ar: 'فيليه سلمون (150 جرام)' },
                     { en: '1/2 Lemon, sliced', ar: 'نصف ليمونة مقطعة شرائح' },
@@ -299,7 +281,7 @@
                 calories: 290,
                 prepTime: { en: '20 min', ar: '20 دقيقة' },
                 description: { en: 'A quick, flavorful, and low-calorie dinner alternative.', ar: 'بديل عشاء سريع ولذيذ وقليل السعرات الحرارية.' },
-                themeIndex: 2, // Blue Theme
+                themeIndex: 2, 
                 ingredients: [
                     { en: '100g Ground Chicken', ar: '100 جرام لحم دجاج مفروم' },
                     { en: '4 Large Lettuce Leaves', ar: '4 أوراق خس كبيرة' },
@@ -313,7 +295,7 @@
                 calories: 350,
                 prepTime: { en: '40 min', ar: '40 دقيقة' },
                 description: { en: 'Homemade vegetarian burger patties packed with fiber and flavor.', ar: 'أقراص برجر نباتية منزلية الصنع مليئة بالألياف والنكهة.' },
-                themeIndex: 3, // Yellow Theme
+                themeIndex: 3, 
                 ingredients: [
                     { en: '1 cup Black Beans, mashed', ar: 'كوب فاصوليا سوداء مهروسة' },
                     { en: '1/4 cup breadcrumbs', ar: 'ربع كوب بقسماط' },
@@ -327,7 +309,7 @@
                 calories: 280,
                 prepTime: { en: '5 min + chill', ar: '5 دقائق + تبريد' },
                 description: { en: 'A quick, make-ahead breakfast loaded with fruit and healthy grains.', ar: 'فطور سريع التحضير ومغذٍ ومليء بالحبوب والفواكه.' },
-                themeIndex: 4, // Purple Theme
+                themeIndex: 4, 
                 ingredients: [
                     { en: '1/2 cup Rolled Oats', ar: 'نصف كوب شوفان ملفوف' },
                     { en: '1/2 cup Milk (dairy or non-dairy)', ar: 'نصف كوب حليب (ألبان أو غير ألبان)' },
@@ -341,7 +323,7 @@
                 calories: 320,
                 prepTime: { en: '15 min', ar: '15 دقيقة' },
                 description: { en: 'A fresh, vibrant, and protein-rich vegetarian wrap.', ar: 'لفافة نباتية طازجة وحيوية وغنية بالبروتين.' },
-                themeIndex: 5, // Cyan Theme
+                themeIndex: 5,
                 ingredients: [
                     { en: '1 Whole Wheat Tortilla', ar: 'قطعة تورتيلا من القمح الكامل' },
                     { en: '1/2 cup mashed Chickpeas', ar: 'نصف كوب حمص مهروس' },
@@ -351,7 +333,6 @@
             }
         ];
 
-        // --- Translation Data (Extended) ---
         const translations = {
             'en': {
                 'page_title': 'MALFIT | Recipes',
@@ -391,15 +372,11 @@
 
         let currentLang = localStorage.getItem('malfitMainLang') || 'en';
         
-        // Utility function to convert Lucide icons
         function replaceLucideIcons() {
             lucide.createIcons();
         }
 
-        /**
-         * Toggles the visibility of the recipe details section when a card is clicked.
-         * @param {Event} event - The click event.
-         */
+       
         function toggleRecipeDetails(event) {
             let card = event.currentTarget;
             const details = card.querySelector('.recipe-details');
@@ -409,7 +386,6 @@
                 details.classList.remove('active');
                 arrow.classList.remove('rotate-90');
             } else {
-                // Close any other open details before opening this one
                 document.querySelectorAll('.recipe-details.active').forEach(openDetails => {
                     openDetails.classList.remove('active');
                     openDetails.closest('.recipe-card').querySelector('.toggle-arrow').classList.remove('rotate-90');
@@ -420,30 +396,24 @@
             }
         }
 
-        /**
-         * Generates the HTML for all recipe cards.
-         * @param {string} lang - The target language code ('en' or 'ar').
-         */
+        
         function generateRecipeCards(lang) {
             const grid = document.getElementById('recipes-grid');
-            grid.innerHTML = ''; // Clear existing cards
+            grid.innerHTML = ''; 
             const langData = translations[lang];
             const dir = (lang === 'ar') ? 'rtl' : 'ltr';
 
             recipes.forEach(recipe => {
-                // Get the theme classes based on the themeIndex
                 const theme = colorThemes[recipe.themeIndex];
                 const textClass = theme.text;
                 const bgClass = theme.bg;
-                const borderClass = theme.border; // IMPROVEMENT: Get the dedicated Tailwind border class
+                const borderClass = theme.border;
                 
                 const card = document.createElement('div');
-                // IMPROVEMENT: Applied the correct Tailwind border class for hover
                 card.className = `recipe-card p-6 border-2 border-gray-200 hover:border-opacity-100 hover:${borderClass}`;
                 card.setAttribute('onclick', 'toggleRecipeDetails(event)');
                 card.setAttribute('data-recipe-id', recipe.id);
                 
-                // Ingredients list generation
                 const ingredientsList = recipe.ingredients.map(ing => {
                     const text = ing[lang];
                     return `
@@ -485,25 +455,20 @@
                 `;
                 grid.appendChild(card);
             });
-            replaceLucideIcons(); // Re-render icons after adding cards
+            replaceLucideIcons(); 
         }
 
 
-        /**
-         * Updates the content of the page based on the selected language and handles RTL layout.
-         * @param {string} lang - The target language code ('en' or 'ar').
-         */
+        
         function updateContent(lang) {
             currentLang = lang;
             const dir = (lang === 'ar') ? 'rtl' : 'ltr';
             const langData = translations[lang];
             const html = document.documentElement;
 
-            // 1. Update HTML language and direction attributes
             html.setAttribute('lang', lang);
             html.setAttribute('dir', dir);
             
-            // 2. Update all translated elements
             document.querySelectorAll('[data-translate-key]').forEach(element => {
                 const key = element.getAttribute('data-translate-key');
                 if (langData[key] !== undefined) {
@@ -517,15 +482,12 @@
                 }
             });
 
-            // 3. Re-generate the recipe cards with the new language
             generateRecipeCards(lang);
 
-            // 4. Persist the selection
             localStorage.setItem('malfitMainLang', lang);
         }
         
         document.addEventListener('DOMContentLoaded', () => {
-            // --- 1. MALFIT Mobile Menu Toggle Handler ---
             const menuToggle = document.getElementById('menu-toggle');
             const mobileMenu = document.getElementById('mobile-menu');
             const langToggle = document.getElementById('lang-toggle'); 
@@ -534,26 +496,21 @@
                 mobileMenu.classList.toggle('active');
             });
             
-            // Close menu when a link is clicked
             mobileMenu.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', () => {
                     mobileMenu.classList.remove('active');
                 });
             });
             
-            // --- 2. Language Toggle Handler ---
             langToggle.addEventListener('click', () => {
                 const newLang = (currentLang === 'en') ? 'ar' : 'en';
                 updateContent(newLang);
             });
             
-            // --- 3. Initial Language Load & Icon Replacement ---
-            // Load saved language or default to English
+            
             updateContent(currentLang);
-            // Replace placeholder SVGs with Lucide Icons (only needed once DOM is ready)
             replaceLucideIcons();
 
-            // --- 4. Falling Food Background Animation Script ---
             const produceEmojis = ['🍳', '🌶️', '🥕', '🥗', '🍲', '🍜', '🍚', '🍎', '🍇', '🍋', '🥑', '🥦'];
             const body = document.body;
             const maxItems = 40; 
@@ -563,10 +520,8 @@
                 if (itemsOnScreen >= maxItems) return;
 
                 const emoji = produceEmojis[Math.floor(Math.random() * produceEmojis.length)];
-                // Smaller size range for subtlety
                 const size = Math.floor(Math.random() * 15) + 12; 
                 const initialX = Math.random() * window.innerWidth;
-                // Faster duration for slightly more noticeable movement
                 const duration = Math.random() * 8 + 4; 
                 const rotation = Math.random() * 360; 
                 
@@ -609,7 +564,6 @@
 
             function spawnLoop() {
                 createFallingItem();
-                // Spawn a new item every 100ms to 500ms
                 const delay = Math.random() * 400 + 100;
                 setTimeout(spawnLoop, delay);
             }
