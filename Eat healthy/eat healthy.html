@@ -13,12 +13,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* Define Arabic font application based on RTL direction */
         html[dir="rtl"] body {
             font-family: 'Cairo', sans-serif;
         }
 
-        /* --- Mobile Menu Styles (REQUIRED for 'active' class to work) --- */
         #mobile-menu {
             transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
             max-height: 0;
@@ -27,23 +25,22 @@
             background-color: #ffffff;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             position: absolute;
-            top: 67px; /* Adjust based on header height */
+            top: 67px; 
             left: 0;
             right: 0;
             z-index: 40;
         }
         #mobile-menu.active {
-            max-height: 500px; /* Sufficient height to show content */
+            max-height: 500px; 
             opacity: 1;
             padding: 10px 0;
             border-bottom: 1px solid #e5e7eb;
         }
-        /* Mobile menu link styling from the previous code */
         #mobile-menu a {
             display: block;
-            padding: 12px 20px; /* Taller padding */
+            padding: 12px 20px;
             border-bottom: 1px solid #f3f4f6;
-            color: #333; /* Darker text */
+            color: #333; 
             text-decoration: none;
             text-align: left; 
             transition: background-color 0.15s;
@@ -55,29 +52,27 @@
             text-align: right; 
         }
 
-        /* Original styles below */
         :root {
-            --primary-color: #4f46e5; /* indigo-600 */
-            --primary-light: #eef2ff; /* indigo-50 */
+            --primary-color: #4f46e5; 
+            --primary-light: #eef2ff; 
         }
         
         body { 
             font-family: 'Inter', sans-serif; 
-            background-color: #f0f4f8; /* Softer background */
+            background-color: #f0f4f8; 
             overflow-x: hidden; 
             min-height: 100vh;
             position: relative; 
         }
 
-        /* --- Custom Nav Link Styles (Pill-shaped - FROM PREVIOUS CODE) --- */
         .nav-link {
             text-decoration: none;
-            color: #474646; /* Slightly darker gray */
+            color: #474646;
             font-weight: 500;
-            padding: 10px 15px; /* Added padding */
+            padding: 10px 15px;
             margin-right: 10px;
             transition: color 0.2s, background-color 0.2s, transform 0.1s;
-            border-radius: 9999px; /* Pill shape */
+            border-radius: 9999px; 
             white-space: nowrap;
         }
         .nav-link:hover {
@@ -85,13 +80,11 @@
             background-color: var(--primary-light); 
             transform: translateY(-1px);
         }
-        /* Adjustments for RTL layout for links */
         html[dir="rtl"] header nav .nav-link {
             margin-right: 0;
             margin-left: 10px;
         }
 
-        /* --- Falling Item Styles (Moving Background) --- */
         .falling-item {
             position: absolute;
             user-select: none;
@@ -102,46 +95,40 @@
             text-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
         }
         
-        /* Ensure all structural elements are above the moving background */
         header, main, footer {
             position: relative;
             z-index: 10; 
         }
         
-        /* Define a container that strictly holds the main content and prevents items from falling into the footer */
         #page-content-wrapper {
             position: relative;
             min-height: calc(100vh - 80px); 
             overflow: hidden; 
         }
         
-        /* --- Header Specific Styles --- */
         header {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             background-color: #ffffff;
-            /* Ensure these flex properties match the Tailwind classes used in the HTML */
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
         }
 
-        /* General styling for header icons/buttons */
         .icon-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 9999px; /* Made fully circular like the previous version */
+            border-radius: 9999px; 
             transition: background-color 0.2s, border-color 0.2s;
-            color: #4b5563; /* Gray-600 */
+            color: #4b5563; 
             cursor: pointer;
-            width: 40px; /* Fixed size for consistency */
-            height: 40px; /* Fixed size for consistency */
+            width: 40px; 
+            height: 40px; 
         }
         
-        /* --- Language Icon Specific Style (Circular) --- */
         .lang-circle-btn {
-            border: 2px solid #d1d5db; /* Gray-300 border */
-            border-radius: 9999px; /* Fully circular */
+            border: 2px solid #d1d5db; 
+            border-radius: 9999px; 
             width: 40px; 
             height: 40px; 
             font-weight: 600;
@@ -151,11 +138,10 @@
             transition: border-color 0.2s;
         }
         .lang-circle-btn:hover {
-            border-color: #4f46e5; /* Highlight border on hover */
+            border-color: #4f46e5; 
         }
 
 
-        /* --- Main Button Styling (LARGER SIZE) --- */
         .main-btn {
             background-image: linear-gradient(to right, #4f46e5 0%, #3b82f6 100%); 
             transition: all 0.3s ease;
@@ -170,7 +156,6 @@
             opacity: 0.95;
         }
         
-        /* Main content minimum height calculation (for vertical centering) */
         .min-h-main {
             min-height: calc(100vh - 140px);
         }
@@ -265,7 +250,6 @@
     <script src="https://unpkg.com/lucide@latest"></script> 
 
     <script>
-        // --- Translation Data ---
         const translations = {
             'en': {
                 'page_title': 'MALFIT | Health',
@@ -297,36 +281,29 @@
                 'cook': 'اطبخ وصفة',
                 'order': 'اطلب طعامًا صحيًا',
                 'footer_text': '© 2025، مشروع تخرج، مدى صالح، أحمد خليفة، لورا عادل، المشرف الدكتور عبد الله محمد خالد القادومي',
-                'lang_code': 'EN', // Display 'EN' to switch to English
+                'lang_code': 'EN', 
             }
         };
 
         let currentLang = localStorage.getItem('malfitMainLang') || 'en';
         
-        // Utility function to convert Lucide icons
         function replaceLucideIcons() {
             lucide.createIcons();
         }
 
-        /**
-         * Updates the content of the page based on the selected language and handles RTL layout.
-         * @param {string} lang - The target language code ('en' or 'ar').
-         */
+        
         function updateContent(lang) {
             currentLang = lang;
             const dir = (lang === 'ar') ? 'rtl' : 'ltr';
             const langData = translations[lang];
             const html = document.documentElement;
 
-            // 1. Update HTML language and direction attributes
             html.setAttribute('lang', lang);
             html.setAttribute('dir', dir);
             
-            // 2. Update all translated elements
             document.querySelectorAll('[data-translate-key]').forEach(element => {
                 const key = element.getAttribute('data-translate-key');
                 if (langData[key]) {
-                    // Update content only if it's not the language code span
                     if (element.id === 'current-lang') {
                         element.textContent = langData.lang_code;
                     } else if (element.tagName === 'TITLE') {
@@ -337,12 +314,10 @@
                 }
             });
 
-            // 3. Persist the selection
             localStorage.setItem('malfitMainLang', lang);
         }
         
         document.addEventListener('DOMContentLoaded', () => {
-            // --- 1. MALFIT Mobile Menu Toggle Handler ---
             const menuToggle = document.getElementById('menu-toggle');
             const mobileMenu = document.getElementById('mobile-menu');
             const langToggle = document.getElementById('lang-toggle'); 
@@ -351,27 +326,21 @@
                 mobileMenu.classList.toggle('active');
             });
             
-            // Close menu when a link is clicked
             mobileMenu.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', () => {
                     mobileMenu.classList.remove('active');
                 });
             });
             
-            // --- 2. Language Toggle Handler ---
             langToggle.addEventListener('click', () => {
                 const newLang = (currentLang === 'en') ? 'ar' : 'en';
                 updateContent(newLang);
-                // Note: The original code contained a call to calculatePlan() which is not defined here.
             });
             
-            // --- 3. Initial Language Load & Icon Replacement ---
-            // Load saved language or default to English
+            
             updateContent(currentLang);
-            // Replace placeholder SVGs with Lucide Icons (only needed once DOM is ready)
             replaceLucideIcons();
 
-            // --- 4. Falling Food Background Animation Script ---
             const produceEmojis = ['🍎', '🍊', '🍋', '🍇', '🍓', '🍍', '🥦', '🥕', '🥬', '🌶️', '🌽', '🥝'];
             const body = document.body;
             const maxItems = 40; 
