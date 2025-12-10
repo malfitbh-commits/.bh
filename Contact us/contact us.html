@@ -9,29 +9,26 @@
     <script src="https://unpkg.com/lucide@latest"></script> 
 
     <style>
-        /* Custom styles for the falling items and overall look */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         
         :root {
-            --primary-color: #4f46e5; /* indigo-600 */
-            --primary-light: #eef2ff; /* indigo-50 */
+            --primary-color: #4f46e5;
+            --primary-light: #eef2ff;
         }
         
         body { 
             font-family: 'Inter', sans-serif; 
-            background-color: #f0f4f8; /* Softer, slightly blue background */
+            background-color: #f0f4f8;
             overflow-x: hidden; 
             min-height: 100vh;
             position: relative; 
         }
 
-        /* Apply Arabic font when direction is RTL */
         html[dir="rtl"] body {
             font-family: 'Cairo', sans-serif;
             text-align: right;
         }
 
-        /* --- Custom Nav Link Styles (Pill-shaped) --- */
         .nav-link {
             text-decoration: none;
             color: #474646;
@@ -39,7 +36,7 @@
             padding: 10px 15px; 
             margin-right: 10px;
             transition: color 0.2s, background-color 0.2s, transform 0.1s;
-            border-radius: 9999px; /* Pill shape */
+            border-radius: 9999px;
             white-space: nowrap;
         }
         .nav-link:hover {
@@ -48,37 +45,32 @@
             transform: translateY(-1px);
         }
         
-        /* Adjustments for RTL layout for links */
         html[dir="rtl"] header nav .nav-link {
             margin-right: 0;
             margin-left: 10px;
         }
 
-        /* --- Falling Item Styles (Background Layer) --- */
         .falling-item {
             position: absolute;
             user-select: none;
             pointer-events: none; 
-            opacity: 0.5; /* More subtle opacity */
+            opacity: 0.5;
             transition: opacity 2s ease-out;
             z-index: 0; 
-            text-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Slight shadow to lift them */
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
         
-        /* Ensure all structural elements are above the falling background */
         header, main, footer {
             position: relative;
             z-index: 10; 
         }
 
-        /* --- Header Specific Styles --- */
         header {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Stronger header shadow */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); 
             background-color: #ffffff;
             transition: box-shadow 0.3s ease-in-out;
         }
         
-        /* --- Mobile Menu Styles --- */
         #mobile-menu {
             transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
             max-height: 0;
@@ -86,7 +78,7 @@
             opacity: 0;
             background-color: #ffffff;
             position: absolute;
-            top: 70px; /* Adjusted for taller header */
+            top: 70px; 
             right: 0;
             left: 0;
             box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
@@ -113,30 +105,27 @@
             text-align: right; 
         }
 
-        /* Icon Button Styling */
         .icon-btn {
             padding: 10px;
             border-radius: 50%;
             transition: background-color 0.2s, color 0.2s;
-            display: flex; /* Ensure SVG is centered */
+            display: flex;
             align-items: center;
             justify-content: center;
-            color: #4b5563; /* gray-700 */
+            color: #4b5563;
         }
         .icon-btn:hover {
             background-color: var(--primary-light);
             color: var(--primary-color);
         }
         
-        /* Specific RTL fix for button icon placement (mr-2 equivalent for RTL) */
         html[dir="rtl"] .rtl-ml-2 {
             margin-right: 0;
             margin-left: 0.5rem; 
         }
         
-        /* Enhanced Contact Button Gradient */
         .contact-btn {
-            background-image: linear-gradient(to right, #4f46e5 0%, #3b82f6 100%); /* Indigo to Blue */
+            background-image: linear-gradient(to right, #4f46e5 0%, #3b82f6 100%);
             transition: all 0.2s ease;
         }
         .contact-btn:hover {
@@ -145,14 +134,11 @@
             opacity: 0.95;
         }
         
-        /* Centering for the main card container */
         .min-h-main {
-            /* Ensures main content takes up remaining screen space */
             min-height: calc(100vh - 140px);
         }
         @media (min-width: 768px) {
             .min-h-main {
-                /* Adjusted for desktop header height */
                 min-height: calc(100vh - 120px); 
             }
         }
@@ -225,7 +211,6 @@
 
 
     <script>
-        // --- Navigation Data (Define links once) ---
         const navData = [
             { href: "../Calories/calories.html", key: "nav_calories" },
             { href: "../Eat healthy/eat healthy.html", key: "nav_eat_healthy" },
@@ -235,10 +220,7 @@
             { href: "contact us.html", key: "nav_contact_us" }
         ];
 
-        // The constant email address
         const CONTACT_EMAIL = 'malfit.bh@gmail.com';
-
-        // --- Translation Data ---
         const translations = {
             'en': {
                 'page_title': 'MALFIT | Contact Us',
@@ -254,8 +236,7 @@
                 'btn_send_email': 'Send Email',
                 'card_footer': 'For urgent matters, expect a reply within 24 hours. Our support team is available Sunday to Thursday.',
                 'footer_text': '© 2025, Senior Project, Mada Saleh, Ahmed Khalifa, Lora Adel, Supervisor Dr.Abdulla Mohamed Khalid Alqaddoumi',
-                'lang_code': 'AR', // Display 'AR' to switch to Arabic
-                // NEW EMAIL KEYS
+                'lang_code': 'AR', 
                 'email_subject': 'Website Inquiry Regarding Support',
                 'email_body_prefix': 'Hello Team,\n\nI am writing to you about...'
             },
@@ -273,88 +254,65 @@
                 'btn_send_email': 'إرسال بريد إلكتروني',
                 'card_footer': 'للمسائل العاجلة، توقعوا رداً خلال 24 ساعة. فريق الدعم متاح من الأحد إلى الخميس.',
                 'footer_text': '© 2025، مشروع تخرج، مدى صالح، أحمد خليفة، لورا عادل، المشرف الدكتور عبد الله محمد خالد القادومي',
-                'lang_code': 'EN',  // Display 'EN' to switch to English
-                // NEW EMAIL KEYS
+                'lang_code': 'EN', 
                 'email_subject': 'استفسار من الموقع بخصوص الدعم',
                 'email_body_prefix': 'أهلاً بالفريق،\n\nأكتب إليكم بخصوص...'
             }
         };
 
         let currentLang = localStorage.getItem('malfitMainLang') || 'en';
-        
-        // Utility function to convert Lucide icons
         function replaceLucideIcons() {
             lucide.createIcons();
         }
 
-        /**
-         * Dynamically generates the navigation links for both desktop and mobile menus.
-         */
+        
         function generateNavigation() {
             const desktopNav = document.getElementById('desktop-nav');
             const mobileMenu = document.getElementById('mobile-menu');
 
-            // Clear existing content
             desktopNav.innerHTML = '';
             mobileMenu.innerHTML = '';
 
             navData.forEach(link => {
                 const navLinkDesktop = document.createElement('a');
                 navLinkDesktop.href = link.href;
-                navLinkDesktop.className = 'nav-link'; // Desktop-specific class for pill shape
+                navLinkDesktop.className = 'nav-link';
                 navLinkDesktop.setAttribute('data-translate-key', link.key);
-                // Text will be updated by updateContent()
                 desktopNav.appendChild(navLinkDesktop);
 
                 const navLinkMobile = document.createElement('a');
                 navLinkMobile.href = link.href;
                 navLinkMobile.setAttribute('data-translate-key', link.key);
-                // Mobile links inherit block/padding styles from CSS #mobile-menu a
                 mobileMenu.appendChild(navLinkMobile);
             });
         }
 
-        /**
-         * Dynamically updates the mailto link's href attribute based on the current language.
-         * @param {string} lang - The target language code ('en' or 'ar').
-         */
+        
         function updateEmailLink(lang) {
             const langData = translations[lang];
             const emailLink = document.getElementById('email-contact-link');
 
             if (!emailLink) return;
 
-            // Construct the subject and body from translation keys
             const subject = encodeURIComponent(langData.email_subject || 'Website Inquiry');
-            // Adding two newlines (%0A%0A) after the prefix for formatting
             const body = encodeURIComponent(langData.email_body_prefix + '\n\nThank you.');
-
-            // Construct the final mailto href using the constant email
-            // Use mail.google.com/mail/u/0/?view=cm&fs=1 to open Gmail tab
             const mailtoLink = `https://mail.google.com/mail/u/0/?view=cm&fs=1&to=${CONTACT_EMAIL}&su=${subject}&body=${body}`;
 
             emailLink.href = mailtoLink;
         }
 
-        /**
-         * Updates the content of the page based on the selected language and handles RTL layout.
-         * @param {string} lang - The target language code ('en' or 'ar').
-         */
         function updateContent(lang) {
             currentLang = lang;
             const dir = (lang === 'ar') ? 'rtl' : 'ltr';
             const langData = translations[lang];
             const html = document.documentElement;
 
-            // 1. Update HTML language and direction attributes
             html.setAttribute('lang', lang);
             html.setAttribute('dir', dir);
             
-            // 2. Update all translated elements
             document.querySelectorAll('[data-translate-key]').forEach(element => {
                 const key = element.getAttribute('data-translate-key');
                 if (langData[key]) {
-                    // Update content only if it's not the language code span
                     if (element.id === 'current-lang') {
                         element.textContent = langData.lang_code;
                     } else if (element.tagName === 'TITLE') {
@@ -365,18 +323,14 @@
                 }
             });
 
-            // 3. Update the Email Link
             updateEmailLink(lang);
 
-            // 4. Persist the selection
             localStorage.setItem('malfitMainLang', lang);
         }
         
         document.addEventListener('DOMContentLoaded', () => {
-            // --- 0. Generate Navigation Structure ---
             generateNavigation();
 
-            // --- 1. MALFIT Mobile Menu Toggle Handler ---
             const menuToggle = document.getElementById('menu-toggle');
             const mobileMenu = document.getElementById('mobile-menu');
             const langToggle = document.getElementById('lang-toggle'); 
@@ -385,26 +339,21 @@
                 mobileMenu.classList.toggle('active');
             });
             
-            // Close menu when a link is clicked
             mobileMenu.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', () => {
                     mobileMenu.classList.remove('active');
                 });
             });
             
-            // --- 2. Language Toggle Handler ---
             langToggle.addEventListener('click', () => {
                 const newLang = (currentLang === 'en') ? 'ar' : 'en';
                 updateContent(newLang);
             });
             
-            // --- 3. Initial Language Load & Icon Replacement ---
-            // Load saved language or default to English
+            
             updateContent(currentLang);
-            // Replace placeholder SVGs with Lucide Icons (only needed once DOM is ready)
             replaceLucideIcons();
 
-            // --- 4. Falling Food Background Animation Script (Unchanged) ---
             const produceEmojis = ['🍎', '🍊', '🍋', '🍇', '🍓', '🍍', '🥦', '🥕', '🥬', '🌶️', '🌽', '🥝'];
             const body = document.body;
             const maxItems = 40; 
@@ -414,10 +363,8 @@
                 if (itemsOnScreen >= maxItems) return;
 
                 const emoji = produceEmojis[Math.floor(Math.random() * produceEmojis.length)];
-                // Smaller size range for subtlety
                 const size = Math.floor(Math.random() * 15) + 12; 
                 const initialX = Math.random() * window.innerWidth;
-                // Faster duration for slightly more noticeable movement
                 const duration = Math.random() * 8 + 4; 
                 const rotation = Math.random() * 360; 
                 
