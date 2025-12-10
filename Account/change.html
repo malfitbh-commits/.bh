@@ -11,7 +11,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
     <style>
-        /* CSS Variables for Theming */
         :root {
             --primary-color: #4f46e5;
             --primary-light: #eef2ff;
@@ -33,7 +32,6 @@
             font-family: 'Cairo', sans-serif;
             text-align: right;
         }
-        /* Custom Button Style for Primary Action */
         .contact-btn {
             background-image: linear-gradient(to right, var(--calc-gradient-start) 0%, var(--calc-gradient-end) 100%); 
             transition: all 0.2s ease;
@@ -43,7 +41,6 @@
             transform: scale(1.02);
             opacity: 0.95;
         }
-        /* Input and Alert Styles */
         .input-style {
             padding: 10px;
             border: 2px solid #e2e8f0;
@@ -61,19 +58,17 @@
             border-left: 4px solid;
         }
         
-        /* Language Button Style */
         .lang-btn-style {
-            font-size: 0.875rem; /* text-sm */
-            padding: 0.375rem 0.75rem; /* px-3 py-1.5 */
-            border-radius: 9999px; /* rounded-full */
+            font-size: 0.875rem;
+            padding: 0.375rem 0.75rem;
+            border-radius: 9999px;
             color: white;
-            /* Use the same gradient and hover effects as contact-btn */
             background-image: linear-gradient(to right, var(--calc-gradient-start) 0%, var(--calc-gradient-end) 100%); 
             transition: all 0.2s ease;
         }
         .lang-btn-style:hover {
-            box-shadow: 0 4px 8px rgba(63, 131, 248, 0.4); /* Smaller shadow for a smaller button */
-            transform: scale(1.05); /* Slightly bigger scale for high visibility */
+            box-shadow: 0 4px 8px rgba(63, 131, 248, 0.4);
+            transform: scale(1.05);
             opacity: 0.9;
         }
     </style>
@@ -139,7 +134,6 @@
             appId: "1:118730063574:web:1a34284a69ae0e7097d377"
         };
         
-        // 🆕 FIREBASE INITIALIZATION
         const app = firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
@@ -178,7 +172,6 @@
             }
         };
 
-        // --- UTILITY & LIFE CYCLE FUNCTIONS (Unchanged) ---
 
         function updateTheme(gender) {
             document.documentElement.classList.toggle('female-theme', gender === 'female');
@@ -242,18 +235,12 @@
             text.textContent = translation;
         }
 
-        // --- CORE LOGIC (UPDATED FOR FIREBASE AUTH) ---
-
-        /**
-         * 🆕 Handles the password change process using secure Firebase Authentication.
-         */
         window.changePassword = async function() {
             const currentPassword = document.getElementById('current-password').value;
             const newPassword = document.getElementById('new-password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
             const user = auth.currentUser; // Get the currently signed-in user
 
-            // 1. Basic Validation
             if (!currentPassword || !newPassword || !confirmPassword) {
                 displayMessage('error_fill_all', false);
                 return;
@@ -269,31 +256,25 @@
                 return;
             }
             
-            // 2. Prepare for Re-authentication
             const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
 
             try {
-                // Step 3: Re-authenticate the user (Crucial security step)
                 await user.reauthenticateWithCredential(credential);
 
-                // Step 4: Update the password with the new one
                 await user.updatePassword(newPassword);
 
-                // Step 5: Success
                 displayMessage('success_password_changed', true);
                 
                 setTimeout(() => {
-                    window.location.href = 'account.html'; // Redirect to account page
+                    window.location.href = 'account.html';
                 }, 1500);
 
             } catch (error) {
-                // Step 6: Handle Firebase Errors
                 let messageKey = 'error_fill_all'; 
                 
                 if (error.code === 'auth/wrong-password') {
                     messageKey = 'error_current_password'; 
                 } else if (error.code === 'auth/requires-recent-login') {
-                    // This error often means the user needs to log out and log back in completely.
                     messageKey = 'error_no_user'; 
                 } else if (error.code === 'auth/weak-password') {
                     messageKey = 'error_weak_password'; 
