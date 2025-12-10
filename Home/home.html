@@ -12,9 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     
-    <style>
-        /* Custom styles for the falling items and overall look */
-        
+    <style>        
         body { 
             font-family: 'Inter', sans-serif; 
             margin: 0;
@@ -22,12 +20,10 @@
             overflow-x: hidden;
         }
 
-        /* Apply Arabic font when direction is RTL */
         html[dir="rtl"] body {
             font-family: 'Cairo', sans-serif;
         }
 
-        /* --- Video Background Styles (Fixed) --- */
         #background-video {
             width: 100vw;
             height: 100vh;
@@ -38,62 +34,55 @@
             z-index: -1;
         }
 
-        /* --- Scrolling Content Styles --- */
         .content-section {
             position: relative;
             z-index: 20;
             padding: 4rem 1rem;
         }
         
-        /* Custom mobile fallback: Hide video and use solid background/image */
         @media (max-width: 768px) {
             #background-video {
                 display: none;
             }
             .hero-container {
-                /* Fallback to MALFIT primary gradient for mobile background */
                 background: linear-gradient(135deg, #4f46e5, #986cff) no-repeat center center fixed; 
                 background-size: cover;
             }
         }
         
-        /* --- Header and Menu Styles (RTL Overrides) --- */
-        /* Ensure text aligns correctly based on direction */
+        
         html[dir="rtl"] .text-left { text-align: right; }
         html[dir="rtl"] .text-right { text-align: left; }
         
-        /* Reverse header links on desktop for RTL */
         html[dir="rtl"] .space-x-4 > :not([hidden]) ~ :not([hidden]) {
             --tw-space-x-reverse: 1; 
             margin-right: calc(1rem * var(--tw-space-x-reverse));
             margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)));
         }
         
-        /* Reverse the order of About Us content and adjust text alignment */
         html[dir="rtl"] .about-container {
             flex-direction: row-reverse; 
             text-align: right; 
         }
         html[dir="rtl"] .us {
-            text-align: left; /* Adjust image container alignment back */
+            text-align: left;
         }
         html[dir="rtl"] .leading {
             text-align: right;
         }
 
-        /* Mobile menu styling (Hidden by default) */
         #mobile-menu {
             transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
             max-height: 0;
             overflow: hidden;
             opacity: 0;
-            background-color: rgba(79, 70, 229, 0.9); /* Indigo translucent background */
+            background-color: rgba(79, 70, 229, 0.9); 
             position: fixed;
-            top: 64px; /* Below the header */
+            top: 64px; 
             right: 0;
             left: 0;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            z-index: 40; /* Higher than header backdrop */
+            z-index: 40; 
         }
         #mobile-menu.active {
             max-height: 500px;
@@ -113,7 +102,6 @@
         }
 
 
-        /* --- Dashboard Button Card Styling --- */
         .dashboard-card {
             height: 110px;
             font-size: 24px;
@@ -147,14 +135,13 @@
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); 
         }
 
-        /* --- About Us Section Styles --- */
         .about-container {
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 40px;
             gap: 40px;
-            text-align: left; /* Default LTR alignment */
+            text-align: left; 
         }
         
         .leading {
@@ -292,7 +279,6 @@
     <script type="module" src="https://unpkg.com/lucide@latest"></script> 
 
     <script>
-        // --- Translation Data ---
         const translations = {
             'en': {
                 'page_title': 'MALFIT - Home',
@@ -332,43 +318,31 @@
 
         let currentLang = 'en';
 
-        /**
-         * Updates the content of the page based on the selected language and handles RTL layout.
-         * @param {string} lang - The target language code ('en' or 'ar').
-         */
+        
         function updateContent(lang) {
             currentLang = lang;
             const dir = (lang === 'ar') ? 'rtl' : 'ltr';
             const langData = translations[lang];
             const html = document.documentElement;
 
-            // 1. Update HTML language and direction attributes
             html.setAttribute('lang', lang);
             html.setAttribute('dir', dir);
             
-            // 2. Update all translated elements
             document.querySelectorAll('[data-translate-key]').forEach(element => {
                 const key = element.getAttribute('data-translate-key');
                 if (langData[key]) {
-                    // Update text content
                     element.textContent = langData[key];
                     
-                    // Handle special case for 'hero_welcome' where 'MALFIT' is in a separate span
                     if (key === 'hero_welcome') {
-                        // This relies on the separate 'logo' key also being updated.
                     }
                 }
             });
 
-            // 3. Update the language code display in the header
             document.getElementById('current-lang').textContent = langData.lang_code;
-
-            // 4. Persist the selection
             localStorage.setItem('malfitLang', lang);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // --- Mobile Menu Toggle Handler ---
             const menuToggle = document.getElementById('menu-toggle');
             const mobileMenu = document.getElementById('mobile-menu');
             const langToggle = document.getElementById('lang-toggle');
@@ -383,25 +357,20 @@
                 });
             });
 
-            // --- Language Toggle Handler ---
             langToggle.addEventListener('click', () => {
                 const newLang = (currentLang === 'en') ? 'ar' : 'en';
                 updateContent(newLang);
             });
 
-            // --- Initial Language Load ---
             const savedLang = localStorage.getItem('malfitLang') || 'en';
             updateContent(savedLang);
 
-
-            // --- Firebase Initialization (Kept for environment compatibility) ---
             const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
             const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
             
             if (Object.keys(firebaseConfig).length === 0) {
                  console.warn("Firebase configuration is missing. Data persistence will not be available.");
             }
-            // Real Firebase logic moved to external module script for environment compatibility, as mandated.
         });
     </script>
     
@@ -410,18 +379,15 @@
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Global variables 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
 
-        // Initialize Firebase
         if (Object.keys(firebaseConfig).length > 0) {
             const app = initializeApp(firebaseConfig);
             const db = getFirestore(app);
             const auth = getAuth(app);
             setLogLevel('Debug');
 
-            // Authentication Setup 
             const initAuth = async () => {
                 try {
                     if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -441,11 +407,10 @@
                 if (user) {
                     userId = user.uid;
                     console.log("User signed in. User ID:", userId);
-                    // Public Data Path: /artifacts/APP_ID/public/data/...
-                    // Private Data Path: /artifacts/APP_ID/users/USER_ID/...
+                    
                 } else {
                     console.log("User signed out or anonymous.");
-                    userId = crypto.randomUUID(); // Fallback for unauthenticated state
+                    userId = crypto.randomUUID(); 
                 }
             });
 
