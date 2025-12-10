@@ -12,35 +12,29 @@
     <script src="https://unpkg.com/lucide@latest" defer></script> 
 
     <style>
-        /* Custom styles */
-        /* REDUNDANT @import REMOVED */
-        
         :root { 
-            --primary-color: #4f46e5; /* indigo-600 */
-            --primary-light: #eef2ff; /* indigo-50 */
+            --primary-color: #4f46e5;
+            --primary-light: #eef2ff;
         }
         
         body { 
             font-family: 'Inter', sans-serif; 
-            background-color: #f0f4f8; /* Softer background */
+            background-color: #f0f4f8;
             overflow-x: hidden; 
             min-height: 100vh;
             position: relative; 
         }
 
-        /* ADDED: Set Arabic font when direction is RTL, uses Cairo from <head> link */
         html[dir="rtl"] body {
             font-family: 'Cairo', sans-serif;
             text-align: right;
         }
 
-        /* Ensure all structural elements are above any moving backgrounds */
         header, main, footer {
             position: relative;
             z-index: 10; 
         }
         
-        /* --- Header Specific Styles --- */
         header {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             background-color: #ffffff;
@@ -49,7 +43,6 @@
             align-items: center; 
         }
 
-        /* Navigation Links Style */
         .nav-link {
             padding: 0.5rem 0.75rem;
             color: #4b5563; 
@@ -61,7 +54,6 @@
             color: #4f46e5; 
         }
         
-        /* General styling for header icons/buttons */
         .icon-btn {
             display: flex;
             align-items: center;
@@ -72,7 +64,6 @@
             cursor: pointer;
         }
         
-        /* --- Language Icon Specific Style (Circular) --- */
         .lang-circle-btn {
             border: 2px solid #d1d5db;
             border-radius: 9999px;
@@ -89,7 +80,6 @@
             border-color: #4f46e5;
         }
         
-        /* --- Trainer Card Styles --- */
         .trainer-card {
             background-color: #ffffff;
             border: 1px solid #e5e7eb;
@@ -102,7 +92,6 @@
             box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
         }
 
-        /* --- Choose Button Style --- */
         .choose-button {
             background-image: linear-gradient(to right, #ec4899 0%, #d946ef 100%); /* Pink to Purple Gradient */
             transition: all 0.3s ease;
@@ -114,12 +103,10 @@
             box-shadow: 0 6px 15px rgba(217, 70, 239, 0.6);
         }
         
-        /* Tailwind classes for the cart badge */
         .cart-badge {
             font-family: 'Inter', sans-serif; 
         }
 
-        /* Custom Mobile Menu Styling */
         #mobile-nav a {
             display: block;
             padding: 12px 24px;
@@ -129,7 +116,7 @@
             border-bottom: 1px solid #f3f4f6;
         }
         #mobile-nav a:hover {
-            background-color: #eef2ff; /* indigo-50 */
+            background-color: #eef2ff; 
             color: #4f46e5;
         }
     </style>
@@ -209,50 +196,33 @@
     </footer>
 
     <script>
-        // --- 1. SHOPPING CART MANAGEMENT ---
-        
-        // Key for localStorage
         const CART_STORAGE_KEY = 'malfitShoppingCart';
         
-        // Initialize cart state from localStorage or use an empty array
         let shoppingCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
         
         const cartCountLink = document.querySelector('a[title="Shopping Cart"]');
 
-        /**
-         * Updates the visual count next to the shopping cart icon.
-         */
         function updateCartCountUI() {
             const count = shoppingCart.length;
             
-            // Remove existing badge if present
             let badge = cartCountLink.querySelector('.cart-badge');
             if (badge) {
                 badge.remove();
             }
 
             if (count > 0) {
-                // Create a new badge element
                 badge = document.createElement('span');
-                // Tailwind classes for a small red notification badge
                 badge.className = 'cart-badge absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full';
                 badge.textContent = count;
                 
-                // Set the cart link to relative position for the absolute badge
                 cartCountLink.style.position = 'relative';
                 cartCountLink.appendChild(badge);
             }
         }
 
-        /**
-         * Adds a trainer item to the shopping cart and saves it to localStorage,
-         * ensuring only one personal trainer service is allowed.
-         * @param {object} trainerData - The data for the trainer to add.
-         */
+        
         function addToCart(trainerData) {
-            // *** NEW LOGIC: CHECK FOR EXISTING TRAINER SERVICE ***
             const existingTrainerService = shoppingCart.find(item => item.type === 'Personal Training Service');
-            
             if (existingTrainerService) {
                 const existingTrainerName = currentLang === 'ar' 
                     ? existingTrainerService.nameAr.replace('مدرب شخصي: ', '')
@@ -261,12 +231,11 @@
                 alertMessage(currentLang === 'ar' 
                     ? `لا يمكنك اختيار أكثر من مدرب شخصي واحد. المدرب ${existingTrainerName} موجود بالفعل في سلة التسوق.` 
                     : `You can only choose one Personal Trainer. Trainer ${existingTrainerName} is already in your cart.`, 
-                    true // isError
+                    true
                 );
                 return;
             }
 
-            // Check if this specific Personal Trainer item is already in the cart (secondary check for safety)
             const itemName = `Personal Trainer: ${trainerData.name}`;
             const existingItem = shoppingCart.find(item => item.name === itemName);
             
@@ -274,41 +243,33 @@
                 alertMessage(currentLang === 'ar' 
                     ? `المدرب ${trainerData.nameAr} موجود بالفعل في سلة التسوق.` 
                     : `Trainer ${trainerData.name} is already in your cart.`, 
-                    true // isError
+                    true 
                 );
                 return;
             }
 
-            // Create the new cart item
             shoppingCart.push({
                 name: itemName,
                 nameAr: `مدرب شخصي: ${trainerData.nameAr}`,
-                price: 'Negotiable', // Placeholder for the price or a specific service package
+                price: 'Negotiable',
                 type: 'Personal Training Service'
             });
 
-            // Save the updated cart to localStorage
             localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(shoppingCart));
 
-            // Update the UI
             updateCartCountUI();
             
-            // Show success message and redirect to the shopping cart page
             alertMessage(currentLang === 'ar' 
                 ? `تمت إضافة المدرب ${trainerData.nameAr} إلى سلة التسوق! يتم تحويلك الآن...` 
                 : `Added Trainer ${trainerData.name} to the cart! Redirecting now...`, 
-                false // isError
+                false 
             );
             
-            // Redirect to the shopping.html page after a short delay
             setTimeout(() => {
-                window.location.href = '../Shopping/shopping.html'; // Adjust path based on your folder structure if needed
-            }, 1500); 
+                window.location.href = '../Shopping/shopping.html';
         }
 
-        // --- 2. GLOBAL AND TRANSLATION LOGIC ---
         
-        // Global variables for language state and elements
         let currentLang = localStorage.getItem('currentLang') || 'en'; 
 
         const langToggleBtn = document.getElementById('lang-toggle');
@@ -321,7 +282,6 @@
         const htmlElement = document.documentElement;
         const trainersContainer = document.getElementById('trainers-container');
 
-        // Static translations for the main headers and navigation links
         const staticTranslations = {
             'main-title': {
                 'en': 'Your Path to Success Starts Here',
@@ -343,7 +303,6 @@
                 'en': 'Trainer Chosen!',
                 'ar': 'تم اختيار المدرب!'
             },
-            // Navigation link translations (Keys match data-translate-key)
             'calories': { 'en': 'Calories', 'ar': 'السعرات الحرارية' },
             'eat-healthy': { 'en': 'Eat Healthy', 'ar': 'تناول طعامًا صحيًا' },
             'plans': { 'en': 'Plans', 'ar': 'الخطط' },
@@ -352,7 +311,6 @@
             'contact-us': { 'en': 'Contact Us', 'ar': 'اتصل بنا' }
         };
 
-        // Trainer Data
         const trainersData = [
             {
                 id: 1,
@@ -360,7 +318,7 @@
                 specialty: "Yoga & Mobility", specialtyAr: "اليوجا والحركة",
                 bio: "Certified Vinyasa instructor with 5 years experience focusing on flexibility and mindfulness. Perfect for stress reduction.",
                 bioAr: "مدربة فينياسا معتمدة بخبرة 5 سنوات تركز على المرونة واليقظة الذهنية. مثالية لتقليل التوتر.",
-                imageUrl: "https://placehold.co/150x150/f472b6/ffffff?text=SJ" // Hot pink placeholder
+                imageUrl: "https://placehold.co/150x150/f472b6/ffffff?text=SJ"
             },
             {
                 id: 2,
@@ -368,7 +326,7 @@
                 specialty: "Strength & Conditioning", specialtyAr: "القوة والتكييف",
                 bio: "Former professional athlete specializing in high-intensity training, muscle building, and peak physical performance.",
                 bioAr: "رياضي محترف سابق متخصص في التدريب عالي الكثافة، بناء العضلات، وتحقيق الأداء البدني الأقصى.",
-                imageUrl: "https://placehold.co/150x150/4f46e5/ffffff?text=OA" // Indigo placeholder
+                imageUrl: "https://placehold.co/150x150/4f46e5/ffffff?text=OA"
             },
             {
                 id: 3,
@@ -376,11 +334,10 @@
                 specialty: "Weight Loss & Nutrition", specialtyAr: "فقدان الوزن والتغذية",
                 bio: "Focuses on sustainable dietary changes and body composition improvements. Great for beginners seeking a healthy lifestyle change.",
                 bioAr: "تركز على التغييرات الغذائية المستدامة وتحسين تكوين الجسم. رائعة للمبتدئين الباحثين عن تغيير صحي في نمط الحياة.",
-                imageUrl: "https://placehold.co/150x150/34d399/ffffff?text=EC" // Green placeholder
+                imageUrl: "https://placehold.co/150x150/34d399/ffffff?text=EC"
             }
         ];
 
-        // Custom alert function (simulates a toast notification)
         function alertMessage(message, isError = false) {
             console.log("App Message: " + message);
             const isRTL = htmlElement.getAttribute('dir') === 'rtl';
@@ -399,7 +356,6 @@
             }, 3000);
         }
 
-        // Function to update static page elements (headers, footer, and navigation links)
         function updateStaticText() {
             mainTitle.textContent = staticTranslations['main-title'][currentLang];
             mainSubtitle.textContent = staticTranslations['main-subtitle'][currentLang];
@@ -408,32 +364,28 @@
             const navKeys = ['calories', 'eat-healthy', 'plans', 'clubs', 'survey', 'contact-us'];
 
             navKeys.forEach(key => {
-                // Update Desktop Navigation Links
                 const desktopId = `nav-${key}`;
                 const desktopEl = document.getElementById(desktopId);
                 if (desktopEl) {
                     desktopEl.textContent = staticTranslations[key][currentLang];
                 }
 
-                // Update Mobile Navigation Links (using data-translate-key for consistency)
                 document.querySelectorAll(`#mobile-nav a[data-translate-key="${key}"]`).forEach(mobileEl => {
                      mobileEl.textContent = staticTranslations[key][currentLang];
                 });
             });
 
-            // Set document direction for proper RTL display
             if (currentLang === 'ar') {
                 htmlElement.setAttribute('dir', 'rtl');
-                htmlElement.setAttribute('lang', 'ar'); // Set language attribute
+                htmlElement.setAttribute('lang', 'ar');
                 currentLangSpan.textContent = 'EN';
             } else {
                 htmlElement.setAttribute('dir', 'ltr');
-                htmlElement.setAttribute('lang', 'en'); // Set language attribute
+                htmlElement.setAttribute('lang', 'en');
                 currentLangSpan.textContent = 'ع';
             }
         }
 
-        // Function to render the trainer cards
         function renderTrainers() {
             const nameKey = currentLang === 'ar' ? 'nameAr' : 'name';
             const specialtyKey = currentLang === 'ar' ? 'specialtyAr' : 'specialty';
@@ -443,7 +395,6 @@
 
             trainersContainer.innerHTML = '';
             
-            // Check if any personal training service is already in the cart
             const isTrainerChosen = shoppingCart.some(item => item.type === 'Personal Training Service');
             const chosenTrainerItem = shoppingCart.find(item => item.type === 'Personal Training Service');
             const chosenTrainerName = isTrainerChosen 
@@ -454,58 +405,47 @@
                 const card = document.createElement('div');
                 card.className = 'trainer-card rounded-xl p-6 flex flex-col items-center text-center';
 
-                // Image
                 const image = document.createElement('img');
                 image.src = trainer.imageUrl;
                 image.alt = trainer[nameKey];
                 image.className = 'w-36 h-36 object-cover rounded-full mb-5 border-4 border-pink-400 shadow-md';
                 image.onerror = function() {
-                    this.onerror = null; // prevents infinite loop
-                    this.src = 'https://placehold.co/150x150/6b7280/ffffff?text=PT'; // Fallback
+                    this.onerror = null;
+                    this.src = 'https://placehold.co/150x150/6b7280/ffffff?text=PT';
                 };
 
-                // Name
                 const nameEl = document.createElement('h3');
                 nameEl.className = 'text-2xl font-bold text-gray-800 mb-1';
                 nameEl.textContent = trainer[nameKey];
 
-                // Specialty
                 const specialtyEl = document.createElement('p');
                 specialtyEl.className = 'text-lg font-semibold text-pink-600 mb-3';
                 specialtyEl.textContent = trainer[specialtyKey];
 
-                // Bio
                 const bioEl = document.createElement('p');
                 bioEl.className = 'text-gray-600 mb-6 flex-grow';
                 bioEl.textContent = trainer[bioKey];
 
-                // Button
                 const button = document.createElement('button');
                 
-                // *** LOGIC: DISABLE BUTTONS IF A TRAINER IS ALREADY CHOSEN ***
                 const isThisTrainerChosen = chosenTrainerName === trainer[nameKey];
 
                 if (isTrainerChosen && !isThisTrainerChosen) {
-                    // Another trainer is chosen, disable this button
                     button.className = 'w-full py-3 text-white font-bold rounded-lg text-lg bg-gray-400 cursor-not-allowed';
-                    button.textContent = buttonText; // Still show the 'Choose' text
+                    button.textContent = buttonText;
                     button.disabled = true;
-                    // Optional: Add a title for clarity
                     button.title = currentLang === 'ar' ? `لقد اخترت المدرب ${chosenTrainerName} بالفعل.` : `You have already chosen Trainer ${chosenTrainerName}.`;
 
                 } else if (isThisTrainerChosen) {
-                    // This is the already chosen trainer
                     button.className = 'w-full py-3 text-white font-bold rounded-lg text-lg bg-green-500 cursor-not-allowed';
                     button.textContent = buttonChosenText;
                     button.disabled = true;
                 } else {
-                    // No trainer chosen yet, allow selection
                     button.className = 'choose-button w-full py-3 text-white font-bold rounded-lg text-lg hover:bg-pink-600';
                     button.textContent = buttonText;
                     button.onclick = () => addToCart(trainer);
                 }
 
-                // Append elements to card
                 card.appendChild(image);
                 card.appendChild(nameEl);
                 card.appendChild(specialtyEl);
@@ -517,27 +457,21 @@
             lucide.createIcons();
         }
 
-        // Function to toggle the language state
         function toggleLanguage() {
             currentLang = currentLang === 'en' ? 'ar' : 'en';
-            
-            // Save the new language choice to localStorage
             localStorage.setItem('currentLang', currentLang);
             
             updateStaticText();
             renderTrainers();
             
-            // Close mobile menu when language is toggled, if open
             if (!mobileNav.classList.contains('hidden')) {
                 toggleMobileMenu();
             }
         }
         
-        // Function to toggle the mobile menu visibility
         function toggleMobileMenu() {
             mobileNav.classList.toggle('hidden'); 
             
-            // Change the menu icon
             const menuIconSvg = menuToggleBtn.querySelector('svg');
             if (mobileNav.classList.contains('hidden')) {
                  menuIconSvg.outerHTML = '<svg data-lucide="menu" width="24" height="24"></svg>';
@@ -549,18 +483,13 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- 1. Initial Setup and Content Load ---
-            lucide.createIcons();
-            
-            // Set initial event listeners
+            lucide.createIcons();            
             langToggleBtn.onclick = toggleLanguage;
             menuToggleBtn.onclick = toggleMobileMenu;
 
-            // Load content based on the saved 'currentLang' value
             updateStaticText();
             renderTrainers();
             
-            // LOAD INITIAL CART COUNT ON PAGE LOAD
             updateCartCountUI(); 
         });
     </script>
