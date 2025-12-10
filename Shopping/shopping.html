@@ -11,11 +11,8 @@
     <script src="https://unpkg.com/lucide@latest" defer></script> 
 
     <style>
-        /* Custom styles from the original file for consistency */
-        /* REDUNDANT @import REMOVED HERE */
-        
         :root {
-            --primary-color: #4f46e5; /* indigo-600 */
+            --primary-color: #4f46e5;
         }
         
         body { 
@@ -25,7 +22,6 @@
             position: relative; 
         }
 
-        /* Reusing essential styles for header/navigation/buttons */
         header {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             background-color: #ffffff;
@@ -71,21 +67,19 @@
             border-color: #4f46e5;
         }
         
-        /* Styles specific to the checkout page table */
         .cart-table th {
             text-align: inherit; 
             padding: 1rem 1.5rem;
             border-bottom: 2px solid #e5e7eb;
             font-weight: 700;
-            color: #4f46e5; /* indigo-600 */
+            color: #4f46e5;
         }
         .cart-table td {
             padding: 1rem 1.5rem;
             border-bottom: 1px solid #f3f4f6;
-            color: #374151; /* gray-700 */
+            color: #374151; 
         }
         
-        /* Pay Now button style */
         .pay-button {
             background-image: linear-gradient(to right, #4f46e5 0%, #3b82f6 100%);
             box-shadow: 0 4px 10px rgba(79, 70, 229, 0.4);
@@ -96,7 +90,6 @@
             transform: translateY(-1px); 
         }
         
-        /* Custom Mobile Menu Styling */
         #mobile-nav a {
             display: block;
             padding: 12px 24px;
@@ -106,7 +99,7 @@
             border-bottom: 1px solid #f3f4f6;
         }
         #mobile-nav a:hover {
-            background-color: #eef2ff; /* indigo-50 */
+            background-color: #eef2ff;
             color: #4f46e5;
         }
     </style>
@@ -211,28 +204,19 @@
     </footer>
 
     <script>
-        // Key for localStorage (must match the key in clubs page)
-        const CART_STORAGE_KEY = 'malfitShoppingCart';
-        
-        // --- 1. GLOBAL AND TRANSLATION LOGIC ---
-        
+        const CART_STORAGE_KEY = 'malfitShoppingCart';        
         let currentLang = localStorage.getItem('currentLang') || 'en'; 
-
         const langToggleBtn = document.getElementById('lang-toggle');
         const menuToggleBtn = document.getElementById('menu-toggle');
         const mobileNav = document.getElementById('mobile-nav');
         const currentLangSpan = document.getElementById('current-lang');
         const htmlElement = document.documentElement;
-
-        // Elements on this page
         const checkoutTitle = document.getElementById('checkout-title');
         const checkoutSubtitle = document.getElementById('checkout-subtitle');
         const footerText = document.getElementById('footer-text'); 
         const cartItemsBody = document.getElementById('cart-items-body');
         const emptyCartMessage = document.getElementById('empty-cart-message');
         const payButton = document.getElementById('pay-button');
-
-        // Static translations for this page and navigation
         const staticTranslations = {
             'checkout-title': {
                 'en': 'Shopping Cart',
@@ -261,7 +245,6 @@
             'contact-us': { 'en': 'Contact Us', 'ar': 'اتصل بنا' }
         };
 
-        // Custom alert function (simulates a toast notification)
         function alertMessage(message) {
             console.log("App Message: " + message);
             const isRTL = htmlElement.getAttribute('dir') === 'rtl';
@@ -279,7 +262,6 @@
             }, 3000);
         }
 
-        // Function to update static page elements (headers, footer, and navigation links)
         function updateStaticText() {
             document.title = currentLang === 'ar' ? 'ملفت | سلة التسوق' : 'MALFIT | Shopping Cart';
             checkoutTitle.textContent = staticTranslations['checkout-title'][currentLang];
@@ -288,14 +270,11 @@
             payButton.textContent = staticTranslations['pay-button'][currentLang];
             document.getElementById('empty-cart-message').textContent = staticTranslations['empty-cart-message'][currentLang];
             document.getElementById('total-text').textContent = staticTranslations['total-text'][currentLang];
-            
-            // Table headers
             document.getElementById('th-item').textContent = staticTranslations['th-item'][currentLang];
             document.getElementById('th-type').textContent = staticTranslations['th-type'][currentLang];
             document.getElementById('th-price').textContent = staticTranslations['th-price'][currentLang];
             document.getElementById('th-remove').textContent = staticTranslations['th-remove'][currentLang];
             
-            // Navigation link translations
             const navKeys = ['calories', 'eat-healthy', 'plans', 'clubs', 'survey', 'contact-us'];
 
             navKeys.forEach(key => {
@@ -308,7 +287,6 @@
                 });
             });
 
-            // Set document direction for proper RTL display
             if (currentLang === 'ar') {
                 htmlElement.setAttribute('dir', 'rtl');
                 currentLangSpan.textContent = 'EN';
@@ -318,24 +296,20 @@
             }
         }
 
-        // Function to toggle the language state
         function toggleLanguage() {
             currentLang = currentLang === 'en' ? 'ar' : 'en';
             localStorage.setItem('currentLang', currentLang);
             updateStaticText();
-            renderCart(); // Re-render cart items with new language
+            renderCart(); 
             
-            // Close mobile menu when language is toggled, if open
             if (!mobileNav.classList.contains('hidden')) {
                 toggleMobileMenu();
             }
         }
         
-        // Function to toggle the mobile menu visibility
         function toggleMobileMenu() {
             mobileNav.classList.toggle('hidden'); 
             const menuIconSvg = menuToggleBtn.querySelector('svg');
-            // Toggle the icon from 'menu' to 'x'
             if (mobileNav.classList.contains('hidden')) {
                  menuIconSvg.outerHTML = '<svg data-lucide="menu" width="24" height="24"></svg>';
             } else {
@@ -344,12 +318,7 @@
             lucide.createIcons();
         }
 
-        // --- 2. CART RENDERING AND LOGIC ---
-
-        /**
-         * Removes an item from the cart by its name (English key) and updates storage/UI.
-         * @param {string} itemName - The name of the item to remove (English key).
-         */
+        
         function removeItemFromCart(itemName) {
             let shoppingCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
             
@@ -359,7 +328,6 @@
                 shoppingCart = shoppingCart.filter(item => item.name !== itemName);
                 localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(shoppingCart));
                 
-                // Show confirmation message
                 const removedName = currentLang === 'ar' ? itemToRemove.nameAr : itemToRemove.name;
                 alertMessage(currentLang === 'ar' ? `تمت إزالة: ${removedName}` : `Removed: ${removedName}`);
             }
@@ -368,9 +336,6 @@
         }
 
 
-        /**
-         * Renders the current state of the shopping cart to the table.
-         */
         function renderCart() {
             const shoppingCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || [];
             const isRTL = currentLang === 'ar';
@@ -394,34 +359,25 @@
                 const row = document.createElement('tr');
                 row.className = 'hover:bg-gray-50 transition-colors';
                 
-                // Item Name
                 const nameCell = document.createElement('td');
                 nameCell.className = 'font-semibold';
                 nameCell.textContent = item[nameKey];
 
-                // Item Type (Hidden on small screens)
                 const typeCell = document.createElement('td');
                 typeCell.className = 'hidden sm:table-cell text-sm';
-                typeCell.textContent = item.type; // Type is consistently in English (e.g., 'Lifetime', 'Monthly')
+                typeCell.textContent = item.type; 
 
-                // Price (Always Free in this phase)
                 const priceCell = document.createElement('td');
                 priceCell.className = 'text-right font-mono text-lg text-green-600 font-bold';
                 priceCell.textContent = isRTL ? 'مجاني' : 'Free';
-                
-                // Remove Button
                 const removeCell = document.createElement('td');
                 removeCell.className = 'text-center';
                 const removeButton = document.createElement('button');
                 removeButton.className = 'text-red-500 hover:text-red-700 p-2 rounded-full transition-colors';
                 removeButton.innerHTML = `<svg data-lucide="trash-2" width="20" height="20"></svg>`;
                 removeButton.title = isRTL ? 'إزالة' : 'Remove';
-                
-                // Attach removal function to the button
                 removeButton.onclick = () => removeItemFromCart(item.name);
-                
                 removeCell.appendChild(removeButton);
-
                 row.appendChild(nameCell);
                 row.appendChild(typeCell);
                 row.appendChild(priceCell);
@@ -429,31 +385,20 @@
                 tableBody.appendChild(row);
             });
             
-            // Final total update
-            document.getElementById('cart-total').textContent = isRTL ? 'مجاني' : 'Free';
-            
-            // Re-render lucide icons after injecting HTML
+            document.getElementById('cart-total').textContent = isRTL ? 'مجاني' : 'Free';            
             lucide.createIcons();
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Initial setup
             lucide.createIcons();
             langToggleBtn.onclick = toggleLanguage;
             menuToggleBtn.onclick = toggleMobileMenu;
-
-            // Load content based on the saved 'currentLang' value
             updateStaticText();
-            renderCart();
-            
-            // Payment button handler (Placeholder logic for now)
+            renderCart();            
             payButton.onclick = () => {
                 if (payButton.disabled) return;
                 alertMessage(currentLang === 'ar' ? 'تمت معالجة الطلب بنجاح. سيتم توجيهك إلى صفحة التأكيد.' : 'Order processed successfully. Redirecting to confirmation page.');
                 
-                // In a real application, you would clear the cart and redirect:
-                // localStorage.removeItem(CART_STORAGE_KEY);
-                // window.location.href = 'confirmation.html';
             };
         });
     </script>
