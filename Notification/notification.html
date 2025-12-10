@@ -10,21 +10,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* --- START: Custom Styles and Theme Variables --- */
         :root {
-            --primary-color: #4f46e5; /* Default: indigo-600 */
-            --primary-light: #eef2ff; /* Default: indigo-50 */
+            --primary-color: #4f46e5; 
+            --primary-light: #eef2ff; 
             --logo-color: #4f46e5;
         }
         
-        /* --- START: FEMALE THEME OVERRIDE --- */
-        html.female-theme { /* Added 'html' for better specificity */
-            --primary-color: #ec4899; /* Pink-600 */
-            --primary-light: #fdf2f8; /* Pink-50 */
+        
+        html.female-theme { 
+            --primary-color: #ec4899;
+            --primary-light: #fdf2f8;
             --logo-color: #ec4899;
         }
         
-        /* Apply custom theme colors to default Tailwind indigo classes */
         .text-indigo-600 {
             color: var(--logo-color) !important;
         }
@@ -32,11 +30,9 @@
             background-color: var(--primary-light) !important;
         }
 
-        /* Hide Period link until Female theme is active */
         .hidden-until-female {
             display: none !important;
         }
-        /* --- END: FEMALE THEME OVERRIDE --- */
 
         body { 
             font-family: 'Inter', sans-serif; 
@@ -46,13 +42,11 @@
             position: relative; 
         }
 
-        /* Apply Arabic font when direction is RTL */
         html[dir="rtl"] body {
             font-family: 'Cairo', sans-serif;
             text-align: right;
         }
 
-        /* --- Custom Nav Link Styles (Pill-shaped) --- */
         .nav-link {
             text-decoration: none;
             color: #474646;
@@ -60,10 +54,9 @@
             padding: 10px 15px; 
             margin-right: 10px;
             transition: color 0.2s, background-color 0.2s, transform 0.1s;
-            border-radius: 9999px; /* Pill shape */
+            border-radius: 9999px; 
             white-space: nowrap;
         }
-        /* Highlight the active link for THIS page (Notification) */
         .nav-link.active-notification {
             color: var(--primary-color); 
             background-color: var(--primary-light); 
@@ -75,20 +68,17 @@
             transform: translateY(-1px);
         }
         
-        /* Adjustments for RTL layout for links */
         html[dir="rtl"] header nav .nav-link {
             margin-right: 0;
             margin-left: 10px;
         }
 
-        /* --- Header Specific Styles --- */
         header {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); 
             background-color: #ffffff;
             transition: box-shadow 0.3s ease-in-out;
         }
         
-        /* --- Mobile Menu Styles --- */
         #mobile-menu {
             transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
             max-height: 0;
@@ -123,7 +113,6 @@
             text-align: right; 
         }
 
-        /* Icon Button Styling */
         .icon-btn {
             padding: 10px;
             border-radius: 50%;
@@ -131,14 +120,13 @@
             display: flex; 
             align-items: center;
             justify-content: center;
-            color: #4b5563; /* gray-700 */
+            color: #4b5563; 
         }
         .icon-btn:hover {
             background-color: var(--primary-light);
             color: var(--primary-color);
         }
         
-        /* Centering for the main card container */
         .min-h-main {
             min-height: calc(100vh - 140px);
         }
@@ -148,7 +136,6 @@
             }
         }
         
-        /* --- Notification Specific Styles --- */
         .notification-card {
             transition: all 0.3s ease;
             cursor: pointer;
@@ -159,7 +146,7 @@
             transform: translateY(-2px);
         }
         .notification-unread {
-            border-left: 5px solid var(--primary-color); /* Highlight unread items */
+            border-left: 5px solid var(--primary-color); 
             background-color: var(--primary-light);
         }
         html[dir="rtl"] .notification-unread {
@@ -167,7 +154,6 @@
             border-right: 5px solid var(--primary-color);
         }
 
-        /* Styling for the Mark Read button to match the theme */
         .mark-read-btn {
             color: var(--primary-color);
             border: 1px solid var(--primary-color);
@@ -177,7 +163,6 @@
         .mark-read-btn:hover {
             background-color: var(--primary-light);
         }
-        /* --- END: Custom Styles and Theme Variables --- */
     </style>
 </head>
 <body>
@@ -290,7 +275,6 @@
     <script src="https://unpkg.com/lucide@latest"></script> 
 
     <script>
-        // --- START: TRANSLATION DATA ---
         const translations = {
             'en': {
                 'page_title': 'MALFIT | Notifications',
@@ -354,38 +338,20 @@
             }
         };
         
-        // Use a more specific key for application language
         let currentLang = localStorage.getItem('malfitMainLang') || 'en';
-        // --- END: TRANSLATION DATA ---
-        
-        // --- START: CORE JS FUNCTIONS ---
-
-        /**
-         * Switches the language between English (en) and Arabic (ar).
-         */
         function toggleLanguage() {
             currentLang = (currentLang === 'en') ? 'ar' : 'en';
             localStorage.setItem('malfitMainLang', currentLang);
             applyTranslation(currentLang);
         }
         
-        /**
-         * Applies translations to all elements with a data-translate-key attribute.
-         * @param {string} lang - The target language ('en' or 'ar').
-         */
         function applyTranslation(lang) {
             const dictionary = translations[lang];
             const html = document.documentElement;
             const currentLangDisplay = document.getElementById('current-lang');
             
-            // 1. Set HTML direction and font
             html.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
-
-            // 2. Set language button text
-            // Note: The displayed text should be the *opposite* language code for the button
             currentLangDisplay.textContent = lang === 'en' ? 'ع' : 'EN'; 
-
-            // 3. Translate all keyed elements
             document.querySelectorAll('[data-translate-key]').forEach(element => {
                 const key = element.getAttribute('data-translate-key');
                 if (dictionary[key]) {
@@ -401,39 +367,30 @@
                 lucide.createIcons();
             }
         }
-        
-        /**
-         * Changes the theme colors (CSS variables and Tailwind classes) to pink if female.
-         */
+       
         function updateTheme(gender) {
             const html = document.documentElement;
             const logo = document.getElementById('logo');
             const periodDesktop = document.getElementById('nav-period-desktop');
             const periodMobile = document.getElementById('nav-period-mobile'); // Using corrected ID
             
-            // Reset/Default classes
             html.classList.remove('female-theme');
             if (periodDesktop) periodDesktop.classList.add('hidden-until-female');
             if (periodMobile) periodMobile.classList.add('hidden-until-female');
             
-            // Update Icon Button colors based on theme, as the original CSS relies on specific Tailwind classes
             const iconButtons = document.querySelectorAll('.icon-btn');
             iconButtons.forEach(btn => {
-                 // Reset border-color logic 
                 btn.classList.remove('hover:border-pink-600');
                 btn.classList.add('hover:border-indigo-600');
             });
 
 
             if (gender === 'female') {
-                // Change to Pink theme
                 html.classList.add('female-theme');
                 
-                // Show Period links
                 if (periodDesktop) periodDesktop.classList.remove('hidden-until-female');
                 if (periodMobile) periodMobile.classList.remove('hidden-until-female');
                 
-                // Fix for border hover color
                 iconButtons.forEach(btn => {
                     btn.classList.remove('hover:border-indigo-600');
                     btn.classList.add('hover:border-pink-600');
@@ -441,28 +398,20 @@
             }  
         }
 
-        // Load and apply notification states from local storage
         function loadNotificationStates() {
-            // Note: Storing IDs as strings in localStorage for consistency
             const readNotifs = JSON.parse(localStorage.getItem('readNotifications')) || [];
             readNotifs.forEach(id => {
                 applyReadStyle(id);
             });
-            // Handle notif-4 which is read by default and doesn't have a button
             applyReadStyle('4');
         }
         
-        /**
-         * Applies the "read" CSS style and removes the button.
-         */
+        
         function applyReadStyle(notifId) {
              const notification = document.getElementById(`notif-${notifId}`);
             if (notification) {
-                // Apply read styles
                 notification.classList.remove('notification-unread', 'bg-white');
-                notification.classList.add('bg-gray-50', 'shadow-sm'); // Lighter background for read items
-                
-                // Find and remove the 'Mark as Read' button
+                notification.classList.add('bg-gray-50', 'shadow-sm'); // Lighter background for read items                
                 const button = notification.querySelector('.mark-read-btn');
                 if (button) {
                     button.remove();
@@ -470,17 +419,10 @@
             }
         }
 
-        /**
-         * Marks a single notification as read, applies style, AND saves the state to Local Storage.
-         * @param {number} notifId 
-         */
+        
         function markAsRead(notifId) {
             const id = notifId.toString();
-
-            // 1. Apply visual change
             applyReadStyle(id);
-
-            // 2. Save state to Local Storage
             const readNotifs = JSON.parse(localStorage.getItem('readNotifications')) || [];
             if (!readNotifs.includes(id)) {
                 readNotifs.push(id);
@@ -488,9 +430,7 @@
             }
         }
 
-        /**
-         * Simulates marking all visible unread notifications as read and saves them.
-         */
+        
         function markAllAsRead() {
             const unreadNotifications = document.querySelectorAll('.notification-unread');
             
@@ -505,41 +445,26 @@
                 const idMatch = notif.id.match(/notif-(\d+)/);
                 if (idMatch) {
                     const id = idMatch[1];
-                    // 1. Apply visual change
                     applyReadStyle(id);
 
-                    // 2. Save ID to the list
                     if (!readNotifs.includes(id)) {
                         readNotifs.push(id);
                     }
                 }
             });
             
-            // 3. Update Local Storage once
             localStorage.setItem('readNotifications', JSON.stringify(readNotifs));
 
             alert(translations[currentLang]['alert_mark_all_success']);
         }
-        // --- END: CORE JS FUNCTIONS ---
 
-
-        // --- INITIALIZATION ---
-        document.addEventListener('DOMContentLoaded', () => {
-            
-            // Apply initial theme based on stored preference (or default to male/indigo)
+        document.addEventListener('DOMContentLoaded', () => {            
             const storedGender = localStorage.getItem('userGender') || 'male';
-            updateTheme(storedGender);
-            
-            // Apply the saved language immediately
-            applyTranslation(currentLang); 
-            
-            // Load initial notification states
+            updateTheme(storedGender);            
+            applyTranslation(currentLang);             
             loadNotificationStates();
-
-            // --- Mobile Menu Toggle Handler ---
             const menuToggle = document.getElementById('menu-toggle');
             const mobileMenu = document.getElementById('mobile-menu');
-
             menuToggle.addEventListener('click', () => {
                 mobileMenu.classList.toggle('active');
                 const menuIconSvg = document.querySelector('#menu-toggle svg');
@@ -547,8 +472,6 @@
                 menuIconSvg.outerHTML = `<svg data-lucide="${iconName}" width="24" height="24"></svg>`;
                 lucide.createIcons();
             });
-
-            // Close menu when a link is clicked
             mobileMenu.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', () => {
                     mobileMenu.classList.remove('active');
