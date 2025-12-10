@@ -12,57 +12,50 @@
     <script src="https://unpkg.com/lucide@latest" defer></script> 
 
     <style>
-        /* Custom styles from the previous file */
         :root {
-            --primary-color: #4f46e5; /* Default: indigo-600 */
-            --primary-light: #eef2ff; /* Default: indigo-50 */
+            --primary-color: #4f46e5;
+            --primary-light: #eef2ff;
             --logo-color: #4f46e5;
-            --calc-gradient-start: #4f46e5; /* Indigo */
-            --calc-gradient-end: #3b82f6; /* Blue */
-            --result-text-color: #3730a3; /* Indigo-800 */
-            --result-highlight-color: #4338ca; /* Indigo-700 */
+            --calc-gradient-start: #4f46e5;
+            --calc-gradient-end: #3b82f6;
+            --result-text-color: #3730a3;
+            --result-highlight-color: #4338ca;
         }
         
-        /* --- START: FEMALE THEME OVERRIDE --- */
         .female-theme {
-            --primary-color: #ec4899; /* Pink-600 */
-            --primary-light: #fdf2f8; /* Pink-50 */
+            --primary-color: #ec4899;
+            --primary-light: #fdf2f8; 
             --logo-color: #ec4899;
-            --calc-gradient-start: #ec4899; /* Pink */
-            --calc-gradient-end: #f43f5e; /* Rose */
-            --result-text-color: #9d174d; /* Pink-800 */
-            --result-highlight-color: #be185d; /* Pink-700 */
+            --calc-gradient-start: #ec4899;
+            --calc-gradient-end: #f43f5e; 
+            --result-text-color: #9d174d;
+            --result-highlight-color: #be185d;
         }
         
-        /* Hide Period link until Female theme is active. Use a class that can be toggled by CSS/JS. */
         .period-link {
             display: none !important;
         }
         .female-theme .period-link {
-            display: flex !important; /* Show on desktop nav (flex layout) */
+            display: flex !important; 
         }
-        /* Mobile menu links are typically block elements */
         #mobile-menu a.period-link {
             display: block !important; 
         }
-        /* --- END: FEMALE THEME OVERRIDE --- */
 
 
         body { 
             font-family: 'Inter', sans-serif; 
-            background-color: #f0f4f8; /* Softer, slightly blue background */
+            background-color: #f0f4f8; 
             overflow-x: hidden; 
             min-height: 100vh;
             position: relative; 
         }
 
-        /* Apply Arabic font when direction is RTL */
         html[dir="rtl"] body {
             font-family: 'Cairo', sans-serif;
             text-align: right;
         }
 
-        /* --- Custom Nav Link Styles (Pill-shaped) --- */
         .nav-link {
             text-decoration: none;
             color: #474646;
@@ -70,10 +63,9 @@
             padding: 10px 15px; 
             margin-right: 10px;
             transition: color 0.2s, background-color 0.2s, transform 0.1s;
-            border-radius: 9999px; /* Pill shape */
+            border-radius: 9999px; 
             white-space: nowrap;
         }
-        /* Highlight the active link for this page */
         .nav-link.active-calorie {
             color: var(--primary-color); 
             background-color: var(--primary-light); 
@@ -85,20 +77,17 @@
             transform: translateY(-1px);
         }
         
-        /* Adjustments for RTL layout for links */
         html[dir="rtl"] header nav .nav-link {
             margin-right: 0;
             margin-left: 10px;
         }
         
-        /* --- Header Specific Styles --- */
         header {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Stronger header shadow */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); 
             background-color: #ffffff;
             transition: box-shadow 0.3s ease-in-out;
         }
         
-        /* --- Mobile Menu Styles (Using existing Tailwind classes for responsiveness) --- */
         #mobile-menu {
             transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
             max-height: 0;
@@ -133,7 +122,6 @@
             text-align: right; 
         }
 
-        /* Icon Button Styling */
         .icon-btn {
             padding: 10px;
             border-radius: 50%;
@@ -141,14 +129,13 @@
             display: flex; 
             align-items: center;
             justify-content: center;
-            color: #4b5563; /* gray-700 */
+            color: #4b5563; 
         }
         .icon-btn:hover {
             background-color: var(--primary-light);
             color: var(--primary-color);
         }
         
-        /* Specific RTL fix for button icon placement (mr-2 equivalent for RTL) */
         .rtl-ml-2 {
             margin-right: 0.5rem; 
         }
@@ -157,18 +144,16 @@
             margin-left: 0.5rem; 
         }
         
-        /* Enhanced Contact Button Gradient - Uses CSS variables */
         .contact-btn {
             background-image: linear-gradient(to right, var(--calc-gradient-start) 0%, var(--calc-gradient-end) 100%); 
             transition: all 0.2s ease;
         }
         .contact-btn:hover {
-            box-shadow: 0 8px 15px rgba(63, 131, 248, 0.4); /* General shadow for hover effect */
+            box-shadow: 0 8px 15px rgba(63, 131, 248, 0.4);
             transform: scale(1.02);
             opacity: 0.95;
         }
         
-        /* Centering for the main card container */
         .min-h-main {
             min-height: calc(100vh - 140px);
         }
@@ -178,7 +163,6 @@
             }
         }
 
-        /* Calculator Specific Styles */
         .input-style {
             padding: 10px;
             border: 2px solid #e2e8f0;
@@ -191,19 +175,18 @@
         }
         .input-style:focus {
             outline: none;
-            border-color: var(--primary-color); /* Uses CSS Variable */
+            border-color: var(--primary-color); 
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
         }
         .result-box-style {
-            background-color: var(--primary-light); /* Uses CSS Variable */
-            border-left: 4px solid var(--primary-color); /* Uses CSS Variable */
+            background-color: var(--primary-light); 
+            border-left: 4px solid var(--primary-color); 
         }
         html[dir="rtl"] .result-box-style {
             border-left: none;
-            border-right: 4px solid var(--primary-color); /* Uses CSS Variable */
+            border-right: 4px solid var(--primary-color); 
         }
         
-        /* Result Box inner content styling using CSS variables */
         .result-inner-box {
              background-color: var(--primary-light);
         }
@@ -387,27 +370,20 @@
     </footer>
 
     <script>
-        // --- GLOBAL STATE ---
         let currentLang = localStorage.getItem('malfitLang') || 'en';
         let userGender = localStorage.getItem('malfitGender') || 'male'; 
-
-        // Constants for Calculation Logic
         const KCAL_PER_KG_FAT = 7700;
         const MIN_CALORIES_MALE = 1500;
         const MIN_CALORIES_FEMALE = 1200;
         const DAYS_IN_WEEK = 7;
-        const CALORIE_SAVING_KEY = 'malfitCaloriePlans'; // Key for saving multiple plans
-        // const PLAN_LIMIT = 3; // REMOVED: Limit is removed as requested.
+        const CALORIE_SAVING_KEY = 'malfitCaloriePlans'; 
 
-        // --- GLOBAL VARIABLES TO STORE LAST RESULT ---
         let lastTdee = 0;
         let lastTargetCalories = 0;
         let lastGoalWeight = 0;
         let lastTimeFrameWeeks = 0;
         let lastGoalType = 'lose'; 
-        // --------------------------------------------------
-
-        // --- TRANSLATION DATA (FIXED AND COMPLETE) ---
+        
         const translations = {
             'en': {
                 'page_title': 'MALFIT | Calorie',
@@ -501,13 +477,7 @@
             }
         };
 
-        // --- UTILITY FUNCTIONS ---
-
-        /**
-         * Clears and optionally displays a warning message in the yellow box.
-         * @param {string} [messageKey] - The translation key for the message.
-         * @param {Object} [replacements] - Key-value pairs for string replacement in the warning.
-         */
+        
         function displayWarning(messageKey, replacements = {}) {
             const warningBox = document.getElementById('warning-box');
             const warningMessage = document.getElementById('warning-message');
@@ -518,7 +488,6 @@
             if (messageKey) {
                 let message = translations[currentLang][messageKey] || messageKey;
                 
-                // Apply replacements
                 for (const key in replacements) {
                     const regex = new RegExp(`{${key}}`, 'g');
                     message = message.replace(regex, replacements[key]);
@@ -529,9 +498,7 @@
             }
         }
         
-        /**
-         * Displays a warning in the RED limit box (now unused for limit checking).
-         */
+        
         function displayLimitWarning(show) {
             const limitBox = document.getElementById('limit-box');
             if (show) {
@@ -541,38 +508,26 @@
             }
         }
 
-        // --- LIFECYCLE & THEME/LANG FUNCTIONS ---
-
-        /**
-         * Toggles visibility of the cycle tracking fields in the form and the 'Period' links in the navigation based on the currently selected gender.
-         */
+       
         function toggleCycleTrackingFields() {
             const genderSelect = document.getElementById('gender');
             const cycleFields = document.getElementById('cycle-tracking-fields');
             const isFemale = genderSelect.value === 'female';
             
-            // Toggle visibility of the form fields
             if (isFemale) {
                 cycleFields.classList.remove('hidden');
             } else {
                 cycleFields.classList.add('hidden');
             }
-            // Note: Visibility of the Period links in the nav is handled by CSS/updateTheme.
         }
 
-        /**
-         * Toggles the mobile navigation menu.
-         */
+        
         function toggleMobileMenu() {
             const mobileMenu = document.getElementById('mobile-menu');
             mobileMenu.classList.toggle('active');
         }
 
-        /**
-         * Updates the theme (colors) based on the selected gender.
-         * @param {string} gender - 'male' or 'female'.
-         * @param {boolean} [save=true] - Whether to save the preference to localStorage.
-         */
+        
         function updateTheme(gender, save = true) {
             const html = document.documentElement;
             if (gender === 'female') {
@@ -586,42 +541,31 @@
             }
         }
 
-        /**
-         * Loads saved user preferences (like gender) and applies them on page load.
-         */
+        
         window.loadUserPreferences = function() {
-            // 1. Load Gender from localStorage
             const savedGender = localStorage.getItem('malfitGender');
             if (savedGender) {
                 userGender = savedGender;
-                // Set the calculator's gender selection to the saved value
                 const genderSelect = document.getElementById('gender');
                 if (genderSelect) {
                     genderSelect.value = userGender;
                 }
             }
             
-            // 2. Apply theme based on loaded gender (don't save again on load)
             updateTheme(userGender, false); 
             
-            // 3. Ensure cycle fields are correctly toggled based on the saved gender
             toggleCycleTrackingFields(); 
 
-            // 4. Apply initial translations
             applyTranslations();
         }
 
-        /**
-         * Applies the translations based on the currentLang setting.
-         */
+        
         function applyTranslations() {
-            // Update the HTML direction attribute
             const html = document.documentElement;
             const newDir = currentLang === 'ar' ? 'rtl' : 'ltr';
             html.setAttribute('lang', currentLang);
             html.setAttribute('dir', newDir);
             
-            // Update all elements with a translation key
             document.querySelectorAll('[data-translate-key]').forEach(element => {
                 const key = element.getAttribute('data-translate-key');
                 const translation = translations[currentLang][key];
@@ -637,20 +581,15 @@
                 }
             });
             
-            // Update the language toggle button text
             document.getElementById('current-lang').textContent = translations[currentLang].lang_code;
             
-            // Re-create Lucide icons after translation
             if (typeof lucide !== 'undefined' && lucide.createIcons) {
                 lucide.createIcons();
             }
-            // Hide the obsolete limit warning
             displayLimitWarning(false);
         }
 
-        /**
-         * Toggles the language and re-applies translations.
-         */
+        
         window.toggleLanguage = function() {
             currentLang = currentLang === 'en' ? 'ar' : 'en';
             localStorage.setItem('malfitLang', currentLang);
@@ -659,7 +598,6 @@
             document.getElementById('mobile-menu').classList.remove('active');
         }
 
-        // --- CORE CALCULATION LOGIC ---
 
         /**
          * Calculates BMR using the Harris-Benedict formula (adjusted/simplified for common use).
@@ -675,24 +613,17 @@
             }
         }
 
-        /**
-         * Calculates the total daily energy expenditure (TDEE).
-         * @returns {number} TDEE in kcal/day.
-         */
+        
         function calculateTDEE(bmr, activityMultiplier) {
             return bmr * activityMultiplier;
         }
 
 
-        /**
-         * Calculates the required daily calorie goal to achieve the weight loss target.
-         */
+        
         window.calculatePlan = function() {
-            // 1. Reset
             document.getElementById('result-box').classList.add('hidden');
-            displayWarning(null); // Clear previous warnings
+            displayWarning(null);
             
-            // 2. Get Inputs
             const age = parseFloat(document.getElementById('age').value);
             const gender = document.getElementById('gender').value;
             const height = parseFloat(document.getElementById('height').value);
@@ -701,14 +632,12 @@
             const goalWeight = parseFloat(document.getElementById('goal_weight').value);
             const timeFrameWeeks = parseFloat(document.getElementById('time_frame').value);
 
-            // 3. Validation
             if (!age || !height || !weight || !goalWeight || !timeFrameWeeks || age <= 0 || height <= 0 || weight <= 0 || goalWeight <= 0 || timeFrameWeeks <= 0) {
                 displayWarning('warning_fill_fields');
                 return;
             }
 
             try {
-                // 4. Core Calculation
                 const bmr = calculateBMR(weight, height, age, gender);
                 const tdee = calculateTDEE(bmr, activityMultiplier);
 
@@ -744,14 +673,12 @@
                     displayWarning('warning_loss_fast');
                 }
 
-                // 6. Update Global State
                 lastTdee = Math.round(tdee);
                 lastTargetCalories = Math.round(targetCalories);
                 lastGoalWeight = goalWeight;
                 lastTimeFrameWeeks = timeFrameWeeks;
-                lastGoalType = 'lose'; // Fixed to 'lose' since the form only calculates loss.
+                lastGoalType = 'lose'; 
 
-                // 7. Display Results
                 const weeklyLoss = (dailyCalorieDeficit * DAYS_IN_WEEK / KCAL_PER_KG_FAT).toFixed(2);
                 
                 document.getElementById('tdee-output').textContent = lastTdee.toLocaleString();
@@ -761,7 +688,6 @@
 
             } catch (e) {
                 console.error("Calculation failed:", e);
-                // Fallback in case of unexpected error
                 const fallbackTarget = (gender === 'male') ? 2000 : 1600;
                 lastTargetCalories = fallbackTarget;
                 displayWarning('warning_error', { fallbackTarget: fallbackTarget.toLocaleString() });
@@ -769,36 +695,30 @@
         }
 
 
-        /**
-         * Saves the calculated plan to local storage and redirects to the Plans page.
-         */
+        
         window.saveCaloriePlan = function() {
             if (lastTargetCalories === 0) {
                 displayWarning('warning_no_plan_to_save');
                 return;
             }
             
-            // Get existing plans or initialize an empty array
             const existingPlans = JSON.parse(localStorage.getItem(CALORIE_SAVING_KEY) || '[]');
             
             const newPlan = {
-                id: Date.now(), // Unique ID for keying/deleting
+                id: Date.now(), 
                 type: lastGoalType,
                 target: lastTargetCalories,
                 tdee: lastTdee,
                 goalWeight: lastGoalWeight,
                 timeFrameWeeks: lastTimeFrameWeeks,
                 gender: userGender,
-                date: new Date().toISOString() // Save the current timestamp
+                date: new Date().toISOString() 
             };
 
-            // Add the new plan
             existingPlans.push(newPlan);
             
-            // Save back to localStorage
             localStorage.setItem(CALORIE_SAVING_KEY, JSON.stringify(existingPlans));
             
-            // Alert and Redirect
             alert(translations[currentLang].alert_plan_saved);
             window.location.href = '../Plans/plans.html';
         }
