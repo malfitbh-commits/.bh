@@ -23,7 +23,6 @@
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
         
-        // --- 1. Global Setup ---
         const firebaseConfig = {
             apiKey: "AIzaSyAJrDZrl1jeKFeEsDTM_lUTxxwW7lib5U0",
             authDomain: "malfit-app.firebaseapp.com",
@@ -39,7 +38,6 @@
         let userId = null;
         let isAuthReady = false;
         
-        // Global state for reactivity (initial guest data)
         let profileState = {
             firstName: 'Guest',
             lastName: 'User',
@@ -50,24 +48,22 @@
             email: 'guest@malfit.com'
         };
 
-        // Define color schemes
         const colorSchemes = {
             male: {
-                primary: '#4f46e5', // indigo-600
-                light: '#eef2ff',   // indigo-50
-                // Tailwind-specific classes for non-css-variable elements (logo/buttons)
+                primary: '#4f46e5',
+                light: '#eef2ff',
                 logoClass: 'text-indigo-600',
                 btnClass: 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100',
                 contactGradient: 'linear-gradient(to right, #4f46e5 0%, #3b82f6 100%)'
             },
             female: {
-                primary: '#ec4899', // pink-500
-                light: '#fdf2f8',   // pink-50
+                primary: '#ec4899',
+                light: '#fdf2f8',
                 logoClass: 'text-pink-500',
                 btnClass: 'bg-pink-50 text-pink-700 hover:bg-pink-100',
                 contactGradient: 'linear-gradient(to right, #ec4899 0%, #f472b6 100%)' // pink gradient
             },
-            default: { // Used for other/guest
+            default: {
                 primary: '#4f46e5',
                 light: '#eef2ff',
                 logoClass: 'text-indigo-600',
@@ -75,10 +71,7 @@
                 contactGradient: 'linear-gradient(to right, #4f46e5 0%, #3b82f6 100%)'
             }
         };
-        
-        // --- 2. Utility Functions ---
-        
-        /** Constructs the reference to the user's profile document. */
+                
         const getProfileDocRef = () => {
             if (db && userId) {
                 return doc(db, 'users', userId);
@@ -86,7 +79,6 @@
             return null;
         };
 
-        /** Toggles the form between view-only (disabled) and editable (enabled). */
         const toggleEditMode = (isEditable) => {
             const formElements = document.querySelectorAll('#profile-form input, #profile-form select');
             const statusMessage = document.getElementById('status-message');
@@ -107,24 +99,19 @@
             if (editButtonContainer) editButtonContainer.classList.toggle('hidden', isEditable);
             if (saveCancelContainer) saveCancelContainer.classList.toggle('hidden', !isEditable);
 
-            // Re-render the UI when exiting edit mode to ensure form fields reflect the saved state
             if (!isEditable) {
                 renderProfileUI(profileState); 
             }
         };
 
-        /** Updates the displayed UI elements and form inputs based on the current profileState. */
         const renderProfileUI = (profile) => {
-            // --- Determine Color Scheme ---
             const genderKey = profile.gender === 'female' ? 'female' : 'default';
             const scheme = colorSchemes[genderKey];
             
-            // Set CSS variables for colors
             document.documentElement.style.setProperty('--primary-color', scheme.primary);
             document.documentElement.style.setProperty('--primary-light', scheme.light);
             document.documentElement.style.setProperty('--contact-gradient', scheme.contactGradient);
 
-            // Update Header/Logo/Buttons with Tailwind classes (using color schemes)
             const logo = document.getElementById('malfit-logo');
             if (logo) {
                 logo.className = `text-3xl font-extrabold tracking-wide ${scheme.logoClass}`;
@@ -132,11 +119,9 @@
             const editButton = document.getElementById('edit-profile-btn');
             if (editButton) {
                 editButton.className = `flex items-center px-4 py-2 rounded-lg font-medium transition disabled:opacity-50 disabled:cursor-not-allowed text-white shadow-lg contact-btn`;
-                // Set the default text color (white) for the main button
                 editButton.style.backgroundColor = 'var(--primary-color)'; 
             }
             
-            // Update Profile Content
             const profileImg = document.getElementById('profile-img-preview');
             if (profileImg) profileImg.src = profile.photoBase64 || "https://placehold.co/120x120/bdbdbd/ffffff?text=MALFIT";
 
@@ -149,7 +134,6 @@
             const userIdDisplay = document.getElementById('user-id-display');
             if (userIdDisplay) userIdDisplay.textContent = `User ID: ${userId || 'N/A'}`;
 
-            // Update form inputs (initial values when not in edit mode)
             const firstNameInput = document.getElementById('firstName');
             if (firstNameInput) firstNameInput.value = profile.firstName || '';
             
@@ -165,7 +149,6 @@
             const genderSelect = document.getElementById('gender');
             if (genderSelect) genderSelect.value = profile.gender || 'other';
             
-            // Toggle visibility of period link based on gender
             const periodLinkDesktop = document.getElementById('period-link');
             const periodLinkMobile = document.getElementById('period-link-mobile');
             const isFemale = profile.gender === 'female';
@@ -201,7 +184,6 @@
             try {
                 const profileRef = getProfileDocRef();
                 
-                // Get current form values
                 const newProfileData = {
                     firstName: document.getElementById('firstName').value,
                     lastName: document.getElementById('lastName').value,
@@ -214,20 +196,17 @@
 
                 await setDoc(profileRef, newProfileData, { merge: true });
                 
-                // Update local state immediately before exiting edit mode
                 profileState = { ...profileState, ...newProfileData };
 
                 statusMessage.className = 'text-sm p-2 rounded text-green-700 bg-green-100 mb-4 block';
                 statusMessage.textContent = 'Profile successfully updated!';
                 
-                // Exit edit mode, which will trigger renderProfileUI using the new state
                 toggleEditMode(false); 
                 
             } catch (error) {
                 console.error("Failed to save profile:", error);
                 statusMessage.className = 'text-sm p-2 rounded text-red-700 bg-red-100 mb-4 block';
                 statusMessage.textContent = `Error saving profile: ${error.message}`;
-                // Re-enable editing if save fails
                 toggleEditMode(true); 
             } finally {
                 saveButton.innerHTML = `<svg data-lucide="save" class="w-5 h-5 mr-2 rtl-ml-2"></svg>Save Changes`;
@@ -237,14 +216,13 @@
             }
         };
 
-        /** Handles converting the selected file to Base64 for storage. */
         const handlePhotoUpload = (event) => {
             const file = event.target.files[0];
             const statusMessage = document.getElementById('status-message');
             
             if (!file) return;
 
-            if (file.size > 1024 * 1024) { // Max 1MB
+            if (file.size > 1024 * 1024) {
                 statusMessage.classList.remove('hidden');
                 statusMessage.className = 'text-sm p-2 rounded text-red-700 bg-red-100 mb-4 block';
                 statusMessage.textContent = 'Image file is too large (> 1MB). Please choose a smaller image.';
@@ -282,7 +260,7 @@
             }
         };
         
-        // --- 3. Firebase Initialization and Authentication ---
+        // --- Firebase Initialization and Authentication ---
 
         const initializeFirebase = () => {
             if (!firebaseConfig) {
@@ -312,7 +290,6 @@
                         }
                     } else {
                         profileState.email = 'guest@malfit.com';
-                        // Guest user cannot save, but we display the default UI
                         renderProfileUI(profileState);
                         if (editButton) {
                             editButton.disabled = true;
@@ -326,7 +303,6 @@
                     const uidFromUrl = urlParams.get('uid');
                     
                     if (uidFromUrl) {
-                        // Attempt to load profile if UID is passed, though sign-in is safer
                         userId = uidFromUrl;
                         isAuthReady = true;
                         setupProfileListener();
@@ -345,7 +321,7 @@
             });
         };
         
-        // --- 4. Firestore Real-time Listener ---
+        // --- Firestore Real-time Listener ---
 
         const setupProfileListener = () => {
             const profileRef = getProfileDocRef();
@@ -378,14 +354,13 @@
             });
         };
 
-        // --- 5. Lucide Icon Creation ---
         function replaceLucideIcons() {
             if (typeof lucide !== 'undefined' && lucide.createIcons) {
                 lucide.createIcons();
             }
         }
         
-        // --- 6. Falling Item Background Animation Script ---
+        // --- Falling Item Background Animation Script ---
         const fitnessEmojis = ['🏋️', '🍎', '💧', '🥗', '🧘', '👟', '🥕', '💪', '🍌', '🥛'];
         const body = document.body;
         const maxItems = 40; 
@@ -445,7 +420,6 @@
             setTimeout(spawnLoop, delay);
         }
         
-        // --- 7. Event Listeners for DOM Interactions ---
         
         window.addEventListener('load', () => {
             initializeFirebase();
@@ -478,7 +452,6 @@
             
             const cancelButton = document.getElementById('cancel-btn');
             if (cancelButton) {
-                // When cancelling, we use the profileState to restore the original values
                 cancelButton.addEventListener('click', () => toggleEditMode(false));
             }
             
@@ -499,18 +472,16 @@
 
 
             replaceLucideIcons(); 
-            spawnLoop(); // Start the background animation
+            spawnLoop();
         });
         
     </script>
 
     <style>
-        /* Custom styles from the original file */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
         
         :root {
-            /* These will be set by JS based on gender */
             --primary-color: #4f46e5; 
             --primary-light: #eef2ff; 
             --contact-gradient: linear-gradient(to right, #4f46e5 0%, #3b82f6 100%);
@@ -524,7 +495,6 @@
             position: relative; 
         }
         
-        /* --- Falling Item Styles --- */
         .falling-item {
             position: fixed;
             z-index: 1; 
@@ -535,13 +505,11 @@
             transition: opacity 0.5s;
         }
 
-        /* Main content must be above the falling items */
         #main-content, header, footer {
             position: relative;
             z-index: 10;
             background-color: inherit; 
         }
-        /* --- End Falling Item Styles --- */
 
         html[dir="rtl"] body {
             font-family: 'Cairo', sans-serif;
@@ -629,12 +597,10 @@
         }
         
         .contact-btn {
-            /* Now uses CSS variable for dynamic gradient */
             background-image: var(--contact-gradient); 
             transition: all 0.2s ease;
         }
         .contact-btn:hover {
-            /* Adjusted shadow to use a standard color for simplicity */
             box-shadow: 0 8px 15px rgba(79, 70, 229, 0.4); 
             transform: scale(1.02);
             opacity: 0.95;
@@ -649,7 +615,6 @@
             }
         }
         
-        /* Custom styles for the profile section */
         .profile-img {
             width: 120px;
             height: 120px;
@@ -662,19 +627,18 @@
             font-weight: 600;
             display: block;
             margin-bottom: 0.25rem;
-            color: #374151; /* gray-700 */
+            color: #374151;
         }
-        /* Disable styling for read-only fields */
         .input-group input:disabled:not([type="file"]), 
         .input-group select:disabled {
-            background-color: #f9fafb; /* gray-50 */
-            color: #6b7280; /* gray-500 */
+            background-color: #f9fafb;
+            color: #6b7280;
             cursor: default;
         }
         .input-group input, .input-group select {
             width: 100%;
             padding: 0.65rem 1rem;
-            border: 1px solid #d1d5db; /* gray-300 */
+            border: 1px solid #d1d5db;
             border-radius: 0.5rem;
             transition: border-color 0.15s, box-shadow 0.15s;
         }
