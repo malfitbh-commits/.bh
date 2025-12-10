@@ -9,18 +9,16 @@
     <script src="https://unpkg.com/lucide@latest" defer></script> 
 
     <style>
-        /* Custom styles from the provided code */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap'); 
         
         :root {
-            --primary-color: #4f46e5; /* indigo-600 */
-            --primary-light: #eef2ff; /* indigo-50 */
-            /* New colors for cards */
-            --calorie-color: #ef4444; /* red-500 */
-            --cycle-color: #10b981; /* emerald-500 */
-            --calorie-light: #fef2f2; /* red-50 */
-            --cycle-light: #ecfdf5; /* emerald-50 */
+            --primary-color: #4f46e5;
+            --primary-light: #eef2ff;
+            --calorie-color: #ef4444; 
+            --cycle-color: #10b981; 
+            --calorie-light: #fef2f2; 
+            --cycle-light: #ecfdf5; 
         }
         
         body { 
@@ -36,7 +34,6 @@
             text-align: right;
         }
 
-        /* Nav Link Styles */
         .nav-link {
             text-decoration: none;
             color: #474646;
@@ -63,37 +60,31 @@
             margin-left: 10px;
         }
         
-        /* Ensures the wrapped Period link div behaves like a flex item */
         #desktop-period-nav {
-            display: contents; /* Allows children to flow directly into flex container */
+            display: contents; 
         }
         
-        /* General Header/Mobile Menu styles */
         header {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             background-color: #ffffff;
         }
 
-        /* --- Plan Card Styles (NEW/MODIFIED) --- */
         .plan-card {
             background-color: #ffffff;
             border-radius: 1rem;
             box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
             transition: transform 0.2s, box-shadow 0.2s;
-            /* Added position relative for z-index control of the remove button */
             position: relative;
         }
         .plan-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
         }
-        /* Ensure anchor tag inside plan-card is styled correctly */
         .plan-card a {
             text-decoration: none;
             color: inherit;
         }
         
-        /* Calorie Card Specific */
         .calorie-card {
             border-top: 5px solid var(--calorie-color);
             background-color: var(--calorie-light);
@@ -103,7 +94,6 @@
             border-right: 5px solid var(--calorie-color);
         }
 
-        /* Cycle Card Specific */
         .cycle-card {
             border-top: 5px solid var(--cycle-color);
             background-color: var(--cycle-light);
@@ -114,17 +104,15 @@
         }
 
         .remove-btn {
-            /* FIX: Changed color variables to use the light/dark pairs for better contrast */
-            background-color: #fca5a5; /* red-300 */
-            color: #991b1b; /* red-800 */
+            background-color: #fca5a5; 
+            color: #991b1b; 
             transition: background-color 0.2s;
         }
         .remove-btn:hover {
-            background-color: #f87171; /* red-400 */
+            background-color: #f87171; 
             color: white;
         }
         
-        /* Icon and Mobile Menu styles inherited from the example code... */
         .icon-btn {
             padding: 10px;
             border-radius: 50%;
@@ -259,10 +247,7 @@
     </footer>
 
     <script>
-        // --- GLOBAL STATE ---
-        let currentLang = localStorage.getItem('malfitMainLang') || 'en';
-        
-        // --- TRANSLATIONS (TRUNCATED FOR BREVITY) ---
+        let currentLang = localStorage.getItem('malfitMainLang') || 'en';        
         const translations = {
             'en': {
                 'page_title': 'MALFIT | My Plans',
@@ -280,17 +265,13 @@
                 'empty_plans_title': 'No Active Plans Found.',
                 'empty_plans_subtitle': 'Go to the Calories page to set a new plan.',
                 'month_names': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-
-                // Calorie Plan Specific
                 'calorie_plan_title': '📊 Daily Calorie Goal',
                 'calorie_target': 'Target:',
                 'calorie_saved': 'Date Saved:',
                 'calorie_type_lose': 'Lose Weight',
                 'calorie_type_maintain': 'Maintain Weight',
                 'calorie_type_gain': 'Gain Weight',
-                'btn_remove_calorie': 'Remove Calorie Plan',
-                
-                // Cycle Plan Specific
+                'btn_remove_calorie': 'Remove Calorie Plan',                
                 'cycle_plan_title': '🩸 Cycle Prediction Plan',
                 'cycle_next_period': 'Next Period Start:',
                 'cycle_ovulation': 'Estimated Ovulation:',
@@ -314,17 +295,13 @@
                 'empty_plans_title': 'لا توجد خطط نشطة.',
                 'empty_plans_subtitle': 'انتقل إلى صفحة السعرات الحرارية لتعيين خطة جديدة.',
                 'month_names': ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'],
-
-                // Calorie Plan Specific
                 'calorie_plan_title': '📊 هدف السعرات اليومي',
                 'calorie_target': 'الهدف:',
                 'calorie_saved': 'تاريخ الحفظ:',
                 'calorie_type_lose': 'خسارة الوزن',
                 'calorie_type_maintain': 'الحفاظ على الوزن',
                 'calorie_type_gain': 'زيادة الوزن',
-                'btn_remove_calorie': 'إزالة خطة السعرات',
-                
-                // Cycle Plan Specific
+                'btn_remove_calorie': 'إزالة خطة السعرات',                
                 'cycle_plan_title': '🩸 خطة توقع الدورة',
                 'cycle_next_period': 'بدء الدورة القادمة:',
                 'cycle_ovulation': 'التبويض المتوقع:',
@@ -333,42 +310,19 @@
                 'btn_remove_cycle': 'إزالة خطة الدورة',
             }
         };
-
-        // --- UTILITY FUNCTIONS ---
-
-        /**
-         * Parses a date string (YYYY-MM-DD) and formats it for display.
-         * @param {string} dateString 
-         * @returns {string} Formatted date string.
-         */
         function formatDateForDisplay(dateString) {
-            // Ensure compatibility by replacing hyphens with slashes
             const date = new Date(dateString.replace(/-/g, '/')); 
             const monthNames = translations[currentLang].month_names;
             return `${date.getDate()} ${monthNames[date.getMonth()]}, ${date.getFullYear()}`;
         }
-        
-        /**
-         * Calculates the estimated ovulation date based on the next period start date.
-         * @param {string} nextPeriodDateString - YYYY-MM-DD format
-         * @returns {string} Formatted ovulation date.
-         */
+       
         function calculateOvulationDate(nextPeriodDateString) {
             const nextPeriodDate = new Date(nextPeriodDateString.replace(/-/g, '/'));
             const ovulationDate = new Date(nextPeriodDate);
-            // Ovulation is approximately 14 days before the next period
             ovulationDate.setDate(ovulationDate.getDate() - 14); 
-            // Return the formatted date string (first convert it back to YYYY-MM-DD for consistency with formatDateForDisplay)
             return formatDateForDisplay(ovulationDate.toISOString().split('T')[0]);
         }
 
-
-        // --- PLAN RENDERING FUNCTIONS ---
-
-        /**
-         * Renders the Calorie Goal Plan card.
-         * @param {object} planData - Parsed Calorie plan data.
-         */
         function renderCaloriePlan(planData) {
             const card = document.getElementById('calorie-plan-card');
             const langData = translations[currentLang];
@@ -380,10 +334,7 @@
                 default: goalTypeKey = 'calorie_type_maintain'; 
             }
             
-            // Format the saved date (Note: The key from Calories.html is 'date', not 'dateSaved')
             const dateToFormat = planData.date || new Date().toISOString(); 
-
-            // MODIFICATION: Wrap content in an anchor tag for accessibility/navigation
             card.innerHTML = `
                 <a href="../Calories/calories.html" class="block h-full cursor-pointer p-6"> 
                     <div class="flex items-center justify-between mb-4 text-red-600">
@@ -413,15 +364,10 @@
             card.classList.remove('hidden');
         }
 
-        /**
-         * Renders the Cycle Prediction Plan card.
-         * @param {object} planData - Parsed Cycle plan data.
-         */
+        
         function renderCyclePlan(planData) {
             const card = document.getElementById('cycle-plan-card');
-            const langData = translations[currentLang];
-            
-            // Calculate Ovulation Date for display
+            const langData = translations[currentLang];            
             const ovulationDateDisplay = calculateOvulationDate(planData.nextPeriodStart);
 
             card.innerHTML = `
@@ -456,32 +402,16 @@
             card.classList.remove('hidden');
         }
 
-
-        // --- CORE LOGIC ---
-
-        /**
-         * Main function to load and render all saved plans.
-         */
         function loadPlans() {
-            // Ensure correct keys are used for both Calorie and Cycle plans.
             const calorieDataRaw = localStorage.getItem('savedCaloriePlan'); 
             const cycleDataRaw = localStorage.getItem('savedCyclePlan');
-            
             let plansFound = false;
-
-            // Clear and hide cards before checking local storage
             document.getElementById('calorie-plan-card').classList.add('hidden');
-            document.getElementById('cycle-plan-card').classList.add('hidden');
-            
-            // Get the Period navigation containers
+            document.getElementById('cycle-plan-card').classList.add('hidden');            
             const desktopPeriodNav = document.getElementById('desktop-period-nav');
             const mobilePeriodNav = document.getElementById('mobile-period-nav');
-            
-            // Hide them by default for a fresh check
             desktopPeriodNav.classList.add('hidden');
             mobilePeriodNav.classList.add('hidden');
-
-            // 1. Load Calorie Plan
             if (calorieDataRaw) {
                 try {
                     const planData = JSON.parse(calorieDataRaw);
@@ -492,15 +422,11 @@
                     localStorage.removeItem('savedCaloriePlan'); 
                 }
             }
-
-            // 2. Load Cycle Plan
             if (cycleDataRaw) {
                 try {
                     const planData = JSON.parse(cycleDataRaw);
                     renderCyclePlan(planData);
-                    plansFound = true;
-                    
-                    // Show the Period navigation buttons since a plan exists
+                    plansFound = true;                    
                     desktopPeriodNav.classList.remove('hidden');
                     mobilePeriodNav.classList.remove('hidden');
                     
@@ -510,7 +436,6 @@
                 }
             }
             
-            // 3. Update Empty State
             const noPlansMessage = document.getElementById('no-plans-message');
             if (plansFound) {
                 noPlansMessage.classList.add('hidden');
@@ -518,18 +443,13 @@
                 noPlansMessage.classList.remove('hidden');
             }
             
-            // Re-render lucide icons after injecting HTML
             if (typeof lucide !== 'undefined' && lucide.createIcons) {
                 lucide.createIcons();
             }
         }
         
-        /**
-         * Removes a specific plan from localStorage and reloads the plans.
-         * @param {string} key - The localStorage key (e.g., 'savedCaloriePlan').
-         */
+
         window.removePlan = function(key) {
-            // Use 'savedCaloriePlan' as the consistent key
             const isCaloriePlan = (key === 'savedCaloriePlan');
             const keyName = isCaloriePlan ? 
                 (currentLang === 'en' ? 'Calorie Goal' : 'هدف السعرات') : 
@@ -545,8 +465,6 @@
             }
         }
 
-
-        // --- LANGUAGE SWITCHING LOGIC ---
 
         function updateContent(lang) {
             currentLang = lang;
@@ -565,22 +483,17 @@
                     } else if (element.tagName === 'TITLE') {
                         document.title = langData[key];
                     } else {
-                        // This handles most text content
                         element.textContent = langData[key];
                     }
                 }
             });
 
-            // Reload plans to ensure the card content is also translated
             loadPlans();
             localStorage.setItem('malfitMainLang', lang);
         }
         
-        // --- INITIALIZATION ---
 
-        document.addEventListener('DOMContentLoaded', () => {
-            
-            // --- Handlers ---
+        document.addEventListener('DOMContentLoaded', () => {            
             const menuToggle = document.getElementById('menu-toggle');
             const mobileMenu = document.getElementById('mobile-menu');
             const langToggle = document.getElementById('lang-toggle'); 
@@ -596,14 +509,12 @@
             });
 
             langToggle.addEventListener('click', () => {
-                // Ensure mobile menu is closed when toggling language
                 mobileMenu.classList.remove('active');
                 
                 const newLang = (currentLang === 'en') ? 'ar' : 'en';
                 updateContent(newLang);
             });
             
-            // Initial setup 
             updateContent(currentLang);
         });
 
